@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Version** | 0.1 (draft) |
+| **Version** | 0.2 (draft) |
 | **Date** | 27 September 2026 |
 | **Prepared by** | Harshit Singh |
 | **Prepared for** | Siddharth Sachdev (personal initiative) |
@@ -38,9 +38,10 @@ system.
 | Geography | India: national, 28 states and 8 union territories, with district and municipal tagging where the text names them |
 | Source types | Department websites, official PDFs, national media, vernacular (regional-language) papers, legal media, X.com handles |
 | Streams | Sector news, transfers, elections, political developments, court decisions, policy and statements |
-| Curation | Automatic tagging, relevance scoring, de-duplication, and a training loop that learns from user feedback |
+| Curation | Automatic tagging, a relevance yes/no decision with a degree-of-relevance score, de-duplication, and a training loop that learns from user feedback |
+| Manual feed-in | The client can add items himself (link, PDF or text) through a Telegram bot or a web form; these become part of the dataset and training labels |
 | Users | 3–5 concurrent users with login; mobile-friendly training mode |
-| Reporting | Daily and weekly reports by state, sector and category, plus an interactive dashboard |
+| Reporting | Daily and weekly reports by state, sector and category for two audiences: a detailed **analyst digest** (the client) and a one-page **executive brief** (his leadership). Plus an interactive dashboard. |
 | Operations | Two weeks of uninterrupted processing, with evidence (run logs) |
 | Handover | Runbook, methodology document, a 2-hour hands-on session, and transfer of all accounts |
 
@@ -63,14 +64,18 @@ The four deliverables follow the brief's payment schedule.
 - Every stored item is tagged with sector(s), geography (state/UT or "National"), category, priority and a relevance score (taxonomy in §6).
 - De-duplication and story clustering (§8).
 - Feedback capture and a relevance model that learns from it (§9).
+- Manual feed-in through a Telegram bot: forward a link, PDF or text and it enters the pipeline.
 - Sources, sectors, states and keywords live in configuration, not code.
 
-**Acceptance:** the scheduled pipeline has run unattended for 48 hours; at least 25 sources are active across at least 4 source types; exact duplicates are 0%; a feedback label given in the app changes the next run's scores; a new RSS feed can be added by editing config only.
+**Acceptance:** the scheduled pipeline has run unattended for 48 hours; at least 25 sources are active across at least 4 source types; exact duplicates are 0%; a feedback label given in the app changes the next run's scores; a link forwarded to the bot appears, tagged, after the next run; a new RSS feed can be added by editing config only.
 
 ### D2 — Frontend & Reporting Structure (₹4,000)
 
 - A web app with login for up to 5 users: a filterable feed (state, sector, category, date, source type, language, priority), a mobile training mode, and source and keyword management.
-- A daily report (07:30 IST) and a weekly report (Monday), shown in the app and sent by email.
+- A daily report (07:30 IST) and a weekly report (Monday), shown in the app and sent by email, each in two formats:
+  - **Analyst digest:** every Core and Relevant item, grouped by sector → state → category, with tags and links.
+  - **Executive brief:** one page with the top 5–10 developments, new transfers, upcoming elections and key rulings.
+- A web form for manual feed-in (link, PDF upload or text).
 - Tracker views for transfers, elections (with a calendar) and court rulings.
 - A dashboard with volumes and trends by state and sector.
 
@@ -108,6 +113,19 @@ backend work starts now rather than after selection.
 | Fri 16 Oct – Mon 19 Oct | **M4 Handover** (D4) | Documents, session, ownership transfer |
 
 ## 5. Solution overview
+
+Every item goes through seven stages. Method details and cost reasoning are in
+[ADR-0003](decisions/0003-collection-and-ai-within-budget.md).
+
+| # | Stage | What happens | How |
+|---|---|---|---|
+| 1 | **Collect** | Pull new items from every source, including government notifications and the client's own submissions | RSS → Google News search RSS → targeted scraping of official pages and PDFs → headless browser (rare) → Apify for X; Telegram bot and web form for manual feed-in |
+| 2 | **Scrape / extract** | Get clean text, date, language and publisher; decode Google News links; read PDFs | `trafilatura`, `pypdf`; OCR best-effort |
+| 3 | **Organise** | Normalize, remove duplicates, group reports of the same event into one story | Three-level de-duplication (§8) |
+| 4 | **Is it relevant?** | Yes/no gate that drops obvious noise | L1 rules: multilingual keywords, gazetteers, source priors |
+| 5 | **Degree of relevance** | Score 0–100 and band (Core, Relevant, Peripheral, Not relevant) | L2 local embedding model + classifier trained on feedback; L3 LLM only when L2 is unsure |
+| 6 | **Tag** | Sector, category, state/district, actor, priority (§6) | Rules first; LLM fills gaps |
+| 7 | **Report** | Analyst digest and executive brief, daily and weekly; dashboard and trackers | Report generator → app and email |
 
 ```
  SOURCES                  PIPELINE (scheduled, GitHub Actions)              STORAGE & APPS
@@ -151,7 +169,8 @@ can be extended without code changes.
 | **Source type** | `official` · `national_media` · `regional_media` · `legal_media` · `social` | one |
 | **Language** | ISO 639-1 (`en`, `hi`, `mr`, `ta`, `te`, `bn`, …) | one |
 | **Priority** | `high` · `medium` · `low` (rubric below) | one |
-| **Relevance score** | 0.00–1.00, learned (§9) | one |
+| **Relevance score** | 0–100, learned (§9). Bands: **Core** ≥ 80, **Relevant** 60–79, **Peripheral** 40–59, **Not relevant** < 40 (hidden but kept for training) | one |
+| **Decided by** | `rules` · `model` · `llm` · `human` (which layer set the score, for audit) | one |
 
 **Category definitions**
 
@@ -222,6 +241,7 @@ Users train the system from their phone while reading:
 - **👍 / 👎** marks an item relevant or not relevant.
 - **Re-tag** corrects the sector, state or category.
 - **Mute / boost** acts on a source or keyword.
+- **Manual feed-in:** anything the client submits through the bot or form is stored as a positive example ("this is the kind of item I want").
 
 The feedback improves three layers, from cheapest to most expensive:
 
@@ -251,8 +271,10 @@ labels collected.
 | Database and auth | Supabase free tier (Postgres, email login, row-level security) | ₹0 |
 | Web app | Static PWA on Cloudflare Pages free tier | ₹0 |
 | Email reports | Gmail SMTP or Resend free tier | ₹0 |
-| LLM tagging | Only for uncertain items; hard cap in config | ≤ ₹300 |
+| Relevance model (L2) | Local multilingual embedding model + classifier, runs inside the pipeline | ₹0 |
+| LLM tagging (L3) | Claude Haiku 4.5 through the Batches API, for the uncertain band only; hard cap in config (estimate about ₹260) | ≤ ₹300 |
 | X.com collection | Apify free monthly credit; capped | ₹0–150 |
+| Manual feed-in | Telegram bot, polled by the pipeline | ₹0 |
 | Domain (optional) | .in domain | ~₹70 |
 | **Total** | | **≤ ₹500** |
 
@@ -283,13 +305,14 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 | M1-10 | LLM tagger for uncertain items, with cost cap | D1 | To do |
 | M1-11 | Feedback store and learned relevance model | D1 | To do |
 | M1-12 | Scheduled workflows, run log, source-health alerts; go-live | D1 | To do |
+| M1-13 | Manual feed-in: Telegram bot intake (links, PDFs, text) | D1 | To do |
 | **M2** | **Frontend & reporting** | D2 | |
 | M2-01 | Web app skeleton, login (up to 5 users) | D2 | To do |
 | M2-02 | Feed view with combined filters | D2 | To do |
 | M2-03 | Mobile training mode (rate, re-tag, mute and boost) | D2 | To do |
-| M2-04 | Settings: sources, keywords, taxonomy | D2 | To do |
-| M2-05 | Daily report (app and email) | D2 | To do |
-| M2-06 | Weekly report | D2 | To do |
+| M2-04 | Settings: sources, keywords, taxonomy; manual feed-in form | D2 | To do |
+| M2-05 | Daily report: analyst digest and executive brief (app and email) | D2 | To do |
+| M2-06 | Weekly report: analyst digest and executive brief | D2 | To do |
 | M2-07 | Dashboard metrics and charts | D2 | To do |
 | M2-08 | Trackers: transfers, elections calendar, court rulings | D2 | To do |
 | **M3** | **Uninterrupted processing** | D3 | |
@@ -328,9 +351,12 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 4. Is there an existing list of X handles to track?
 5. Which regional languages matter most beyond Hindi?
 6. At handover, should accounts move to the client's GitHub, Supabase and Cloudflare, or stay with us under a maintenance arrangement?
+7. Who reads the executive brief, and what must it always contain?
+8. Is Telegram acceptable for manual feed-in, or is another channel needed?
 
 ## Change log
 
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 27 Sep 2026 | First draft |
+| 0.2 | 27 Sep 2026 | Added the seven-stage pipeline, relevance gate plus degree-of-relevance bands, manual feed-in (Telegram bot and web form), analyst digest and executive brief reports, AI cost decision (ADR-0003), task M1-13 |
