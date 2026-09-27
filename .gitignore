@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / frontend
+node_modules/
+dist/
+.next/
+.svelte-kit/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+*.pem
+
+# Local data, caches, generated reports
+data/
+*.sqlite
+*.sqlite3
+*.db
+output/
+logs/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
