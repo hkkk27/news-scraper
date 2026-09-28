@@ -123,6 +123,21 @@ def cmd_process(args, cfg) -> int:
     return 0
 
 
+def cmd_train(args, cfg) -> int:
+    from tracker.db import connect
+    from tracker.learn import RelevanceModel, train
+
+    info = train(connect(cfg.db_path), cfg.config_dir)
+    if info is None:
+        print("Not enough labels yet (need both relevant and not-relevant examples).")
+        return 0
+    model = RelevanceModel.load(cfg.settings.relevance.model)
+    print(f"trained on {info.labels} client labels + {info.seed_labels} seed labels "
+          f"({info.positives} relevant / {info.negatives} not); cv accuracy={info.cv_accuracy}, "
+          f"cv precision={info.cv_precision}; model weight in scoring={model.weight:.2f}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="tracker", description="News & Election Tracker")
     parser.add_argument("--config", help="profile directory (default: ./config or $TRACKER_CONFIG_DIR)")
@@ -151,6 +166,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--mode", choices=["auto", "engine", "direct"], default="auto",
                    help="auto = engine output if present, else fetch feeds directly")
     p.set_defaults(func=cmd_process)
+
+    sub.add_parser("train", help="retrain the relevance model from feedback and seed labels").set_defaults(func=cmd_train)
     return parser
 
 
