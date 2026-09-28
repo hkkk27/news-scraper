@@ -80,9 +80,12 @@ def make_bot(cfg):
     from tracker.db import connect
     from tracker.telegram import TelegramClient
 
+    from tracker.commands import build_commands
+
     client = TelegramClient(cfg.secrets.telegram_bot_token)
     http = httpx.Client(headers={"User-Agent": cfg.settings.collection.user_agent}, timeout=15, follow_redirects=True)
-    return Bot(client, connect(cfg.db_path), cfg.secrets.telegram_allowed_chat_ids, http=http)
+    return Bot(client, connect(cfg.db_path), cfg.secrets.telegram_allowed_chat_ids, http=http,
+               commands=build_commands(cfg))
 
 
 def cmd_bot(args, cfg) -> int:
@@ -138,6 +141,32 @@ def cmd_train(args, cfg) -> int:
     return 0
 
 
+def cmd_report(args, cfg) -> int:
+    from tracker.commands import story_card
+    from tracker.reports import build_report, render, send_email, telegram_text, write_report
+
+    data = build_report(cfg, args.kind)
+    files = write_report(cfg, data)
+    print(f"{data.title} ({data.period_label}): {data.stats['stories']} stories, {data.stats['core']} core")
+    for name, path in files.items():
+        print(f"  {name:9} {path}")
+    if args.send:
+        subject = f"{'Weekly' if args.kind == 'weekly' else 'Daily'} brief — {data.period_label}"
+        exec_to = cfg.secrets.report_email_to_exec or cfg.secrets.report_email_to
+        send_email(cfg, subject, render(data, "brief.html"), exec_to)
+        attachments = [files["excel"]] if args.kind == "weekly" else []
+        send_email(cfg, f"Analyst digest — {data.period_label}", render(data, "digest.html"),
+                   cfg.secrets.report_email_to, attachments)
+        if cfg.secrets.telegram_bot_token:
+            bot = make_bot(cfg)
+            cards = [story_card(s) for s in data.top[: cfg.settings.telegram.brief_max_items]]
+            for chat_id in cfg.secrets.telegram_allowed_chat_ids:
+                bot.client.send_message(chat_id, telegram_text(data))
+                bot.send_cards(chat_id, cards)
+            print(f"  sent to {len(cfg.secrets.telegram_allowed_chat_ids)} Telegram chat(s)")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="tracker", description="News & Election Tracker")
     parser.add_argument("--config", help="profile directory (default: ./config or $TRACKER_CONFIG_DIR)")
@@ -168,6 +197,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_process)
 
     sub.add_parser("train", help="retrain the relevance model from feedback and seed labels").set_defaults(func=cmd_train)
+
+    p = sub.add_parser("report", help="build the daily or weekly report (HTML, Excel, Telegram text)")
+    p.add_argument("kind", choices=["daily", "weekly"])
+    p.add_argument("--send", action="store_true", help="also deliver by email and Telegram (if configured)")
+    p.set_defaults(func=cmd_report)
     return parser
 
 
