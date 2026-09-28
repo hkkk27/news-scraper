@@ -5,6 +5,33 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 â€” M0-05 Decision to build on TrendRadar
+
+**Branch:** `docs/m0-05-adopt-trendradar`
+
+### Input from the team
+
+- Don't build everything from scratch: download the open-source projects, integrate and edit them.
+- Licensing is not a concern for this personal project.
+
+### Done
+
+- **Code review.** Read TrendRadar 6.10.0 (released 13 Sep 2026): RSS crawler, per-day SQLite storage, keyword word groups, the AI filter (interests â†’ tags â†’ 0â€“1 scores in batches of 200 titles), LiteLLM client, translator, 10 notification channels including Telegram and email, HTML report, workflow with a Cloudflare Pages deploy step, MCP server.
+- **[ADR-0005](decisions/0005-adopt-trendradar-as-engine.md):**
+  - Import TrendRadar into `engine/` with `git subtree`.
+  - Configure it for India.
+  - Every new collector (government pages, Telegram intake, X) writes an RSS file that the engine ingests.
+  - Our additions become an `india` sub-package: tagging, clustering, learning, reports, dashboard.
+  - Retire the M1-01 skeleton; move the M1-02 taxonomy into the India layer.
+  - ADR-0001 is superseded.
+- **SOW v0.4.** Rewrote the M1/M2 task breakdown around the engine.
+
+### Next
+
+- M1-03: import TrendRadar and run it locally on Python 3.12.
+
+---
+
 ## 2026-09-28 â€” M1-02 Taxonomy and geography
 
 **Branch:** `feat/m1-02-taxonomy`
