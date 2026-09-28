@@ -5,6 +5,33 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 — M2-05/06 Reports; M2-03 Telegram commands
+
+**Branch:** `feat/m2-05-reports`
+
+### Done
+
+- **Reports module** (`tracker/reports.py`). Every format is built from the same stories, where a story is the best item in a cluster, with its outlet count:
+  - **Analyst digest (HTML):** sector → state → category, with each item's "why" reasons.
+  - **Executive brief (HTML):** one page with varied top developments plus trackers for transfers, elections and court rulings.
+  - **Excel workbook:** a state × sector pivot, all stories, and a sheet each for transfers, elections, courts and policy.
+  - **Telegram brief text** and SMTP email. The footer shows run health (runs OK, failing sources).
+- **`tracker report daily|weekly [--send]`.** Writes to `output/reports/<kind>-<date>/`. With `--send`, the brief goes to leadership, the digest (plus Excel weekly) to analysts, and the brief plus top cards (with training buttons) to Telegram.
+- **Bot commands** (`tracker/commands.py`): `/today`, `/week`, `/search`, `/state`, `/sector` reply with story cards.
+- **Visual check** in the browser pane. Issues found and fixed:
+  1. Three outlets' versions of the same Supreme Court CBSE order all made the top list. The brief now skips headlines that share key words with one already chosen.
+  2. A CISF security deployment was tagged as a transfer ("नियुक्त" + generic "अधिकारी"). Transfers now need a cadre or senior post.
+  3. "Headlines for school assembly" round-ups and SEO pages now get a noise penalty.
+- **Live daily report:** 357 stories, 81 core. The top 8 are 8 distinct developments.
+- **Tests:** 67 passing.
+
+### Next
+
+- M1-12: GitHub Actions workflow with `data`-branch persistence.
+- M2-01: dashboard.
+
+---
+
 ## 2026-09-28 — M1-11 Learned relevance model (L2) and layer blending
 
 **Branch:** `feat/m1-11-learning`
