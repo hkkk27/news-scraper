@@ -1,0 +1,102 @@
+# Item categories (streams). An item gets one primary category (the matched category with the
+# lowest precedence number) and an optional secondary one. "news" is the fallback.
+# Scoring for each stream lives in scoring.yaml.
+
+categories:
+  court:
+    label: Court ruling
+    precedence: 1
+    strong:
+      en: ["Supreme Court", "High Court", "HC", "apex court", "bench of", "division bench", "PIL",
+           "petition", "petitioner", "verdict", "judgment", "judgement", "quashes", "quashed", "stays",
+           "stayed", "struck down", "upholds", "contempt", "writ", "tribunal", "sought response"]
+      hi: ["सुप्रीम कोर्ट", "उच्चतम न्यायालय", "सर्वोच्च न्यायालय", "हाईकोर्ट", "हाई कोर्ट", "उच्च न्यायालय", "याचिका", "न्यायालय"]
+      mr: ["उच्च न्यायालय", "सर्वोच्च न्यायालय", "खंडपीठ", "याचिका"]
+      ta: ["உயர் நீதிமன்றம்", "உச்ச நீதிமன்றம்", "நீதிமன்றம்", "மனு"]
+      te: ["హైకోర్టు", "సుప్రీంకోర్టు"]
+      bn: ["হাইকোর্ট", "সুপ্রিম কোর্ট"]
+
+  transfer:
+    label: Transfer / posting
+    precedence: 2
+    strong:
+      en: ["transferred", "transfers", "reshuffle", "reshuffled", "posted as", "new posting", "postings",
+           "appointed as", "appointed new", "repatriated", "relieved of", "given additional charge",
+           "additional charge", "takes charge", "took charge", "assumes charge", "shunted",
+           "bureaucratic rejig", "rejig", "new vice-chancellor", "appointed vice-chancellor", "new VC"]
+      hi: ["तबादला", "तबादले", "तबादलों", "स्थानांतरण", "स्थानांतरित", "पदस्थापना", "नियुक्त", "प्रभार", "कार्यभार"]
+      mr: ["बदली", "बदल्या", "नियुक्ती", "पदभार"]
+      ta: ["இடமாற்றம்", "பணியிட மாற்றம்", "நியமனம்", "பொறுப்பேற்பு"]
+      te: ["బదిలీ", "బదిలీలు"]
+      bn: ["বদলি"]
+    # A transfer item must also mention an officer (keeps "transfer of funds" out).
+    requires_any:
+      en: [IAS, IPS, IFS, IRS, PCS, IAS officers, officers, officer, secretary, "principal secretary",
+           commissioner, collector, "district magistrate", DM, SP, SSP, DGP, director, "vice-chancellor",
+           "vice chancellor", VC, registrar, chairman, chairperson, bureaucrat, bureaucrats, "civil servants"]
+      hi: ["आईएएस", "आईपीएस", "अधिकारी", "अधिकारियों", "सचिव", "आयुक्त", "कलेक्टर", "जिलाधिकारी", "कुलपति", "निदेशक"]
+      mr: ["आयएएस", "अधिकारी", "सचिव", "आयुक्त", "जिल्हाधिकारी", "कुलगुरू"]
+      ta: ["ஐஏஎஸ்", "அதிகாரி", "அதிகாரிகள்", "செயலர்", "ஆட்சியர்"]
+
+  election:
+    label: Election
+    precedence: 3
+    strong:
+      en: ["election", "elections", "polls", "bypoll", "bypolls", "by-election", "by-elections", "by-poll",
+           "assembly polls", "Lok Sabha polls", "civic polls", "municipal polls", "local body polls",
+           "panchayat polls", "zilla parishad", "State Election Commission", "Election Commission", "ECI",
+           "model code of conduct", "polling", "voter list", "electoral roll", "nomination", "counting of votes",
+           "graduates' constituency", "teachers' constituency", "MLC election", "student union election"]
+      hi: ["चुनाव", "निर्वाचन", "मतदान", "उपचुनाव", "आचार संहिता", "मतगणना", "नगर निगम चुनाव", "पंचायत चुनाव", "निकाय चुनाव"]
+      mr: ["निवडणूक", "निवडणुका", "मतदान", "पोटनिवडणूक", "आचारसंहिता", "महापालिका निवडणूक"]
+      ta: ["தேர்தல்", "இடைத்தேர்தல்", "வாக்குப்பதிவு", "உள்ளாட்சித் தேர்தல்"]
+      te: ["ఎన్నికలు", "ఎన్నిక"]
+      bn: ["নির্বাচন", "ভোট"]
+    # Terms that mark an announcement (schedule, notification) — scored higher than coverage.
+    announcement:
+      en: ["schedule", "announced", "announces", "notification", "notified", "dates", "to be held",
+           "phase", "polling on", "code of conduct comes into force", "reservation of wards", "ward delimitation"]
+      hi: ["कार्यक्रम घोषित", "तारीख", "अधिसूचना", "घोषणा"]
+      mr: ["कार्यक्रम जाहीर", "तारीख", "अधिसूचना"]
+      ta: ["அட்டவணை", "அறிவிப்பு"]
+
+  policy:
+    label: Policy decision
+    precedence: 4
+    strong:
+      en: ["policy", "scheme", "notification", "notifies", "notified", "circular", "guidelines",
+           "regulations", "draft regulations", "cabinet approves", "cabinet nod", "approved", "launches",
+           "launched", "amendment", "bill", "ordinance", "budget", "allocation", "government order",
+           "G.O.", "GR", "government resolution", "mandatory", "made compulsory", "rolls out", "framework"]
+      hi: ["योजना", "नीति", "अधिसूचना", "परिपत्र", "दिशानिर्देश", "मंजूरी", "कैबिनेट", "आदेश जारी", "बजट", "शासनादेश"]
+      mr: ["शासन निर्णय", "योजना", "धोरण", "परिपत्रक", "मंजुरी", "अर्थसंकल्प"]
+      ta: ["திட்டம்", "அரசாணை", "கொள்கை", "சுற்றறிக்கை", "ஒப்புதல்"]
+      te: ["పథకం", "ఉత్తర్వులు"]
+      bn: ["প্রকল্প", "নির্দেশিকা"]
+
+  political:
+    label: Political development
+    precedence: 5
+    strong:
+      en: ["sworn in", "takes oath", "took oath", "cabinet expansion", "cabinet reshuffle", "portfolio",
+           "portfolios", "resigns", "resignation", "alliance", "coalition", "floor test", "no-confidence",
+           "defection", "party president", "government formation", "new chief minister", "dropped from cabinet"]
+      hi: ["मंत्रिमंडल विस्तार", "मंत्रिमंडल फेरबदल", "शपथ", "इस्तीफा", "गठबंधन", "विभाग आवंटन"]
+      mr: ["मंत्रिमंडळ विस्तार", "शपथ", "राजीनामा", "खातेवाटप", "युती"]
+      ta: ["அமைச்சரவை மாற்றம்", "பதவியேற்பு", "ராஜினாமா", "கூட்டணி"]
+
+  statement:
+    label: Statement
+    precedence: 6
+    strong:
+      en: ["said", "says", "stated", "urged", "urges", "slammed", "slams", "criticised", "criticized",
+           "demanded", "demands", "assured", "announced", "told reporters", "remarks", "according to",
+           "claimed", "alleged", "hits out"]
+      hi: ["कहा", "बयान", "आरोप", "मांग", "घोषणा", "आश्वासन"]
+      mr: ["म्हणाले", "सांगितले", "आरोप", "मागणी", "घोषणा"]
+      ta: ["தெரிவித்தார்", "கூறினார்", "வலியுறுத்தல்", "குற்றச்சாட்டு"]
+
+  news:
+    label: Sector news
+    precedence: 99
+    strong: {}

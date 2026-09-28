@@ -1,0 +1,88 @@
+# India gazetteer: 28 states + 8 union territories.
+# code  = ISO 3166-2:IN subdivision code without the "IN-" prefix (2023 revision: CG, OD, TG, UK).
+# names = the state's own names (English, Hindi and the state's main language); strong signal.
+# cities = capitals, major cities and district HQs; they imply the state (weaker signal).
+# weak  = names that often appear only as datelines (e.g. "New Delhi") and need another signal.
+# Extend a state by adding names or cities; add a country as a new file in this folder.
+
+country: IN
+country_names: [India, "भारत", "इंडिया", "இந்தியா", "ভারত", "భారత్"]
+national_terms: ["the Centre", "Centre's", "Union government", "central government", "Union Cabinet", "Union Minister",
+                 "nationwide", "across India", "all states", "केंद्र सरकार", "देशभर", "केंद्रीय मंत्री", "மத்திய அரசு", "ஒன்றிய அரசு"]
+municipal_terms: ["municipal corporation", "municipal council", "municipality", "nagar nigam", "nagar palika",
+                  "nagar panchayat", "civic body", "civic polls", "wards", "mayor", "corporator", "BMC",
+                  "GHMC", "BBMP", "MCD", "PMC", "नगर निगम", "नगर पालिका", "नगर पंचायत", "महापौर", "पार्षद",
+                  "महानगरपालिका", "नगरपालिका", "नगरसेवक", "மாநகராட்சி", "நகராட்சி", "மேயர்"]
+district_terms: ["district", "districts", "collector", "district magistrate", "zilla parishad", "zila parishad",
+                 "tehsil", "taluka", "जिला", "जिले", "जिलाधिकारी", "जिल्हा", "जिल्हा परिषद", "तालुका",
+                 "மாவட்டம்", "ஆட்சியர்"]
+foreign_terms: ["United States", "US university", "Harvard", "Oxford", "Cambridge", "UK government", "Canada",
+                "Australia", "Pakistan", "Bangladesh", "China", "Nepal", "Sri Lanka", "UAE", "Russia"]
+
+states:
+  - {code: AP, name: Andhra Pradesh, type: state,
+     names: ["Andhra Pradesh", "Andhra", "आंध्र प्रदेश", "ఆంధ్రప్రదేశ్", "ఆంధ్ర ప్రదేశ్"],
+     cities: [Amaravati, Visakhapatnam, Vizag, Vijayawada, Guntur, Tirupati, Nellore, Kurnool, Kakinada, Anantapur, Rajahmundry]}
+  - {code: AR, name: Arunachal Pradesh, type: state,
+     names: ["Arunachal Pradesh", "Arunachal", "अरुणाचल प्रदेश"], cities: [Itanagar, Tawang, Pasighat]}
+  - {code: AS, name: Assam, type: state,
+     names: [Assam, "असम", "অসম"], cities: [Guwahati, Dispur, Dibrugarh, Silchar, Jorhat, Tezpur, Nagaon]}
+  - {code: BR, name: Bihar, type: state,
+     names: [Bihar, "बिहार"], cities: [Patna, Gaya, Muzaffarpur, Bhagalpur, Darbhanga, Purnia, "पटना", "मुजफ्फरपुर", "भागलपुर", "दरभंगा"]}
+  - {code: CG, name: Chhattisgarh, type: state,
+     names: [Chhattisgarh, Chattisgarh, "छत्तीसगढ़"], cities: [Raipur, Bilaspur, Durg, Bhilai, Korba, Bastar, "रायपुर", "बिलासपुर"]}
+  - {code: GA, name: Goa, type: state,
+     names: [Goa, "गोवा"], cities: [Panaji, Panjim, Margao, Vasco]}
+  - {code: GJ, name: Gujarat, type: state,
+     names: [Gujarat, "गुजरात", "ગુજરાત"], cities: [Ahmedabad, Gandhinagar, Surat, Vadodara, Rajkot, Bhavnagar, Jamnagar, "अहमदाबाद", "અમદાવાદ", "સુરત"]}
+  - {code: HR, name: Haryana, type: state,
+     names: [Haryana, "हरियाणा"], cities: [Gurugram, Gurgaon, Faridabad, Panipat, Rohtak, Hisar, Karnal, Ambala, "गुरुग्राम", "फरीदाबाद"]}
+  - {code: HP, name: Himachal Pradesh, type: state,
+     names: ["Himachal Pradesh", Himachal, "हिमाचल प्रदेश", "हिमाचल"], cities: [Shimla, Dharamshala, Solan, Kullu, "शिमला"]}
+  - {code: JH, name: Jharkhand, type: state,
+     names: [Jharkhand, "झारखंड", "झारखण्ड"], cities: [Ranchi, Jamshedpur, Dhanbad, Bokaro, Hazaribagh, "रांची", "धनबाद"]}
+  - {code: KA, name: Karnataka, type: state,
+     names: [Karnataka, "कर्नाटक", "ಕರ್ನಾಟಕ"], cities: [Bengaluru, Bangalore, Mysuru, Mysore, Mangaluru, Mangalore, Hubballi, Belagavi, Kalaburagi, Dharwad, "ಬೆಂಗಳೂರು"]}
+  - {code: KL, name: Kerala, type: state,
+     names: [Kerala, "केरल", "കേരളം"], cities: [Thiruvananthapuram, Trivandrum, Kochi, Kozhikode, Thrissur, Kannur, Kollam, "തിരുവനന്തപുരം"]}
+  - {code: MP, name: Madhya Pradesh, type: state,
+     names: ["Madhya Pradesh", "मध्य प्रदेश", "मध्यप्रदेश"], cities: [Bhopal, Indore, Jabalpur, Gwalior, Ujjain, Rewa, "भोपाल", "इंदौर", "जबलपुर", "ग्वालियर"]}
+  - {code: MH, name: Maharashtra, type: state,
+     names: [Maharashtra, "महाराष्ट्र"], cities: [Mumbai, Pune, Nagpur, Nashik, Thane, Aurangabad, "Chhatrapati Sambhajinagar", Kolhapur, Solapur, "Navi Mumbai", Amravati, Latur, Nanded, "मुंबई", "पुणे", "नागपूर", "नागपुर", "नाशिक", "ठाणे", "कोल्हापूर"]}
+  - {code: MN, name: Manipur, type: state, names: [Manipur, "मणिपुर"], cities: [Imphal]}
+  - {code: ML, name: Meghalaya, type: state, names: [Meghalaya, "मेघालय"], cities: [Shillong, Tura]}
+  - {code: MZ, name: Mizoram, type: state, names: [Mizoram, "मिजोरम"], cities: [Aizawl]}
+  - {code: NL, name: Nagaland, type: state, names: [Nagaland, "नागालैंड"], cities: [Kohima, Dimapur]}
+  - {code: OD, name: Odisha, type: state,
+     names: [Odisha, Orissa, "ओडिशा", "ଓଡ଼ିଶା"], cities: [Bhubaneswar, Cuttack, Rourkela, Puri, Sambalpur, Berhampur, "भुवनेश्वर"]}
+  - {code: PB, name: Punjab, type: state,
+     names: [Punjab, "पंजाब", "ਪੰਜਾਬ"], cities: [Ludhiana, Amritsar, Jalandhar, Patiala, Mohali, Bathinda, "लुधियाना", "अमृतसर"]}
+  - {code: RJ, name: Rajasthan, type: state,
+     names: [Rajasthan, "राजस्थान"], cities: [Jaipur, Jodhpur, Udaipur, Kota, Ajmer, Bikaner, Alwar, "जयपुर", "जोधपुर", "उदयपुर", "अजमेर"]}
+  - {code: SK, name: Sikkim, type: state, names: [Sikkim, "सिक्किम"], cities: [Gangtok]}
+  - {code: TN, name: Tamil Nadu, type: state,
+     names: ["Tamil Nadu", "तमिलनाडु", "தமிழ்நாடு", "தமிழகம்", "தமிழக"], cities: [Chennai, Coimbatore, Madurai, Tiruchirappalli, Trichy, Salem, Tirunelveli, Vellore, "சென்னை", "மதுரை", "கோவை", "திருச்சி"]}
+  - {code: TG, name: Telangana, type: state,
+     names: [Telangana, "तेलंगाना", "తెలంగాణ"], cities: [Hyderabad, Warangal, Karimnagar, Nizamabad, Khammam, "హైదరాబాద్", "हैदराबाद"]}
+  - {code: TR, name: Tripura, type: state, names: [Tripura, "त्रिपुरा"], cities: [Agartala]}
+  - {code: UP, name: Uttar Pradesh, type: state,
+     names: ["Uttar Pradesh", "UP", "U.P.", "उत्तर प्रदेश", "यूपी"], cities: [Lucknow, Kanpur, Varanasi, Prayagraj, Allahabad, Agra, Noida, "Greater Noida", Ghaziabad, Meerut, Gorakhpur, Bareilly, Aligarh, "लखनऊ", "कानपुर", "वाराणसी", "प्रयागराज", "आगरा", "नोएडा", "गाजियाबाद", "मेरठ", "गोरखपुर"]}
+  - {code: UK, name: Uttarakhand, type: state,
+     names: [Uttarakhand, "उत्तराखंड", "उत्तराखण्ड"], cities: [Dehradun, Haridwar, Nainital, Haldwani, Rishikesh, "देहरादून", "हरिद्वार"]}
+  - {code: WB, name: West Bengal, type: state,
+     names: ["West Bengal", Bengal, "पश्चिम बंगाल", "পশ্চিমবঙ্গ"], cities: [Kolkata, Calcutta, Howrah, Siliguri, Durgapur, Asansol, "कोलकाता", "কলকাতা"]}
+
+  # Union territories
+  - {code: AN, name: Andaman and Nicobar Islands, type: ut,
+     names: ["Andaman and Nicobar", "Andaman & Nicobar", Andaman], cities: ["Port Blair", "Sri Vijaya Puram"]}
+  - {code: CH, name: Chandigarh, type: ut, names: [Chandigarh, "चंडीगढ़"], cities: []}
+  - {code: DH, name: Dadra and Nagar Haveli and Daman and Diu, type: ut,
+     names: ["Dadra and Nagar Haveli", "Daman and Diu", "Daman", "Diu"], cities: [Silvassa]}
+  - {code: DL, name: Delhi, type: ut,
+     names: [Delhi, "Delhi government", "दिल्ली"], cities: ["Delhi University", DU, JNU, "Jamia"],
+     weak: ["New Delhi", "नई दिल्ली"]}
+  - {code: JK, name: Jammu and Kashmir, type: ut,
+     names: ["Jammu and Kashmir", "Jammu & Kashmir", "J&K", Kashmir, "जम्मू-कश्मीर", "जम्मू कश्मीर"], cities: [Srinagar, Jammu, Anantnag, Baramulla]}
+  - {code: LA, name: Ladakh, type: ut, names: [Ladakh, "लद्दाख"], cities: [Leh, Kargil]}
+  - {code: LD, name: Lakshadweep, type: ut, names: [Lakshadweep], cities: [Kavaratti]}
+  - {code: PY, name: Puducherry, type: ut, names: [Puducherry, Pondicherry, "புதுச்சேரி"], cities: [Karaikal]}
