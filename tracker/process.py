@@ -84,6 +84,22 @@ def human_labels(conn: sqlite3.Connection) -> dict[str, int]:
     return {row["item_key"]: row["value"] for row in rows}
 
 
+def combine(rule_score: int, probability: float | None, engine_score: float | None, model, llm_cfg) -> tuple[int, str]:
+    """L1 rules → L2 model → L3 engine AI filter. Returns (final score, deciding layer)."""
+    final, decided_by = rule_score, "rules"
+    if model is not None and probability is not None and model.weight > 0:
+        final, moved = model.blend(rule_score, probability)
+        if moved:
+            decided_by = "model"
+    if engine_score is not None:
+        ai = round(100 * engine_score)
+        if llm_cfg.uncertain_low <= final <= llm_cfg.uncertain_high:
+            final, decided_by = round((final + ai) / 2), "llm"   # AI settles the uncertain band
+        elif engine_score >= 0.85 and final < llm_cfg.uncertain_low:
+            final, decided_by = max(final, llm_cfg.uncertain_high), "llm"  # AI strongly disagrees with a miss
+    return int(max(0, min(100, final))), decided_by
+
+
 def process(cfg: AppConfig, mode: str = "auto", items: list[Item] | None = None) -> RunReport:
     specs = load_sources(cfg.config_dir, include_disabled=True)
     by_id = {s.id: s for s in specs}
@@ -99,14 +115,21 @@ def process(cfg: AppConfig, mode: str = "auto", items: list[Item] | None = None)
         tagger = Tagger(taxonomy, scoring, by_id, muted_sources(conn))
         bands_cfg = cfg.settings.relevance.bands
         labels = human_labels(conn)
-        for item in items:
+        from tracker.learn import RelevanceModel, text_of
+
+        model = RelevanceModel.load(cfg.settings.relevance.model)
+        probabilities = model.probabilities([text_of(i.title, i.summary) for i in items]) if model else []
+        for index, item in enumerate(items):
             tags = tagger.tag(item)
-            final, decided_by = tags.rule_score, "rules"
+            probability = probabilities[index] if probabilities else None
+            final, decided_by = combine(tags.rule_score, probability, item.engine_score, model,
+                                        cfg.settings.relevance.llm)
             if item.key in labels:  # a human label overrides every model
                 final, decided_by = (95 if labels[item.key] else 10), "human"
             band = bands_cfg.band(final)
             priority = priority_for(final, tags.category, bool(tags.sectors), scoring)
-            if upsert_item(conn, item, tags, by_id.get(item.feed_id), final, band, priority, decided_by):
+            if upsert_item(conn, item, tags, by_id.get(item.feed_id), final, band, priority, decided_by,
+                           model_score=probability):
                 report.new += 1
             report.bands[band] = report.bands.get(band, 0) + 1
         from tracker.stories import update_stories
