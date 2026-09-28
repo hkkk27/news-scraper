@@ -54,6 +54,9 @@ class Tagger:
         self.cfg = scoring
         self.sources = sources or {}
         self.muted = muted_sources or set()
+        from tracker.taxonomy import TermMatcher
+
+        self.noise = TermMatcher(scoring.get("noise_terms") or [])
 
     # --- parts ------------------------------------------------------------------------------
 
@@ -199,6 +202,11 @@ class Tagger:
             penalty = neg.get("with_sector", -15) if tags.sectors else neg.get("without_sector", -45)
             score += penalty
             reasons.append(f"off-topic '{negative[0]}' ({penalty})")
+        noise = self.noise.terms_in(text)
+        if noise:
+            penalty = self.cfg.get("noise_penalty", -45)
+            score += penalty
+            reasons.append(f"round-up/SEO '{noise[0]}' ({penalty})")
         gz = self.tax.gazetteer
         if gz.foreign.find(text) and not tags.states and not gz.country_names.find(text):
             penalty = self.cfg.get("foreign_without_india", -15)
