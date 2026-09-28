@@ -1,0 +1,88 @@
+# Actors: bodies and institutions that make the news. Used for the "actor" tag, for geography
+# (a High Court implies its state) and as relevance signals. `sector` links a body to a sector.
+# Same matching rules as sectors.yaml (ALL-CAPS acronyms are case-sensitive).
+
+actors:
+  # --- Central ministries and departments --------------------------------------------------
+  - {id: moe, label: Ministry of Education, type: ministry, sector: [school_education, higher_education],
+     aliases: ["Ministry of Education", "Education Ministry", "Union Education Minister", "MoE", "शिक्षा मंत्रालय", "केंद्रीय शिक्षा मंत्री"]}
+  - {id: msde, label: Ministry of Skill Development and Entrepreneurship, type: ministry, sector: [skill_development],
+     aliases: [MSDE, "Skill Development Ministry", "Ministry of Skill Development", "कौशल विकास मंत्रालय"]}
+  - {id: dopt, label: Department of Personnel and Training, type: ministry,
+     aliases: [DoPT, "Department of Personnel", "Appointments Committee of the Cabinet", ACC, "कार्मिक मंत्रालय"]}
+  - {id: pib, label: Press Information Bureau, type: ministry, aliases: [PIB]}
+
+  # --- Regulators and national bodies -------------------------------------------------------
+  - {id: ugc, label: UGC, type: regulator, sector: [higher_education], aliases: [UGC, "University Grants Commission", "यूजीसी", "विश्वविद्यालय अनुदान आयोग"]}
+  - {id: aicte, label: AICTE, type: regulator, sector: [higher_education, skill_development], aliases: [AICTE, "All India Council for Technical Education", "एआईसीटीई"]}
+  - {id: ncte, label: NCTE, type: regulator, sector: [school_education, higher_education], aliases: [NCTE, "National Council for Teacher Education"]}
+  - {id: ncert, label: NCERT, type: regulator, sector: [school_education], aliases: [NCERT, "एनसीईआरटी"]}
+  - {id: cbse, label: CBSE, type: board, sector: [school_education], aliases: [CBSE, "Central Board of Secondary Education", "सीबीएसई"]}
+  - {id: cisce, label: CISCE, type: board, sector: [school_education], aliases: [CISCE, ICSE, ISC]}
+  - {id: nios, label: NIOS, type: board, sector: [school_education], aliases: [NIOS, "National Institute of Open Schooling"]}
+  - {id: nta, label: NTA, type: regulator, sector: [higher_education], aliases: [NTA, "National Testing Agency", "एनटीए"]}
+  - {id: naac, label: NAAC, type: regulator, sector: [higher_education], aliases: [NAAC]}
+  - {id: nmc, label: NMC, type: regulator, sector: [higher_education], aliases: [NMC, "National Medical Commission"]}
+  - {id: ncvet, label: NCVET, type: regulator, sector: [skill_development], aliases: [NCVET]}
+  - {id: nsdc, label: NSDC, type: regulator, sector: [skill_development], aliases: [NSDC, "National Skill Development Corporation"]}
+  - {id: dget, label: DGT, type: regulator, sector: [skill_development], aliases: [DGT, "Directorate General of Training"]}
+  - {id: kvs, label: Kendriya Vidyalaya Sangathan, type: board, sector: [school_education], aliases: [KVS, "Kendriya Vidyalaya"]}
+  - {id: nvs, label: Navodaya Vidyalaya Samiti, type: board, sector: [school_education], aliases: [NVS, "Navodaya Vidyalaya", "JNV"]}
+
+  # --- Courts (state = the state a High Court sits for; it seeds geography) -------------------
+  - {id: sc, label: Supreme Court, type: court, level: national, aliases: ["Supreme Court", "apex court", "SC bench", "सुप्रीम कोर्ट", "उच्चतम न्यायालय", "सर्वोच्च न्यायालय", "உச்ச நீதிமன்றம்"]}
+  - {id: hc_bombay, label: Bombay High Court, type: court, state: MH, aliases: ["Bombay High Court", "Bombay HC", "मुंबई उच्च न्यायालय", "मुंबई हाईकोर्ट"]}
+  - {id: hc_delhi, label: Delhi High Court, type: court, state: DL, aliases: ["Delhi High Court", "Delhi HC", "दिल्ली हाईकोर्ट", "दिल्ली उच्च न्यायालय"]}
+  - {id: hc_madras, label: Madras High Court, type: court, state: TN, aliases: ["Madras High Court", "Madras HC", "Madurai Bench", "சென்னை உயர் நீதிமன்றம்", "உயர் நீதிமன்ற மதுரைக் கிளை"]}
+  - {id: hc_allahabad, label: Allahabad High Court, type: court, state: UP, aliases: ["Allahabad High Court", "Allahabad HC", "Lucknow bench", "इलाहाबाद हाईकोर्ट", "इलाहाबाद उच्च न्यायालय"]}
+  - {id: hc_calcutta, label: Calcutta High Court, type: court, state: WB, aliases: ["Calcutta High Court", "Calcutta HC", "কলকাতা হাইকোর্ট"]}
+  - {id: hc_karnataka, label: Karnataka High Court, type: court, state: KA, aliases: ["Karnataka High Court", "Karnataka HC"]}
+  - {id: hc_kerala, label: Kerala High Court, type: court, state: KL, aliases: ["Kerala High Court", "Kerala HC"]}
+  - {id: hc_gujarat, label: Gujarat High Court, type: court, state: GJ, aliases: ["Gujarat High Court", "Gujarat HC"]}
+  - {id: hc_rajasthan, label: Rajasthan High Court, type: court, state: RJ, aliases: ["Rajasthan High Court", "Rajasthan HC", "राजस्थान हाईकोर्ट"]}
+  - {id: hc_mp, label: Madhya Pradesh High Court, type: court, state: MP, aliases: ["Madhya Pradesh High Court", "MP High Court", "MP HC", "मध्य प्रदेश हाईकोर्ट"]}
+  - {id: hc_patna, label: Patna High Court, type: court, state: BR, aliases: ["Patna High Court", "Patna HC", "पटना हाईकोर्ट"]}
+  - {id: hc_orissa, label: Orissa High Court, type: court, state: OD, aliases: ["Orissa High Court", "Orissa HC"]}
+  - {id: hc_ph, label: Punjab and Haryana High Court, type: court, state: PB, aliases: ["Punjab and Haryana High Court", "Punjab & Haryana High Court", "P&H High Court"]}
+  - {id: hc_gauhati, label: Gauhati High Court, type: court, state: AS, aliases: ["Gauhati High Court", "Gauhati HC"]}
+  - {id: hc_telangana, label: Telangana High Court, type: court, state: TG, aliases: ["Telangana High Court", "Telangana HC"]}
+  - {id: hc_ap, label: Andhra Pradesh High Court, type: court, state: AP, aliases: ["Andhra Pradesh High Court", "AP High Court"]}
+  - {id: hc_jk, label: Jammu & Kashmir and Ladakh High Court, type: court, state: JK, aliases: ["J&K High Court", "Jammu and Kashmir High Court"]}
+  - {id: hc_hp, label: Himachal Pradesh High Court, type: court, state: HP, aliases: ["Himachal Pradesh High Court", "Himachal HC"]}
+  - {id: hc_uk, label: Uttarakhand High Court, type: court, state: UK, aliases: ["Uttarakhand High Court", "Uttarakhand HC"]}
+  - {id: hc_jh, label: Jharkhand High Court, type: court, state: JH, aliases: ["Jharkhand High Court", "Jharkhand HC"]}
+  - {id: hc_cg, label: Chhattisgarh High Court, type: court, state: CG, aliases: ["Chhattisgarh High Court", "Chhattisgarh HC"]}
+  - {id: hc_tripura, label: Tripura High Court, type: court, state: TR, aliases: ["Tripura High Court"]}
+  - {id: hc_manipur, label: Manipur High Court, type: court, state: MN, aliases: ["Manipur High Court"]}
+  - {id: hc_meghalaya, label: Meghalaya High Court, type: court, state: ML, aliases: ["Meghalaya High Court"]}
+  - {id: hc_sikkim, label: Sikkim High Court, type: court, state: SK, aliases: ["Sikkim High Court"]}
+
+  # --- Election bodies ----------------------------------------------------------------------
+  - {id: eci, label: Election Commission of India, type: election_body, level: national,
+     aliases: ["Election Commission of India", "Election Commission", ECI, "EC", "चुनाव आयोग", "निर्वाचन आयोग", "தேர்தல் ஆணையம்"]}
+  - {id: sec, label: State Election Commission, type: election_body,
+     aliases: ["State Election Commission", SEC, "राज्य निर्वाचन आयोग", "राज्य चुनाव आयोग", "राज्य निवडणूक आयोग", "மாநில தேர்தல் ஆணையம்"]}
+
+  # --- Political parties (for political-development tagging) ------------------------------
+  - {id: bjp, label: BJP, type: party, aliases: [BJP, "Bharatiya Janata Party", "भाजपा", "भाजप", "பாஜக"]}
+  - {id: inc, label: Congress, type: party, aliases: ["Congress", INC, "कांग्रेस", "காங்கிரஸ்"]}
+  - {id: aap, label: AAP, type: party, aliases: [AAP, "Aam Aadmi Party", "आम आदमी पार्टी"]}
+  - {id: sp, label: Samajwadi Party, type: party, aliases: ["Samajwadi Party", "सपा", "समाजवादी पार्टी"]}
+  - {id: bsp, label: BSP, type: party, aliases: [BSP, "बसपा"]}
+  - {id: tmc, label: TMC, type: party, aliases: [TMC, "Trinamool", "তৃণমূল"]}
+  - {id: dmk, label: DMK, type: party, aliases: [DMK, "திமுக"]}
+  - {id: aiadmk, label: AIADMK, type: party, aliases: [AIADMK, "அதிமுக"]}
+  - {id: shiv_sena, label: Shiv Sena, type: party, aliases: ["Shiv Sena", "शिवसेना"]}
+  - {id: ncp, label: NCP, type: party, aliases: [NCP, "राष्ट्रवादी"]}
+  - {id: jdu, label: JD(U), type: party, aliases: ["JD(U)", "JDU", "जदयू"]}
+  - {id: rjd, label: RJD, type: party, aliases: [RJD, "राजद"]}
+  - {id: bjd, label: BJD, type: party, aliases: [BJD]}
+  - {id: tdp, label: TDP, type: party, aliases: [TDP]}
+  - {id: ysrcp, label: YSRCP, type: party, aliases: [YSRCP]}
+  - {id: brs, label: BRS, type: party, aliases: [BRS]}
+  - {id: cpim, label: CPI(M), type: party, aliases: ["CPI(M)", "CPM"]}
+  - {id: jmm, label: JMM, type: party, aliases: [JMM]}
+
+  # --- Officer cadres (for transfers) ---------------------------------------------------------
+  - {id: ias, label: IAS officers, type: officer, aliases: [IAS, "आईएएस", "आयएएस", "ஐஏஎஸ்"]}
+  - {id: ips, label: IPS officers, type: officer, aliases: [IPS, "आईपीएस"]}
