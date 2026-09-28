@@ -5,6 +5,31 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-29 — M1-12 Scheduled pipeline and go-live
+
+**Branch:** `feat/m1-12-scheduler`
+
+### Done
+
+- **`tracker run`.** One scheduled pass: watch official pages → process Telegram updates → gather, tag, score and cluster → rebuild the dashboard. Steps are isolated, and the SQLite write-ahead log is checkpointed before the file is saved.
+- **`scripts/data_branch.sh restore|save`.** Keeps `data/` on an orphan `data` branch as a single force-pushed commit. Tested round-trip against a local bare repository.
+- **`.github/workflows/tracker.yml`:**
+  - Every 2 hours: `run`.
+  - 07:30 IST: daily report (email + Telegram).
+  - Monday 08:00 IST: weekly report with Excel.
+  - 03:10 IST: nightly retrain.
+  - One concurrency group (single SQLite writer). Outputs are kept 14 days as artifacts. Cloudflare Pages deploy is optional, when its secrets are set.
+- **`.github/workflows/tests.yml`.** Runs pytest on every push and pull request.
+- **Local run:** the watcher found 15 new official notices since the baseline; process gave 116 core, 328 relevant.
+- **Go-live.** Merging to `main` starts the schedule. It runs without secrets (Telegram and email are skipped) until the owner adds them. Budget: about 1,000 of 2,000 free Actions minutes a month.
+
+### Next
+
+- M4-01: setup guide, runbook, methodology.
+- M4-04: sample outputs and slide content.
+
+---
+
 ## 2026-09-28 — M2-01/07/08 Dashboard
 
 **Branch:** `feat/m2-01-dashboard`
