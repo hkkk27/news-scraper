@@ -5,6 +5,30 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 â€” M1-02 Taxonomy and geography
+
+**Branch:** `feat/m1-02-taxonomy`
+
+### Done
+
+- **Taxonomy files** in `config/taxonomy/`:
+  - `sectors.yaml`: 3 sectors, strong and normal terms in 9 languages, plus negative terms.
+  - `categories.yaml`: 7 categories. Transfers require an officer mention; election announcements are marked separately.
+  - `actors.yaml`: regulators, 25 High Courts mapped to their states, ECI and State Election Commissions, parties, cadres.
+- **Gazetteer:** `config/geography/india.yaml` covers 36 states and UTs with ISO codes, native-script names and cities. "New Delhi" is kept as a weak signal because it is usually a dateline.
+- **Matcher:** `tracker/taxonomy.py` is an explainable term matcher.
+  - Latin-script terms match whole words.
+  - ALL-CAPS acronyms are case-sensitive.
+  - Indian-language terms accept inflections but not longer words.
+- **Removed ambiguous terms:** "à¤—à¤¯à¤¾" (also "went"), "à¤•à¥‹à¤Ÿà¤¾" (also "quota"), "Centre" (also "exam centre"), "Mandi", "block", "ward".
+- **Tests:** 14 passing.
+
+### Next
+
+- M1-03: storage (SQLite schema and repository layer).
+
+---
+
 ## 2026-09-28 â€” M1-01 Python package skeleton
 
 **Branch:** `feat/m1-01-skeleton`
