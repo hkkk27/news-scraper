@@ -1,0 +1,45 @@
+# Rule scoring (L1) — how the India layer turns matched terms into a 0-100 relevance score.
+# Every number here appears in an item's "reasons", so the score is always explainable.
+# Tune these, re-run `python -m tracker process`, and compare bands.
+
+sector:                 # evidence that an item is about a tracked sector (best hit counts)
+  title_strong: 40      # a strong term (CBSE, UGC, ITI, "board exam") in the title
+  title_term: 25        # a normal term (school, university, teacher) in the title
+  body_strong: 20       # a strong term only in the summary
+  body_term: 10         # a normal term only in the summary
+  extra_hit: 5          # each further distinct term
+  max: 55
+
+stream_base:            # relevance from the category alone, without any sector evidence
+  transfer: 55          # officer transfers are tracked across all departments
+  election_announcement: 58
+  election: 40
+  political: 35
+  court: 15
+  policy: 10
+  statement: 0
+  news: 0
+
+sector_bonus:           # added when the item also has sector evidence
+  transfer: 30
+  court: 30
+  policy: 25
+  election: 15
+  political: 15
+  statement: 10
+  news: 5
+
+actor_bonus: 10         # a sector body, court or election body is named
+hint_bonus: 10          # the source's own sector/stream hint agrees with what was detected
+negative:
+  without_sector: -45   # "cricket", "Bollywood"... and nothing about education
+  with_sector: -15
+foreign_without_india: -40   # other countries' news, with no Indian place or "India"
+source_hint_only: 0.5        # a category known only from the source's focus gets half its base, no sector bonus
+muted_source: -30       # a user pressed 🔇 on this source
+manual_score: 95        # items the client added through the bot
+
+priority:               # high = important official action in a tracked sector
+  high_min_score: 80
+  high_categories: [policy, court, transfer, election]
+  medium_min_score: 60

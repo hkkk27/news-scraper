@@ -62,6 +62,53 @@ CREATE TABLE IF NOT EXISTS muted_sources (
     muted_by   TEXT DEFAULT '',
     created_at TEXT NOT NULL
 );
+
+-- Every item the India layer has seen, with its tags and scores (lists stored as JSON).
+CREATE TABLE IF NOT EXISTS items (
+    item_key     TEXT PRIMARY KEY,
+    url          TEXT NOT NULL,
+    title        TEXT NOT NULL,
+    summary      TEXT DEFAULT '',
+    feed_id      TEXT DEFAULT '',
+    source_name  TEXT DEFAULT '',
+    source_type  TEXT DEFAULT '',
+    language     TEXT DEFAULT 'en',
+    published_at TEXT DEFAULT '',
+    first_seen   TEXT NOT NULL,
+    sectors      TEXT DEFAULT '[]',
+    category     TEXT DEFAULT 'news',
+    category2    TEXT,
+    states       TEXT DEFAULT '[]',
+    level        TEXT DEFAULT 'national',
+    actors       TEXT DEFAULT '[]',
+    rule_score   INTEGER DEFAULT 0,
+    model_score  REAL,
+    engine_score REAL,
+    engine_tag   TEXT DEFAULT '',
+    final_score  INTEGER DEFAULT 0,
+    band         TEXT DEFAULT 'not_relevant',
+    priority     TEXT DEFAULT 'low',
+    decided_by   TEXT DEFAULT 'rules',
+    reasons      TEXT DEFAULT '[]',
+    story_id     TEXT,
+    updated_at   TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_items_seen ON items(first_seen);
+CREATE INDEX IF NOT EXISTS idx_items_band ON items(band);
+CREATE INDEX IF NOT EXISTS idx_items_story ON items(story_id);
+
+-- One row per pipeline run: the evidence log for the 14-day uninterrupted run.
+CREATE TABLE IF NOT EXISTS runs (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    started_at  TEXT NOT NULL,
+    finished_at TEXT,
+    mode        TEXT DEFAULT '',
+    items_seen  INTEGER DEFAULT 0,
+    items_new   INTEGER DEFAULT 0,
+    relevant    INTEGER DEFAULT 0,
+    errors      TEXT DEFAULT '{}',
+    status      TEXT DEFAULT 'running'
+);
 """
 
 

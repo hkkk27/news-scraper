@@ -15,23 +15,30 @@ sectors:
            "board exam", "board exams", "board results", "Class 10", "Class 12", "Class X", "Class XII",
            "school education", "school teachers", "teacher recruitment", "Right to Education", "RTE Act",
            UDISE, "NIPUN Bharat", "Kendriya Vidyalaya", "Navodaya Vidyalaya", KVS, NVS, "government schools",
-           "private schools", "school fees", "SSC exam", "HSC exam", TET, CTET]
+           "private schools", "school fees", "SSC exam", "HSC exam", TET, CTET, "teachers protest",
+           "teachers' protest", "recruitment scam", "SSC scam", "school jobs", "para teachers"]
       hi: ["विद्यालय", "सरकारी स्कूल", "बोर्ड परीक्षा", "मध्याह्न भोजन", "मिड-डे मील", "शिक्षक भर्ती", "समग्र शिक्षा",
            "केंद्रीय विद्यालय", "नवोदय विद्यालय", "कक्षा 10", "कक्षा 12", "दसवीं", "बारहवीं", "माध्यमिक शिक्षा", "बेसिक शिक्षा"]
       mr: ["शाळा", "जिल्हा परिषद शाळा", "दहावी", "बारावी", "शालेय शिक्षण", "शिक्षक भरती"]
       ta: ["பள்ளி", "பள்ளிக்கல்வி", "அரசுப் பள்ளி", "பொதுத்தேர்வு"]
       te: ["పాఠశాల", "పాఠశాలలు"]
-      bn: ["বিদ্যালয়", "মাধ্যমিক"]
+      bn: ["বিদ্যালয়", "মাধ্যমিক", "উচ্চমাধ্যমিক", "শিক্ষক নিয়োগ", "স্কুল সার্ভিস কমিশন", "এসএসসি"]
       gu: ["શાળા"]
       kn: ["ಶಾಲೆ"]
       ml: ["സ്കൂൾ"]
     terms:
-      en: [school, schools, student, students, pupils, teacher, teachers, classroom, textbook, textbooks,
+      en: [education, "education minister", "education department", "education ministry", NEP,
+           school, schools, student, students, pupils, teacher, teachers, classroom, textbook, textbooks,
            curriculum, syllabus, enrolment, enrollment, dropout, "foundational literacy", anganwadi, "pre-primary",
            "primary school", "secondary school", "higher secondary", headmaster, principal]
-      hi: ["स्कूल", "छात्र", "छात्रों", "शिक्षक", "शिक्षकों", "पाठ्यक्रम", "पाठ्यपुस्तक", "कक्षा"]
-      mr: ["विद्यार्थी", "शिक्षक", "अभ्यासक्रम"]
-      ta: ["மாணவர்", "மாணவர்கள்", "ஆசிரியர்", "ஆசிரியர்கள்"]
+      hi: ["शिक्षा", "स्कूल", "छात्र", "छात्रों", "शिक्षक", "शिक्षकों", "पाठ्यक्रम", "पाठ्यपुस्तक", "कक्षा"]
+      mr: ["शिक्षण", "विद्यार्थी", "शिक्षक", "अभ्यासक्रम"]
+      ta: ["கல்வி", "மாணவர்", "மாணவர்கள்", "ஆசிரியர்", "ஆசிரியர்கள்"]
+      te: ["విద్య", "విద్యార్థులు"]
+      bn: ["শিক্ষা", "ছাত্র", "ছাত্রছাত্রী", "শিক্ষক", "শিক্ষিকা", "স্কুল", "পড়ুয়া", "পরীক্ষা"]
+      gu: ["શિક્ષણ", "વિદ્યાર્થી"]
+      ml: ["വിദ്യാഭ്യാസ", "വിദ്യാർത്ഥി"]
+      pa: ["ਸਿੱਖਿਆ", "ਵਿਦਿਆਰਥੀ"]
 
   higher_education:
     label: Higher education
@@ -45,17 +52,23 @@ sectors:
       mr: ["विद्यापीठ", "महाविद्यालय", "कुलगुरू", "उच्च शिक्षण", "प्रवेश परीक्षा"]
       ta: ["பல்கலைக்கழகம்", "கல்லூரி", "துணைவேந்தர்", "உயர்கல்வி"]
       te: ["విశ్వవిద్యాలయం", "యూనివర్సిటీ"]
-      bn: ["বিশ্ববিদ্যালয়"]
+      bn: ["বিশ্ববিদ্যালয়", "উপাচার্য", "উচ্চশিক্ষা"]
       gu: ["યુનિવર્સિટી"]
       kn: ["ವಿಶ್ವವಿದ್ಯಾಲಯ"]
       ml: ["സർവകലാശാല"]
     terms:
-      en: [university, universities, college, colleges, campus, faculty, professor, professors, admission, admissions,
+      en: [education, "education minister", "education ministry", NEP,
+           university, universities, college, colleges, campus, faculty, professor, professors, admission, admissions,
            "entrance exam", "entrance test", scholarship, scholarships, hostel, graduate, postgraduate, undergraduate,
            degree, "fee hike", accreditation, researchers, "higher studies", "study abroad"]
-      hi: ["कॉलेज", "कालेज", "प्रोफेसर", "छात्रवृत्ति", "दाखिला", "प्रवेश"]
-      mr: ["कॉलेज", "प्राध्यापक", "शिष्यवृत्ती", "प्रवेश"]
-      ta: ["கல்லூரிகள்", "பேராசிரியர்", "உதவித்தொகை", "சேர்க்கை"]
+      hi: ["शिक्षा", "कॉलेज", "कालेज", "प्रोफेसर", "छात्रवृत्ति", "दाखिला", "प्रवेश"]
+      mr: ["शिक्षण", "कॉलेज", "प्राध्यापक", "शिष्यवृत्ती", "प्रवेश"]
+      ta: ["கல்வி", "கல்லூரிகள்", "பேராசிரியர்", "உதவித்தொகை", "சேர்க்கை"]
+      te: ["విద్య", "కళాశాల"]
+      bn: ["শিক্ষা", "কলেজ"]
+      gu: ["શિક્ષણ", "કૉલેજ"]
+      ml: ["വിദ്യാഭ്യാസ", "കോളേജ്"]
+      pa: ["ਸਿੱਖਿਆ", "ਕਾਲਜ"]
 
   skill_development:
     label: Skill development

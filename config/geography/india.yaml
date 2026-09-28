@@ -6,7 +6,7 @@
 # Extend a state by adding names or cities; add a country as a new file in this folder.
 
 country: IN
-country_names: [India, "भारत", "इंडिया", "இந்தியா", "ভারত", "భారత్"]
+country_names: [India, Indian, Indians, "भारत", "भारतीय", "इंडिया", "இந்தியா", "இந்திய", "ভারত", "ভারতীয়", "భారత్"]
 national_terms: ["the Centre", "Centre's", "Union government", "central government", "Union Cabinet", "Union Minister",
                  "nationwide", "across India", "all states", "केंद्र सरकार", "देशभर", "केंद्रीय मंत्री", "மத்திய அரசு", "ஒன்றிய அரசு"]
 municipal_terms: ["municipal corporation", "municipal council", "municipality", "nagar nigam", "nagar palika",
@@ -16,8 +16,14 @@ municipal_terms: ["municipal corporation", "municipal council", "municipality", 
 district_terms: ["district", "districts", "collector", "district magistrate", "zilla parishad", "zila parishad",
                  "tehsil", "taluka", "जिला", "जिले", "जिलाधिकारी", "जिल्हा", "जिल्हा परिषद", "तालुका",
                  "மாவட்டம்", "ஆட்சியர்"]
-foreign_terms: ["United States", "US university", "Harvard", "Oxford", "Cambridge", "UK government", "Canada",
-                "Australia", "Pakistan", "Bangladesh", "China", "Nepal", "Sri Lanka", "UAE", "Russia"]
+foreign_terms: ["United States", "US university", "Harvard", "Oxford", "UK government", "Canada", "Australia",
+                "Pakistan", "Bangladesh", "China", "Nepal", "Sri Lanka", "UAE", "Russia", "South Africa", "Nigeria",
+                "Kenya", "Ghana", "Philippines", "Malaysia", "Singapore", "Dhaka", Britain, British, UK, England,
+                London, Scotland, Wales, Ireland, "New Zealand", Yorkshire, "List of Passers", Vietnam, Indonesia,
+                # Bangladesh (the Bengali Google News edition mixes in Bangladeshi publishers)
+                "বাংলাদেশ", "ঢাকা", "চট্টগ্রাম", "রাজশাহী", "সিলেট", "খুলনা", "বরিশাল", "রংপুর", "ময়মনসিংহ",
+                "কুমিল্লা", "নোয়াখালী", "যশোর", "শেখ হাসিনা", "আওয়ামী", "বিএনপি", "জামায়াত", "ইউনূস",
+                "জাহাঙ্গীরনগর", "জগন্নাথ বিশ্ববিদ্যালয়", "উপজেলা"]
 
 states:
   - {code: AP, name: Andhra Pradesh, type: state,
