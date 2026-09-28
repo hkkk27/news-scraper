@@ -5,6 +5,25 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-29 — M4-04 Samples, slide content, demo script
+
+**Branch:** `docs/m4-04-samples-and-slides`
+
+### Done
+
+- **Live pass.** Ran a fresh `tracker run` plus daily and weekly reports: 1,996 items stored, 469 relevant stories in 24 h, 111 core, 9 languages, 27 states/UTs, 8/8 runs OK.
+- **`samples/`.** Real outputs, unedited: executive brief, analyst digest, Excel, Telegram brief text (daily and weekly), and the dashboard with data embedded. A README explains each file and the numbers behind it.
+- **`docs/proposal/slide-content.md`.** The 5-slide content for Claude Design: design direction, real numbers, screenshots to take, speaker notes and placeholders. TrendRadar is described as the next integration step, not as already running.
+- **`docs/proposal/demo-script.md`.** A 3-minute demo video script.
+- **Proposal README.** Marks the 27 Sep artifact deck as outdated, because it still shows Supabase and a paid LLM.
+- **Watcher check.** 15 "new" items per run come from the Supreme Court's daily judgments list. That is genuine churn capped by `max_new`, not a bug.
+
+### Next
+
+- M4-01: setup guide, runbook, methodology, README quickstart.
+
+---
+
 ## 2026-09-29 — M1-12 Scheduled pipeline and go-live
 
 **Branch:** `feat/m1-12-scheduler`
