@@ -5,6 +5,29 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-29 — M4-01 Handover documents
+
+**Branch:** `docs/m4-01-handover-docs`
+
+### Done
+
+- **`docs/SETUP.md`:** local run; Telegram bot (BotFather, allowlist, test card); Gmail app password; Cloudflare Pages + Access email login; the engine import and Gemini key.
+- **`docs/RUNBOOK.md`:** the schedule in IST, a 1-minute daily check, a common-problems table, manual operations, costs to watch.
+- **`docs/METHODOLOGY.md`:** the collection ladder, three-level de-duplication, tagging rubric, scoring formula for all three layers, bands and priority, reports, reliability, known limitations.
+- **`docs/EXTENDING.md`:** add a feed, query, language, watched page, vocabulary, a sector (healthcare example), a state or country, a new client profile; tune scores.
+- **README.** Rewritten as the project front page: what it is, quick start, docs index, layout, credits.
+- **Workflow.** Run artifacts now include `data/tracker.db` as a 14-day backup.
+- **SOW v0.5.** Task statuses updated. Engine-dependent parts are marked as following the import rather than done.
+
+### Open items
+
+- **M1-03:** TrendRadar import awaits the owner's approval. Then: engine config, English prompts, `file://` support, and a workflow step.
+- **M1-06:** X.com collector (optional).
+- **M3:** 14-day run and weekly accuracy reviews.
+- **M4-02 / M4-03:** training session and ownership transfer.
+
+---
+
 ## 2026-09-29 — M4-04 Samples, slide content, demo script
 
 **Branch:** `docs/m4-04-samples-and-slides`
