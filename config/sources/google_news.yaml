@@ -34,7 +34,7 @@ packs:
       mr: 'शाळा OR शालेय शिक्षण OR शिक्षक भरती OR दहावी OR बारावी'
       ta: 'பள்ளிக்கல்வி OR அரசுப் பள்ளி OR பொதுத்தேர்வு'
       te: 'పాఠశాల విద్య'
-      bn: 'বিদ্যালয় শিক্ষা OR মাধ্যমিক'
+      bn: '(বিদ্যালয় OR মাধ্যমিক OR শিক্ষক) (পশ্চিমবঙ্গ OR কলকাতা OR রাজ্য)'
       gu: 'શાળા શિક્ષણ'
       ml: 'സ്കൂൾ വിദ്യാഭ്യാസം'
       pa: 'ਸਕੂਲ ਸਿੱਖਿਆ'
@@ -47,7 +47,7 @@ packs:
       mr: 'विद्यापीठ OR कुलगुरू OR उच्च शिक्षण'
       ta: 'பல்கலைக்கழகம் OR துணைவேந்தர் OR உயர்கல்வி'
       te: 'విశ్వవిద్యాలయం OR ఉన్నత విద్య'
-      bn: 'বিশ্ববিদ্যালয় OR উচ্চশিক্ষা'
+      bn: '(বিশ্ববিদ্যালয় OR উচ্চশিক্ষা OR কলেজ) (পশ্চিমবঙ্গ OR কলকাতা OR রাজ্য)'
       gu: 'યુનિવર્સિટી OR ઉચ્ચ શિક્ષણ'
       ml: 'സർവകലാശാല'
       pa: 'ਯੂਨੀਵਰਸਿਟੀ'
@@ -56,7 +56,7 @@ packs:
     sector: skill_development
     recency: "when:2d"
     queries:
-      en: '"skill development" OR ITI OR apprenticeship OR PMKVY OR NSDC OR "Skill India" OR polytechnic'
+      en: '"skill development" OR "ITI students" OR "ITI admission" OR ITIs OR apprenticeship OR PMKVY OR NSDC OR "Skill India" OR polytechnic'
       hi: 'कौशल विकास OR आईटीआई OR अप्रेंटिसशिप'
       mr: 'कौशल्य विकास OR आयटीआय'
       ta: 'திறன் மேம்பாடு OR தொழிற்பயிற்சி'
@@ -82,7 +82,7 @@ packs:
       mr: 'महापालिका निवडणूक OR जिल्हा परिषद निवडणूक OR पोटनिवडणूक OR राज्य निवडणूक आयोग'
       ta: 'உள்ளாட்சித் தேர்தல் OR இடைத்தேர்தல்'
       te: 'స్థానిక సంస్థల ఎన్నికలు'
-      bn: 'পুরসভা নির্বাচন OR উপনির্বাচন'
+      bn: '(পুরসভা নির্বাচন OR উপনির্বাচন OR বিধানসভা নির্বাচন) (পশ্চিমবঙ্গ OR কলকাতা)'
       gu: 'સ્થાનિક સ્વરાજ ચૂંટણી'
   - id: courts
     name: Court rulings on education
