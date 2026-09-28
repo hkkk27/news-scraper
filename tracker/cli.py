@@ -175,6 +175,39 @@ def cmd_site(args, cfg) -> int:
     return 0
 
 
+def cmd_run(args, cfg) -> int:
+    """One scheduled pass: watch official pages → Telegram updates → process → dashboard.
+
+    Each step is isolated so one failing source or service never stops the rest; the exit code
+    is non-zero only if processing itself fails (that is what the run log must show).
+    """
+    from tracker.db import connect
+    from tracker.process import process
+    from tracker.site import build_site
+    from tracker.watch import load_watch_pages, run_watch
+
+    def step(name, fn):
+        try:
+            result = fn()
+            log.info("step %s: ok %s", name, result if result is not None else "")
+            return True
+        except Exception as exc:  # keep going; the error is logged and visible in the Actions log
+            log.error("step %s failed: %s: %s", name, type(exc).__name__, exc)
+            return False
+
+    c = cfg.settings.collection
+    step("watch", lambda: sum(r.new for r in run_watch(load_watch_pages(cfg.config_dir), c.user_agent,
+                                                          c.http_timeout_seconds)))
+    if cfg.secrets.telegram_bot_token:
+        step("telegram", lambda: make_bot(cfg).poll_once())
+    ok = step("process", lambda: process(cfg, mode=args.mode).bands)
+    step("site", lambda: build_site(cfg))
+    conn = connect(cfg.db_path)  # fold the write-ahead log into the file before it is saved
+    conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    conn.close()
+    return 0 if ok else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="tracker", description="News & Election Tracker")
     parser.add_argument("--config", help="profile directory (default: ./config or $TRACKER_CONFIG_DIR)")
@@ -212,6 +245,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=cmd_report)
 
     sub.add_parser("site", help="build the static dashboard (output/site/index.html)").set_defaults(func=cmd_site)
+
+    p = sub.add_parser("run", help="one scheduled pass: watch, Telegram, process, dashboard")
+    p.add_argument("--mode", choices=["auto", "engine", "direct"], default="auto")
+    p.set_defaults(func=cmd_run)
     return parser
 
 

@@ -1,0 +1,112 @@
+name: tracker
+
+# One workflow for every scheduled job. All jobs share one concurrency group, because the
+# SQLite database is saved back to the `data` branch and must never be written twice at once.
+on:
+  schedule:
+    - cron: "10 */2 * * *"   # every 2 hours: watch, Telegram, collect, tag, dashboard
+    - cron: "0 2 * * *"      # 07:30 IST: daily report (email + Telegram)
+    - cron: "30 2 * * 1"     # Monday 08:00 IST: weekly report with Excel
+    - cron: "40 21 * * *"    # 03:10 IST: retrain the relevance model from the day's feedback
+  workflow_dispatch:
+    inputs:
+      task:
+        description: "What to run"
+        type: choice
+        options: [run, daily, weekly, train]
+        default: run
+
+concurrency:
+  group: tracker-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  tracker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_ALLOWED_CHAT_IDS: ${{ secrets.TELEGRAM_ALLOWED_CHAT_IDS }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+      SMTP_HOST: ${{ secrets.SMTP_HOST }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      SMTP_USER: ${{ secrets.SMTP_USER }}
+      SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      REPORT_EMAIL_TO: ${{ secrets.REPORT_EMAIL_TO }}
+      REPORT_EMAIL_TO_EXEC: ${{ secrets.REPORT_EMAIL_TO_EXEC }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Pick the task
+        id: task
+        run: |
+          case "${{ github.event.schedule }}" in
+            "0 2 * * *")   task=daily ;;
+            "30 2 * * 1")  task=weekly ;;
+            "40 21 * * *") task=train ;;
+            "")            task="${{ inputs.task || 'run' }}" ;;
+            *)             task=run ;;
+          esac
+          echo "task=$task" >> "$GITHUB_OUTPUT"
+          echo "Running task: $task"
+
+      - name: Restore data
+        run: bash scripts/data_branch.sh restore
+
+      - name: Run
+        run: |
+          case "${{ steps.task.outputs.task }}" in
+            run)    python -m tracker run ;;
+            daily)  python -m tracker run && python -m tracker report daily --send ;;
+            weekly) python -m tracker report weekly --send ;;
+            train)  python -m tracker train && python -m tracker process ;;
+          esac
+
+      - name: Save data
+        if: always()
+        run: bash scripts/data_branch.sh save
+
+      - name: Upload reports and dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-output-${{ github.run_id }}
+          path: output/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # Optional: publish the dashboard to Cloudflare Pages (put Cloudflare Access in front of it
+      # for email login). Skipped unless all three secrets exist.
+      - name: Check Cloudflare config
+        id: cf
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$CLOUDFLARE_PROJECT_NAME" ] && [ -f output/site/index.html ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy dashboard
+        if: steps.cf.outputs.enabled == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy output/site --project-name=${{ secrets.CLOUDFLARE_PROJECT_NAME }}
