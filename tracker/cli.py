@@ -112,6 +112,17 @@ def cmd_bot(args, cfg) -> int:
     return 0
 
 
+def cmd_process(args, cfg) -> int:
+    from tracker.process import process
+
+    report = process(cfg, mode=args.mode)
+    print(f"run {report.run_id} via {report.mode}: {report.seen} items, {report.new} new, "
+          f"{report.relevant} core+relevant, bands={report.bands}")
+    if report.errors:
+        print(f"{len(report.errors)} source errors: " + ", ".join(sorted(report.errors)))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="tracker", description="News & Election Tracker")
     parser.add_argument("--config", help="profile directory (default: ./config or $TRACKER_CONFIG_DIR)")
@@ -135,6 +146,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("bot", help="Telegram bot: process updates once, listen continuously, or send a test card")
     p.add_argument("action", choices=["poll", "listen", "test-card"])
     p.set_defaults(func=cmd_bot)
+
+    p = sub.add_parser("process", help="gather items, tag and score them, save to the tracker database")
+    p.add_argument("--mode", choices=["auto", "engine", "direct"], default="auto",
+                   help="auto = engine output if present, else fetch feeds directly")
+    p.set_defaults(func=cmd_process)
     return parser
 
 
