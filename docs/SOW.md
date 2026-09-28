@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| **Version** | 0.2 (draft) |
-| **Date** | 27 September 2026 |
+| **Version** | 0.3 |
+| **Date** | 28 September 2026 |
 | **Prepared by** | Harshit Singh |
 | **Prepared for** | Siddharth Sachdev (personal initiative) |
 | **Target completion** | 19 October 2026 |
@@ -39,8 +39,8 @@ system.
 | Source types | Department websites, official PDFs, national media, vernacular (regional-language) papers, legal media, X.com handles |
 | Streams | Sector news, transfers, elections, political developments, court decisions, policy and statements |
 | Curation | Automatic tagging, a relevance yes/no decision with a degree-of-relevance score, de-duplication, and a training loop that learns from user feedback |
-| Manual feed-in | The client can add items himself (link, PDF or text) through a Telegram bot or a web form; these become part of the dataset and training labels |
-| Users | 3–5 concurrent users with login; mobile-friendly training mode |
+| Manual feed-in | The client can add items himself by forwarding a link, PDF or text to the Telegram bot; these become part of the dataset and training labels |
+| Users | 3–5 concurrent users: an allowlist for the Telegram bot and email login for the dashboard; the mobile training mode lives in Telegram |
 | Reporting | Daily and weekly reports by state, sector and category for two audiences: a detailed **analyst digest** (the client) and a one-page **executive brief** (his leadership). Plus an interactive dashboard. |
 | Operations | Two weeks of uninterrupted processing, with evidence (run logs) |
 | Handover | Runbook, methodology document, a 2-hour hands-on session, and transfer of all accounts |
@@ -48,7 +48,7 @@ system.
 ### 2.2 Out of scope (v1)
 
 - Other sectors and countries. The architecture supports them (see §10), but only the three sectors above are populated.
-- Native Android and iOS apps. The web app is mobile-first and installable as a PWA instead.
+- Native Android and iOS apps. Telegram is the mobile app, and the dashboard is mobile-first.
 - Paid news or data APIs, including the official X API (too expensive for the budget).
 - Bulk historical backfill. v1 starts from go-live, plus up to 7 days of look-back where sources allow.
 - Guaranteed OCR of scanned regional-language PDFs. This is best-effort, and failures are flagged for manual review.
@@ -71,11 +71,12 @@ The four deliverables follow the brief's payment schedule.
 
 ### D2 — Frontend & Reporting Structure (₹4,000)
 
-- A web app with login for up to 5 users: a filterable feed (state, sector, category, date, source type, language, priority), a mobile training mode, and source and keyword management.
-- A daily report (07:30 IST) and a weekly report (Monday), shown in the app and sent by email, each in two formats:
+- A mobile-first dashboard behind email login for up to 5 users: a filterable feed (state, sector, category, date, source type, language, band) and tracker views.
+- Training happens in the Telegram bot. Sources and keywords are managed in config files, which can be edited on GitHub, including from a phone.
+- A daily report (07:30 IST) and a weekly report (Monday), delivered to Telegram and by email and saved in the dashboard, each in two formats:
   - **Analyst digest:** every Core and Relevant item, grouped by sector → state → category, with tags and links.
   - **Executive brief:** one page with the top 5–10 developments, new transfers, upcoming elections and key rulings.
-- A web form for manual feed-in (link, PDF upload or text).
+- A weekly Excel workbook split by state and sector.
 - Tracker views for transfers, elections (with a calendar) and court rulings.
 - A dashboard with volumes and trends by state and sector.
 
@@ -115,17 +116,18 @@ backend work starts now rather than after selection.
 ## 5. Solution overview
 
 Every item goes through seven stages. Method details and cost reasoning are in
-[ADR-0003](decisions/0003-collection-and-ai-within-budget.md).
+[ADR-0003](decisions/0003-collection-and-ai-within-budget.md) and
+[ADR-0004](decisions/0004-zero-cost-serverless-telegram-first.md).
 
 | # | Stage | What happens | How |
 |---|---|---|---|
-| 1 | **Collect** | Pull new items from every source, including government notifications and the client's own submissions | RSS → Google News search RSS → targeted scraping of official pages and PDFs → headless browser (rare) → Apify for X; Telegram bot and web form for manual feed-in |
+| 1 | **Collect** | Pull new items from every source, including government notifications and the client's own submissions | RSS → Google News search RSS → targeted scraping of official pages and PDFs → headless browser (rare) → Apify for X; the Telegram bot for manual feed-in |
 | 2 | **Scrape / extract** | Get clean text, date, language and publisher; decode Google News links; read PDFs | `trafilatura`, `pypdf`; OCR best-effort |
 | 3 | **Organise** | Normalize, remove duplicates, group reports of the same event into one story | Three-level de-duplication (§8) |
 | 4 | **Is it relevant?** | Yes/no gate that drops obvious noise | L1 rules: multilingual keywords, gazetteers, source priors |
-| 5 | **Degree of relevance** | Score 0–100 and band (Core, Relevant, Peripheral, Not relevant) | L2 local embedding model + classifier trained on feedback; L3 LLM only when L2 is unsure |
+| 5 | **Degree of relevance** | Score 0–100 and band (Core, Relevant, Peripheral, Not relevant) | L2 local model (TF-IDF or multilingual embeddings) + classifier trained on feedback; L3 free-tier LLM only when L2 is unsure (optional) |
 | 6 | **Tag** | Sector, category, state/district, actor, priority (§6) | Rules first; LLM fills gaps |
-| 7 | **Report** | Analyst digest and executive brief, daily and weekly; dashboard and trackers | Report generator → app and email |
+| 7 | **Report** | Analyst digest and executive brief, daily and weekly; dashboard and trackers | Report generator → Telegram, email, Excel, dashboard |
 
 ```
  SOURCES                  PIPELINE (scheduled, GitHub Actions)              STORAGE & APPS
@@ -139,14 +141,14 @@ Every item goes through seven stages. Method details and cost reasoning are in
                                                                      └──────┬───────┘
                                                                             ▼
                     ┌──────────────────────────────────────────────────────────────┐
-                    │ Postgres (Supabase): items, stories, tags, sources, feedback,│
-                    │ runs, reports                                                 │
-                    └───────┬───────────────────────────────┬──────────────────────┘
-                            ▼                               ▼
-                 Web app (mobile-first PWA)        Report generator
-                 feed · training · trackers ·      daily 07:30 IST · weekly Mon
-                 dashboard · settings              → app + email
-                            │
+                    │ SQLite (single file on the `data` branch; D1 or a local box  │
+                    │ as drop-in swaps): items, stories, tags, feedback, runs      │
+                    └───────┬──────────────────────┬──────────────────┬────────────┘
+                            ▼                      ▼                  ▼
+                 Telegram bot             Report generator      Static dashboard
+                 brief · buttons ·        daily 07:30 IST ·     filters · trackers ·
+                 feed-in · /search        weekly Mon → email,   charts (Cloudflare
+                            │             Telegram, Excel       Pages + Access)
                             └── feedback (👍/👎, re-tag, mute) ──▶ nightly retrain
 ```
 
@@ -247,7 +249,7 @@ The feedback improves three layers, from cheapest to most expensive:
 
 1. **Rules:** keyword and source weights, editable in the app and adjusted by mute and boost.
 2. **Learned model:** a small classifier (TF-IDF or multilingual embeddings with logistic regression), retrained nightly from labels. It needs no GPU and runs in seconds.
-3. **LLM:** called only for items the first two layers are unsure about. The prompt carries a plain-English relevance brief plus recent labelled examples (few-shot), with a hard monthly spending cap.
+3. **LLM (optional):** called only for items the first two layers are unsure about. It uses the free Gemini tier by default, and no paid API is used unless the client switches one on. The prompt carries a plain-English relevance brief plus recent labelled examples (few-shot), with a hard daily request cap. With no LLM configured, uncertain items wait in a review queue.
 
 **Measurement:** the dashboard shows weekly precision on sampled items and the number of
 labels collected.
@@ -265,22 +267,22 @@ labels collected.
 
 ## 11. Technology and running cost
 
+Rationale: [ADR-0004](decisions/0004-zero-cost-serverless-telegram-first.md).
+
 | Component | Choice | Monthly cost |
 |---|---|---|
 | Pipeline and scheduler | Python 3.11 on GitHub Actions cron (private repo: 2,000 free minutes a month; the planned load is about 1,200) | ₹0 |
-| Database and auth | Supabase free tier (Postgres, email login, row-level security) | ₹0 |
-| Web app | Static PWA on Cloudflare Pages free tier | ₹0 |
-| Email reports | Gmail SMTP or Resend free tier | ₹0 |
-| Relevance model (L2) | Local multilingual embedding model + classifier, runs inside the pipeline | ₹0 |
-| LLM tagging (L3) | Claude Haiku 4.5 through the Batches API, for the uncertain band only; hard cap in config (estimate about ₹260) | ≤ ₹300 |
-| X.com collection | Apify free monthly credit; capped | ₹0–150 |
-| Manual feed-in | Telegram bot, polled by the pipeline | ₹0 |
-| Domain (optional) | .in domain | ~₹70 |
-| **Total** | | **≤ ₹500** |
+| Database | SQLite file persisted on the repository's `data` branch; Cloudflare D1 or a local machine as drop-in swaps | ₹0 |
+| Mobile app, training and feed-in | Telegram bot (Bot API over HTTPS; polled by the pipeline) | ₹0 |
+| Dashboard | Static site on Cloudflare Pages behind Cloudflare Access email login | ₹0 |
+| Email reports | Gmail SMTP (app password) | ₹0 |
+| Relevance model (L2) | Local TF-IDF / multilingual-embedding classifier, runs inside the pipeline | ₹0 |
+| LLM (L3, optional) | Free Gemini tier for the uncertain band, about 15 batched requests a day against a quota of roughly 500–1,000; paid providers off by default | ₹0 |
+| X.com collection (optional) | Apify pay-per-result, within the free monthly credit; capped | ₹0–150 |
+| **Total** | | **₹0–150** (ceiling ₹500) |
 
-Free-tier limits and prices are to be re-verified at M1-03. The fallback is a small VPS at
-about ₹400 a month, since all components are portable. Rationale:
-[ADR-0002](decisions/0002-stack-and-hosting.md).
+Free tiers change from time to time. Every paid-risk component is optional or swappable,
+and the fallback is a small VPS at about ₹400 a month, since all components are portable.
 
 ## 12. Work breakdown structure
 
@@ -290,29 +292,30 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 |---|---|---|---|
 | **M0** | **Planning** | | |
 | M0-01 | Repository setup, git conventions | — | Done |
-| M0-02 | Scope of work, decisions, source verification | — | In review |
+| M0-02 | Scope of work, decisions, source verification | — | Done |
 | M0-03 | A/M proposal: 3–5 slides, profile, prior work (due 29 Sep 23:59) — [outline](proposal/README.md) | Application | Draft ready |
+| M0-04 | Architecture decision: ₹0 serverless, SQLite- and Telegram-first (ADR-0004), SOW v0.3 | — | Done |
 | **M1** | **Backend & training platform** | D1 | |
 | M1-01 | Python package skeleton, config loader, logging, CLI | D1 | To do |
 | M1-02 | Taxonomy and geography config (sectors, categories, 36 states/UTs with multilingual aliases) | D1 | To do |
-| M1-03 | Storage schema (Supabase Postgres, SQLite for local dev), migrations | D1 | To do |
+| M1-03 | Storage: SQLite schema and repository layer, `data`-branch persistence, D1-ready interface | D1 | To do |
 | M1-04 | RSS and Google News source adapters | D1 | To do |
 | M1-05 | Official website and PDF watcher | D1 | To do |
 | M1-06 | X.com adapter | D1 | To do |
 | M1-07 | Normalization and full-text extraction | D1 | To do |
 | M1-08 | De-duplication and story clustering | D1 | To do |
 | M1-09 | Rule-based tagger (sector, geography, category, priority) | D1 | To do |
-| M1-10 | LLM tagger for uncertain items, with cost cap | D1 | To do |
+| M1-10 | Optional LLM tagger for uncertain items (free tier by default), with request cap | D1 | To do |
 | M1-11 | Feedback store and learned relevance model | D1 | To do |
 | M1-12 | Scheduled workflows, run log, source-health alerts; go-live | D1 | To do |
 | M1-13 | Manual feed-in: Telegram bot intake (links, PDFs, text) | D1 | To do |
 | **M2** | **Frontend & reporting** | D2 | |
-| M2-01 | Web app skeleton, login (up to 5 users) | D2 | To do |
+| M2-01 | Static dashboard skeleton, mobile-first; Cloudflare Access login (up to 5 users) | D2 | To do |
 | M2-02 | Feed view with combined filters | D2 | To do |
-| M2-03 | Mobile training mode (rate, re-tag, mute and boost) | D2 | To do |
-| M2-04 | Settings: sources, keywords, taxonomy; manual feed-in form | D2 | To do |
+| M2-03 | Mobile training mode in Telegram (rate, re-tag, mute) | D2 | To do |
+| M2-04 | Settings through config files; manual feed-in through Telegram | D2 | To do |
 | M2-05 | Daily report: analyst digest and executive brief (app and email) | D2 | To do |
-| M2-06 | Weekly report: analyst digest and executive brief | D2 | To do |
+| M2-06 | Weekly report: analyst digest, executive brief, Excel workbook | D2 | To do |
 | M2-07 | Dashboard metrics and charts | D2 | To do |
 | M2-08 | Trackers: transfers, elections calendar, court rulings | D2 | To do |
 | **M3** | **Uninterrupted processing** | D3 | |
@@ -322,7 +325,8 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 | **M4** | **Handover** | D4 | |
 | M4-01 | Runbook, methodology and extension guide | D4 | To do |
 | M4-02 | 2-hour training session and materials | D4 | To do |
-| M4-03 | Ownership transfer (repo, Supabase, hosting, secrets) | D4 | To do |
+| M4-03 | Ownership transfer (repo, Telegram bot, Cloudflare, secrets) | D4 | To do |
+| M4-04 | Sample outputs, demo script and slide content | D4 | To do |
 
 ## 13. Risks and mitigations
 
@@ -332,9 +336,9 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 | X.com access or pricing changes | Loss of the social stream | Pay-per-result scraper within credit; fallbacks (RSSHub, twscrape); X treated as supplementary, never the only source for a stream |
 | Government sites that are JavaScript-heavy, slow or blocking | Missed official orders | Headless fetch only where needed; polite rate limits; news coverage of the same order as backup; CAPTCHAs are never bypassed |
 | Scanned PDFs in regional languages | Missing text | OCR best-effort; flag untagged PDFs for manual review in the app |
-| Free-tier limits change | Cost over ceiling | Portable Postgres and Python; VPS fallback at about ₹400 a month |
-| LLM cost overrun | Budget breach | Rules and model first; LLM only when uncertain; hard monthly cap |
-| Storage fills the 500 MB free database | Writes fail | Store excerpts and links, not full pages; retention policy for low-relevance items |
+| Free-tier limits change | Cost over ceiling | Portable SQLite and Python; VPS fallback at about ₹400 a month |
+| LLM quota or cost changes | Budget breach or missing tags | Rules and model first; LLM optional, free tier, hard daily cap; uncertain items queue for review without it |
+| Database file grows large | Slow runs, big data branch | Store excerpts and links, not full pages; purge Not-relevant items after 30 days |
 | Copyright and terms of use | Legal exposure | Store headline, short excerpt and link only; respect robots.txt and rate limits |
 
 ## 14. Documentation and change control
@@ -350,7 +354,7 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 3. Who receives the reports, and on which channel (email, WhatsApp, both)?
 4. Is there an existing list of X handles to track?
 5. Which regional languages matter most beyond Hindi?
-6. At handover, should accounts move to the client's GitHub, Supabase and Cloudflare, or stay with us under a maintenance arrangement?
+6. At handover, should accounts move to the client's GitHub, Telegram and Cloudflare, or stay with us under a maintenance arrangement?
 7. Who reads the executive brief, and what must it always contain?
 8. Is Telegram acceptable for manual feed-in, or is another channel needed?
 
@@ -360,3 +364,4 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 |---|---|---|
 | 0.1 | 27 Sep 2026 | First draft |
 | 0.2 | 27 Sep 2026 | Added the seven-stage pipeline, relevance gate plus degree-of-relevance bands, manual feed-in (Telegram bot and web form), analyst digest and executive brief reports, AI cost decision (ADR-0003), task M1-13 |
+| 0.3 | 28 Sep 2026 | Adopted Option A (ADR-0004): ₹0 serverless, SQLite on a `data` branch, Telegram as the mobile app and training mode, static dashboard behind email login, optional free-tier LLM; running cost ₹0–150; WBS updated; M4-04 added |
