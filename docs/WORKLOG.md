@@ -5,6 +5,28 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 — M1-08 Story clustering
+
+**Branch:** `feat/m1-08-story-clustering`
+
+### Done
+
+- **Clustering** (`tracker/stories.py`). This is level-2 de-duplication; level 1 is the canonical-URL key.
+  - Titles are normalized before comparing ("SC" → "supreme court", "Class VI" → "class 6", "3rd" → "3").
+  - Items are compared with TF-IDF cosine similarity, within one language and a 72-hour window.
+  - Two items only group when their states agree, so "Tamil Nadu NEET counselling" and "Odisha NEET counselling" stay apart.
+- **Stable ids and corroboration.** Story ids stay stable across runs. Each story stores how many distinct outlets reported it (`sources_count`); reports will show this as corroboration.
+- **Threshold choice.** Compared 0.35 / 0.4 / 0.45 / 0.55 on live data and picked 0.4 with state agreement. Without the state rule, different states' NEET counselling notices merged.
+- **Process.** Clustering now runs in every `process` pass. The database migrates in place (new `sources_count` column).
+- **Live result:** 472 Core/Relevant items → 373 stories. The Supreme Court CBSE three-language order appears as clusters of 4–6 outlets.
+- **Tests:** 56 passing.
+
+### Next
+
+- M1-11: the learned relevance model (L2) trained on Telegram labels.
+
+---
+
 ## 2026-09-28 — M1-07 India-layer tagging, scoring and item store
 
 **Branch:** `feat/m1-07-india-tagger`
