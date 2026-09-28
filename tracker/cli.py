@@ -60,6 +60,19 @@ def cmd_sources(args, cfg) -> int:
     return 1 if bad else 0
 
 
+def cmd_watch(args, cfg) -> int:
+    from tracker.watch import load_watch_pages, run_watch
+
+    pages = load_watch_pages(cfg.config_dir)
+    if args.only:
+        pages = [p for p in pages if p.id in set(args.only)]
+    results = run_watch(pages, cfg.settings.collection.user_agent, cfg.settings.collection.http_timeout_seconds)
+    failed = [r for r in results if not r.ok]
+    print(f"{len(results)} pages: {sum(r.new for r in results)} new items, "
+          f"{sum(r.baseline for r in results)} baselines, {len(failed)} failed")
+    return 1 if failed and len(failed) == len(results) else 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="tracker", description="News & Election Tracker")
     parser.add_argument("--config", help="profile directory (default: ./config or $TRACKER_CONFIG_DIR)")
@@ -75,6 +88,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--only", nargs="*", help="check only these source ids")
     p.add_argument("--out", default="build/engine_feeds.yaml", help="export path (relative to project root)")
     p.set_defaults(func=cmd_sources)
+
+    p = sub.add_parser("watch", help="check official pages for new notices and PDFs")
+    p.add_argument("--only", nargs="*", help="watch only these page ids")
+    p.set_defaults(func=cmd_watch)
     return parser
 
 

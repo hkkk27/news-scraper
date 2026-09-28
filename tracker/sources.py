@@ -30,6 +30,7 @@ class FeedSpec:
     prior: int = 0
     sector: str | None = None
     stream: str | None = None
+    state: str | None = None
     enabled: bool = True
     max_age_days: int | None = None
 
@@ -56,6 +57,7 @@ def _direct_feeds(data: dict) -> list[FeedSpec]:
             prior=int(spec.get("prior", 0)),
             sector=spec.get("sector"),
             stream=spec.get("stream"),
+            state=spec.get("state"),
             enabled=bool(spec.get("enabled", True)),
             max_age_days=spec.get("max_age_days"),
         ))
@@ -84,6 +86,16 @@ def _google_news_feeds(data: dict) -> list[FeedSpec]:
     return out
 
 
+def _watched_page_feeds(config_dir: Path) -> list[FeedSpec]:
+    from tracker.watch import load_watch_pages
+
+    return [
+        FeedSpec(id=page.feed_id, name=page.name, url=f"file://data/feeds/{page.feed_id}.xml", type="official",
+                 language="en", prior=page.prior, sector=page.sector, stream=page.stream, state=page.state)
+        for page in load_watch_pages(config_dir)
+    ]
+
+
 def load_sources(config_dir: Path, include_disabled: bool = False) -> list[FeedSpec]:
     src_dir = config_dir / "sources"
     specs: list[FeedSpec] = []
@@ -91,6 +103,7 @@ def load_sources(config_dir: Path, include_disabled: bool = False) -> list[FeedS
         specs += _direct_feeds(read_yaml(src_dir / "feeds.yaml"))
     if (src_dir / "google_news.yaml").exists():
         specs += _google_news_feeds(read_yaml(src_dir / "google_news.yaml"))
+    specs += _watched_page_feeds(config_dir)
     ids = [s.id for s in specs]
     duplicates = {i for i in ids if ids.count(i) > 1}
     if duplicates:

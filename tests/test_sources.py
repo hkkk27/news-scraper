@@ -32,6 +32,7 @@ def test_pack_metadata_flows_to_specs():
     assert specs["gn-higher-ta"].sector == "higher_education"
     assert specs["gn-courts-en"].stream == "court"
     assert specs["manual-feed-in"].is_local
+    assert specs["official-mahasec"].state == "MH" and specs["official-mahasec"].type == "official"
 
 
 def test_engine_export_shape(tmp_path):

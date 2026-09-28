@@ -5,6 +5,31 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 â€” M1-05 Official page and PDF watcher
+
+**Branch:** `feat/m1-05-official-watcher`
+
+### Done
+
+- **Watched pages.** `config/sources/watch.yaml` lists 8 official pages verified to serve plain-HTML links: UGC, AICTE, CBSE, NTA, DoPT, the Supreme Court, DGT (skills) and the Maharashtra SEC. JavaScript-rendered sites (MoE, MSDE, ECI) are left to PIB and Google News.
+- **Watcher** (`tracker/watch.py`). On each run it:
+  1. Fetches the page and lists its links.
+  2. Keeps the new links that pass the include/exclude rules.
+  3. Writes them to `data/feeds/official-<id>.xml`, which the engine ingests.
+  - The first visit only records a baseline; `max_new` caps each run.
+  - Generic "Read More" links take their title from the surrounding text. At NTA this raised the captured notices from 2 to 751.
+  - File sizes are stripped from titles. First-page PDF text is added when present; scanned PDFs (common for government orders) are labelled.
+- **RSS helper.** `tracker/rssfile.py` reads and writes rolling RSS files for all India-layer collectors.
+- **Registry.** Watched pages join the source registry as `official-*` feeds carrying their sector, stream and state hints (MahaSEC â†’ MH, elections).
+- **Live run.** 8/8 pages reachable and baselined. A simulated second run produced 6 correctly titled items.
+- **Tests:** 24 passing.
+
+### Next
+
+- M1-13: Telegram bot (feedback buttons, forward-to-add intake).
+
+---
+
 ## 2026-09-28 â€” M1-04 India sources and engine relevance config
 
 **Branch:** `feat/m1-04-india-sources`
