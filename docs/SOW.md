@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Version** | 0.4 |
+| **Version** | 0.5 |
 | **Date** | 28 September 2026 |
 | **Prepared by** | Harshit Singh |
 | **Prepared for** | Siddharth Sachdev (personal initiative) |
@@ -293,39 +293,39 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 | **M0** | **Planning** | | |
 | M0-01 | Repository setup, git conventions | — | Done |
 | M0-02 | Scope of work, decisions, source verification | — | Done |
-| M0-03 | A/M proposal: 3–5 slides, profile, prior work (due 29 Sep 23:59) — [outline](proposal/README.md) | Application | Draft ready |
+| M0-03 | A/M proposal: 3–5 slides, profile, prior work (due 29 Sep 23:59) — [outline](proposal/README.md) | Application | Slide content ready ([slide-content.md](proposal/slide-content.md)); owner builds the deck |
 | M0-04 | Architecture decision: ₹0 serverless, SQLite- and Telegram-first (ADR-0004), SOW v0.3 | — | Done |
 | M0-05 | Decision to build on TrendRadar (ADR-0005), SOW v0.4 | — | Done |
 | **M1** | **Backend & training platform (on TrendRadar, ADR-0005)** | D1 | |
 | M1-01 | Python package skeleton, settings loader, CLI | D1 | Done; now the India layer's CLI |
 | M1-02 | Taxonomy and geography (sectors, categories, actors, 36 states/UTs, multilingual matcher) | D1 | Done; the India layer's tagging core |
-| M1-03 | Import TrendRadar into `engine/` (git subtree) and run it locally | D1 | To do |
-| M1-04 | Configure the engine for India: English config, feeds and Google News query packs, keyword groups, AI interests, English prompts | D1 | To do |
-| M1-05 | Official page and PDF watcher that writes RSS files; `file://` feed support | D1 | To do |
-| M1-06 | X.com via Apify that writes an RSS file (optional) | D1 | To do |
-| M1-07 | India layer: state/sector/category/actor tagging and relevance bands on stored items | D1 | To do |
-| M1-08 | Cross-feed de-duplication and story clustering | D1 | To do |
-| M1-10 | LLM relevance through TrendRadar's AI filter on the free Gemini tier (configuration + request cap) | D1 | To do |
-| M1-11 | Feedback store and learned relevance model | D1 | To do |
-| M1-12 | Root GitHub Actions workflow: schedule, `data`-branch persistence, secrets; go-live | D1 | To do |
-| M1-13 | Telegram bot: feedback buttons and forward-to-add intake (writes an RSS file) | D1 | To do |
+| M1-03 | Import TrendRadar into `engine/` (git subtree) and run it locally | D1 | Blocked: `git subtree add` needs the owner's approval (see SETUP §5) |
+| M1-04 | Configure the engine for India: English config, feeds and Google News query packs, keyword groups, AI interests, English prompts | D1 | Overlay done (feeds, query packs, keyword groups, AI brief); engine `config.yaml` and English prompts follow the import |
+| M1-05 | Official page and PDF watcher that writes RSS files; `file://` feed support | D1 | Watcher done; the engine's `file://` support follows the import |
+| M1-06 | X.com via Apify that writes an RSS file (optional) | D1 | To do (optional) |
+| M1-07 | India layer: state/sector/category/actor tagging and relevance bands on stored items | D1 | Done |
+| M1-08 | Cross-feed de-duplication and story clustering | D1 | Done (cross-language grouping needs the engine) |
+| M1-10 | LLM relevance through TrendRadar's AI filter on the free Gemini tier (configuration + request cap) | D1 | Config ready (`config/engine/`); needs the engine and a Gemini key |
+| M1-11 | Feedback store and learned relevance model | D1 | Done |
+| M1-12 | Root GitHub Actions workflow: schedule, `data`-branch persistence, secrets; go-live | D1 | Done; live since 28 Sep |
+| M1-13 | Telegram bot: feedback buttons and forward-to-add intake (writes an RSS file) | D1 | Done; needs the bot token |
 | **M2** | **Frontend & reporting** | D2 | |
-| M2-01 | Dashboard: static, mobile-first site with filters (Cloudflare Pages + Access) | D2 | To do |
-| M2-03 | Mobile training mode in Telegram (rate, re-tag, mute) | D2 | To do |
-| M2-04 | Settings through config files; manual feed-in through Telegram | D2 | To do |
-| M2-05 | Daily report: analyst digest and executive brief (Telegram, email, file) | D2 | To do |
-| M2-06 | Weekly report: analyst digest, executive brief, Excel workbook | D2 | To do |
-| M2-07 | Dashboard metrics and charts | D2 | To do |
-| M2-08 | Trackers: transfers, elections, court rulings | D2 | To do |
+| M2-01 | Dashboard: static, mobile-first site with filters (Cloudflare Pages + Access) | D2 | Done; online hosting needs Cloudflare secrets |
+| M2-03 | Mobile training mode in Telegram (rate, re-tag, mute) | D2 | Done |
+| M2-04 | Settings through config files; manual feed-in through Telegram | D2 | Done |
+| M2-05 | Daily report: analyst digest and executive brief (Telegram, email, file) | D2 | Done |
+| M2-06 | Weekly report: analyst digest, executive brief, Excel workbook | D2 | Done |
+| M2-07 | Dashboard metrics and charts | D2 | Done |
+| M2-08 | Trackers: transfers, elections, court rulings | D2 | Done |
 | **M3** | **Uninterrupted processing** | D3 | |
-| M3-01 | Go-live checklist and monitoring | D3 | To do |
+| M3-01 | Go-live checklist and monitoring | D3 | In progress (runs since 28 Sep) |
 | M3-02 | Daily run log and weekly accuracy review | D3 | To do |
 | M3-03 | Tuning and fixes (`fix/` branches) | D3 | To do |
 | **M4** | **Handover** | D4 | |
-| M4-01 | Runbook, methodology and extension guide | D4 | To do |
+| M4-01 | Runbook, methodology and extension guide | D4 | Done |
 | M4-02 | 2-hour training session and materials | D4 | To do |
 | M4-03 | Ownership transfer (repo, Telegram bot, Cloudflare, secrets) | D4 | To do |
-| M4-04 | Sample outputs, demo script and slide content | D4 | To do |
+| M4-04 | Sample outputs, demo script and slide content | D4 | Done |
 
 ## 13. Risks and mitigations
 
@@ -365,3 +365,4 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 | 0.2 | 27 Sep 2026 | Added the seven-stage pipeline, relevance gate plus degree-of-relevance bands, manual feed-in (Telegram bot and web form), analyst digest and executive brief reports, AI cost decision (ADR-0003), task M1-13 |
 | 0.3 | 28 Sep 2026 | Adopted Option A (ADR-0004): ₹0 serverless, SQLite on a `data` branch, Telegram as the mobile app and training mode, static dashboard behind email login, optional free-tier LLM; running cost ₹0–150; WBS updated; M4-04 added |
 | 0.4 | 28 Sep 2026 | Build on TrendRadar (ADR-0005): the engine is imported into `engine/` and our work becomes an India layer plus configuration; WBS M1/M2 rewritten |
+| 0.5 | 29 Sep 2026 | Task statuses updated after the build: M1/M2 done except the engine import (awaiting approval), X.com (optional) and engine AI; M3 run in progress; handover docs done |

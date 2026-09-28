@@ -79,12 +79,14 @@ jobs:
         if: always()
         run: bash scripts/data_branch.sh save
 
-      - name: Upload reports and dashboard
+      - name: Upload reports, dashboard and a database backup
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: tracker-output-${{ github.run_id }}
-          path: output/
+          path: |
+            output/
+            data/tracker.db
           retention-days: 14
           if-no-files-found: ignore
 
