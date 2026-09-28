@@ -1,0 +1,36 @@
+{% extends "_base.html" %}
+{% from "_story.html" import story_card %}
+{% block title %}Executive brief — {{ r.period_label }}{% endblock %}
+{% block eyebrow %}Executive brief · {{ r.kind }}{% endblock %}
+{% block heading %}What changed in education & governance{% endblock %}
+{% block body %}
+<div class="stats">
+  <div class="stat"><b>{{ r.stats.stories }}</b><span>relevant stories</span></div>
+  <div class="stat"><b>{{ r.stats.high_priority }}</b><span>high priority</span></div>
+  <div class="stat"><b>{{ r.trackers.transfer | length }}</b><span>transfer stories</span></div>
+  <div class="stat"><b>{{ r.trackers.court | length }}</b><span>court rulings</span></div>
+</div>
+
+<h2>Top developments</h2>
+{% if r.top %}
+<ol class="top">
+{% for s in r.top %}
+  <li>{{ story_card(s) }}</li>
+{% endfor %}
+</ol>
+{% else %}<p class="muted">No core or relevant developments in this period.</p>{% endif %}
+
+{% for key, label in [("transfer", "Transfers & postings"), ("election", "Elections"), ("court", "Court rulings")] %}
+{% if r.trackers[key] %}
+<h2>{{ label }}</h2>
+{% for s in r.trackers[key][:5] %}{{ story_card(s) }}{% endfor %}
+{% if r.trackers[key] | length > 5 %}<p class="muted">+ {{ r.trackers[key] | length - 5 }} more in the analyst digest.</p>{% endif %}
+{% endif %}
+{% endfor %}
+
+<h2>Where the news was</h2>
+<table class="mini">
+  <tr><th>State / UT</th><th>Stories</th></tr>
+  {% for name, n in r.stats.by_state[:8] %}<tr><td>{{ name }}</td><td>{{ n }}</td></tr>{% endfor %}
+</table>
+{% endblock %}

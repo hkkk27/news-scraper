@@ -1,0 +1,34 @@
+{% extends "_base.html" %}
+{% from "_story.html" import story_card %}
+{% block title %}Analyst digest — {{ r.period_label }}{% endblock %}
+{% block eyebrow %}Analyst digest · {{ r.kind }}{% endblock %}
+{% block heading %}{{ r.title }}{% endblock %}
+{% block body %}
+<div class="stats">
+  <div class="stat"><b>{{ r.stats.items_seen }}</b><span>items scanned</span></div>
+  <div class="stat"><b>{{ r.stats.stories }}</b><span>relevant stories</span></div>
+  <div class="stat"><b>{{ r.stats.core }}</b><span>core</span></div>
+  <div class="stat"><b>{{ r.stats.high_priority }}</b><span>high priority</span></div>
+</div>
+
+<table class="mini">
+  <tr><th>By sector</th><th></th><th>By category</th><th></th></tr>
+  {% for i in range([r.stats.by_sector | length, r.stats.by_category | length] | max) %}
+  <tr>
+    <td>{{ r.stats.by_sector[i][0] if i < r.stats.by_sector | length else "" }}</td>
+    <td>{{ r.stats.by_sector[i][1] if i < r.stats.by_sector | length else "" }}</td>
+    <td>{{ r.stats.by_category[i][0] if i < r.stats.by_category | length else "" }}</td>
+    <td>{{ r.stats.by_category[i][1] if i < r.stats.by_category | length else "" }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% for sector_id, label, states in r.by_sector %}
+<h2>{{ label }}</h2>
+{% for state, stories in states %}
+<h3>{{ state }} · {{ stories | length }}</h3>
+{% for s in stories %}{{ story_card(s, show_why=True) }}{% endfor %}
+{% endfor %}
+{% endfor %}
+{% if not r.by_sector %}<p class="muted">No relevant stories in this period.</p>{% endif %}
+{% endblock %}

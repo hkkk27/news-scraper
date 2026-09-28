@@ -1,0 +1,14 @@
+{% macro story_card(s, show_why=False) -%}
+<div class="story">
+  {% if s.is_link %}<a class="t" href="{{ s.url }}">{{ s.title }}</a>{% else %}<span class="t"><b>{{ s.title }}</b></span>{% endif %}
+  <div class="meta">
+    {% if s.priority == "high" %}<span class="badge b-high">HIGH</span>{% endif %}
+    {% if s.band == "core" %}<span class="badge b-core">CORE {{ s.score }}</span>{% endif %}
+    <span class="badge b-cat">{{ s.category_label | upper }}</span>
+    {{ s.where }}{% if s.sector_labels %} · {{ s.sector_labels | join(", ") }}{% endif %}
+    · {{ s.source_name }}{% if s.outlets > 1 %} · reported by {{ s.outlets }} outlets{% endif %}
+    {% if s.language != "en" %} · {{ s.language }}{% endif %}
+  </div>
+  {% if show_why and s.reasons %}<div class="why">Why: {{ s.reasons[:4] | join("; ") }}</div>{% endif %}
+</div>
+{%- endmacro %}
