@@ -24,7 +24,7 @@ NORMALIZE = [
     (re.compile(r"\bsc\b"), "supreme court"),
     (re.compile(r"\bhc\b"), "high court"),
     (re.compile(r"\bapex court\b"), "supreme court"),
-    (re.compile(r"\b(third|3rd)\b"), "3"),
+    (re.compile(r"\b(three|third|3rd)\b"), "3"),
     (re.compile(r"\b(second|2nd)\b"), "2"),
     (re.compile(r"\b(first|1st)\b"), "1"),
     (re.compile(r"\bclass(?:es)?\s+(i{1,3}|iv|v|vi{0,3}|ix|x|xi{0,2})\b"), lambda m: "class " + ROMAN[m.group(1)]),

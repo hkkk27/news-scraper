@@ -135,3 +135,13 @@ def test_court_case_about_elections_counts_as_election(tagger):
     t = tag(tagger, "Supreme Court hears plea on electoral roll revision before assembly polls", feed="livelaw")
     assert {t.category, t.category2} == {"court", "election"}
     assert t.rule_score >= 40
+
+
+def test_generic_officer_deployment_is_not_a_transfer(tagger):
+    t = tag(tagger, "अब NTA ऑफिस की सुरक्षा CISF के हवाले, अधिकारी नियुक्त", feed="bhaskar")
+    assert t.category != "transfer"
+
+
+def test_school_assembly_roundups_are_noise(tagger):
+    t = tag(tagger, "Today News Headlines for School Assembly, September 29: SC refuses to stay order", feed="ie-education")
+    assert BANDS.band(t.rule_score) in ("peripheral", "not_relevant")

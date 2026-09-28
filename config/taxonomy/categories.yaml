@@ -31,14 +31,15 @@ categories:
       ta: ["இடமாற்றம்", "பணியிட மாற்றம்", "நியமனம்", "பொறுப்பேற்பு"]
       te: ["బదిలీ", "బదిలీలు"]
       bn: ["বদলি"]
-    # A transfer item must also mention an officer (keeps "transfer of funds" out).
+    # A transfer item must also name a cadre or senior post. Generic "officer(s)" is not enough:
+    # it keeps "transfer of funds" and "security officers deployed" out.
     requires_any:
-      en: [IAS, IPS, IFS, IRS, PCS, IAS officers, officers, officer, secretary, "principal secretary",
-           commissioner, collector, "district magistrate", DM, SP, SSP, DGP, director, "vice-chancellor",
+      en: [IAS, IPS, IFS, IRS, PCS, "IAS officers", secretary, "principal secretary", "additional secretary",
+           commissioner, collector, "district magistrate", DM, SP, SSP, DGP, "director general", "vice-chancellor",
            "vice chancellor", VC, registrar, chairman, chairperson, bureaucrat, bureaucrats, "civil servants"]
-      hi: ["आईएएस", "आईपीएस", "अधिकारी", "अधिकारियों", "सचिव", "आयुक्त", "कलेक्टर", "जिलाधिकारी", "कुलपति", "निदेशक"]
-      mr: ["आयएएस", "अधिकारी", "सचिव", "आयुक्त", "जिल्हाधिकारी", "कुलगुरू"]
-      ta: ["ஐஏஎஸ்", "அதிகாரி", "அதிகாரிகள்", "செயலர்", "ஆட்சியர்"]
+      hi: ["आईएएस", "आईपीएस", "सचिव", "आयुक्त", "कलेक्टर", "जिलाधिकारी", "कुलपति", "निदेशक", "अध्यक्ष"]
+      mr: ["आयएएस", "सचिव", "आयुक्त", "जिल्हाधिकारी", "कुलगुरू"]
+      ta: ["ஐஏஎஸ்", "செயலர்", "ஆட்சியர்", "துணைவேந்தர்"]
 
   election:
     label: Election

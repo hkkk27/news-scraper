@@ -37,6 +37,12 @@ negative:
 foreign_without_india: -40   # other countries' news, with no Indian place or "India"
 source_hint_only: 0.5        # a category known only from the source's focus gets half its base, no sector bonus
 muted_source: -30       # a user pressed 🔇 on this source
+
+# Round-ups and SEO pages that mention education but carry no news: penalised even with sector evidence.
+noise_penalty: -45
+noise_terms: ["headlines for school assembly", "school assembly news", "news headlines for school",
+              "word of the day", "GK quiz", "current affairs quiz", "download link", "direct link",
+              "answer key", "admit card download", "check list of holidays", "horoscope"]
 manual_score: 95        # items the client added through the bot
 
 priority:               # high = important official action in a tracked sector
