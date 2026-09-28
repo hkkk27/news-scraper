@@ -22,8 +22,8 @@ collection:
     min_score: 55
 
 dedup:
-  window_hours: 72           # near-duplicate search window
-  title_similarity: 88       # 0-100, rapidfuzz token_set_ratio threshold for "same story"
+  window_hours: 72           # stories are grouped within this window
+  story_similarity: 0.4      # 0-1, TF-IDF cosine of normalized titles for "same story" (tuned on live data)
 
 relevance:
   bands:                     # score thresholds (0-100)

@@ -109,6 +109,10 @@ def process(cfg: AppConfig, mode: str = "auto", items: list[Item] | None = None)
             if upsert_item(conn, item, tags, by_id.get(item.feed_id), final, band, priority, decided_by):
                 report.new += 1
             report.bands[band] = report.bands.get(band, 0) + 1
+        from tracker.stories import update_stories
+
+        stories = update_stories(conn, cfg.settings.dedup.window_hours, cfg.settings.dedup.story_similarity)
+        log.info("grouped recent relevant items into %d stories", stories)
         report.seen = len(items)
         report.relevant = report.bands.get("core", 0) + report.bands.get("relevant", 0)
         purge_before = (datetime.now(timezone.utc) - timedelta(days=cfg.settings.retention.not_relevant_days))

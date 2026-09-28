@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS items (
     decided_by   TEXT DEFAULT 'rules',
     reasons      TEXT DEFAULT '[]',
     story_id     TEXT,
+    sources_count INTEGER DEFAULT 1,
     updated_at   TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_items_seen ON items(first_seen);
@@ -122,7 +123,16 @@ def connect(path: Path) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.executescript(SCHEMA)
+    _migrate(conn)
     return conn
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    """Add columns introduced after a database was first created."""
+    columns = {row[1] for row in conn.execute("PRAGMA table_info(items)")}
+    if "sources_count" not in columns:
+        conn.execute("ALTER TABLE items ADD COLUMN sources_count INTEGER DEFAULT 1")
+        conn.commit()
 
 
 def kv_get(conn: sqlite3.Connection, key: str, default: str = "") -> str:
