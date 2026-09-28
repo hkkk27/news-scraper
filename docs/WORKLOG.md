@@ -5,6 +5,28 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 — M1-11 Learned relevance model (L2) and layer blending
+
+**Branch:** `feat/m1-11-learning`
+
+### Done
+
+- **Model** (`tracker/learn.py`): TF-IDF (character 2–5-grams, which work across Indian scripts, plus word 1–2-grams) and a balanced logistic regression. It needs no GPU or downloads and trains in seconds.
+- **Training data:**
+  - The latest label per item from Telegram (👍 / ⭐ / 👎) and forwarded items.
+  - 60 bilingual seed labels (`config/training/seed_labels.yaml`) at half weight, for day one.
+- **`tracker train`.** Saves the model with cross-validated accuracy and precision. Seed-only run: accuracy 0.67, precision 0.64, weight 0.10.
+- **Blending in `process`:** rules → model → engine AI score (L3, uncertain band only). Every item records which layer decided.
+- **Fix during the live check.** The first blend (a convex mix) let a weak seed-only model pull every score down, and 91 items fell out of Relevant. It is now neutral when unsure: `rule + w × (100p − 50)`, giving at most ±35 points at full weight.
+- **Live run:** 1,352 items → 109 Core, 330 Relevant.
+- **Tests:** 62 passing.
+
+### Next
+
+- M2-05/06: daily and weekly analyst digest, executive brief and Excel.
+
+---
+
 ## 2026-09-28 — M1-08 Story clustering
 
 **Branch:** `feat/m1-08-story-clustering`
