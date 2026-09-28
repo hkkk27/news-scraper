@@ -1,6 +1,6 @@
 # ADR-0002: Stack and hosting within ₹500/month
 
-- **Status:** Proposed
+- **Status:** Superseded by [ADR-0004](0004-zero-cost-serverless-telegram-first.md) (storage and web app); GitHub Actions and the minute budget still apply
 - **Date:** 27 September 2026
 - **Task:** M0-02
 

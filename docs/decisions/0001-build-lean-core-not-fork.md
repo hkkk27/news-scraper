@@ -1,6 +1,6 @@
 # ADR-0001: Build a lean core from proven libraries instead of forking an existing product
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 27 September 2026
 - **Task:** M0-02
 

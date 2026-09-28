@@ -28,6 +28,10 @@ SOW task (e.g. M1-04)
 `main` is always working and deployable, and nobody commits to it directly after setup.
 The scheduled pipeline runs from `main`.
 
+When a pull request can't be opened (for example `gh` is not logged in), merge the
+finished branch with `git merge --no-ff <branch>`. That keeps the same history a merged
+pull request would, and every branch is still pushed so it can be reviewed on GitHub.
+
 ## 2. Branch names
 
 `<type>/<task-id>-<short-description>`, lowercase, words joined with hyphens:

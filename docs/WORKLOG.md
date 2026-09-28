@@ -5,6 +5,39 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 — M0-04 Architecture decision (Option A)
+
+**Branch:** `docs/m0-04-option-a`
+
+### Input from the team
+
+- Supabase and a paid API look risky for a ₹500/month ceiling; prefer local storage.
+- Build an integrated system, not just a website.
+- After ideating five options, the team chose **Option A**: ₹0 serverless, Telegram-first.
+- Complete the whole project, including samples and slide content for Claude Design.
+- The product may later be sold to other clients.
+
+### Done
+
+- **Merged** `docs/m0-scope-of-work` and `docs/m0-03-proposal` into `main` with `--no-ff`, because `gh` is not logged in and no PR can be opened.
+- **[ADR-0004](decisions/0004-zero-cost-serverless-telegram-first.md):**
+  - SQLite on an orphan `data` branch (D1 or a local box as swaps).
+  - Telegram bot as the mobile app, training mode and feed-in.
+  - Email and Excel for leadership; static dashboard behind Cloudflare Access.
+  - Local relevance model plus an optional free-tier LLM.
+  - Config profiles for resale.
+  - Running cost ₹0–150/month.
+- **ADR statuses:** 0001 accepted; 0002 and 0003 marked superseded where they conflict.
+- **SOW v0.3:** users, D2, stage table, diagram, training, §11 cost, WBS and risks updated; M0-04 and M4-04 added.
+- **CONTRIBUTING:** documented the `--no-ff` merge fallback.
+- **README:** added a design summary.
+
+### Next
+
+- M1-01 onwards: build the pipeline, one branch per task.
+
+---
+
 ## 2026-09-27 (session 2, continued) — M0-03 A/M proposal deck
 
 **Branch:** `docs/m0-03-proposal` (stacked on `docs/m0-scope-of-work`)

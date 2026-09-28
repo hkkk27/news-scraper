@@ -10,7 +10,15 @@ Constraints: running cost under **₹500/month**, 3–5 concurrent users, a mobi
 training mode, and room to add sectors (such as healthcare), states and geographies
 later.
 
-> Status: **M0 — planning.** See the [Scope of Work](docs/SOW.md).
+**Design (ADR-0004):**
+
+- A ₹0 serverless pipeline on GitHub Actions.
+- A SQLite database stored in the repository.
+- A **Telegram bot** as the mobile app: morning brief, one-tap training, forward-to-add.
+- Email and Excel reports for leadership.
+- A static, mobile-first dashboard.
+
+> Status: **M1 — building.** See the [Scope of Work](docs/SOW.md).
 
 ## Documentation
 
