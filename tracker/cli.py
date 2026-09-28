@@ -73,6 +73,45 @@ def cmd_watch(args, cfg) -> int:
     return 1 if failed and len(failed) == len(results) else 0
 
 
+def make_bot(cfg):
+    import httpx
+
+    from tracker.bot import Bot
+    from tracker.db import connect
+    from tracker.telegram import TelegramClient
+
+    client = TelegramClient(cfg.secrets.telegram_bot_token)
+    http = httpx.Client(headers={"User-Agent": cfg.settings.collection.user_agent}, timeout=15, follow_redirects=True)
+    return Bot(client, connect(cfg.db_path), cfg.secrets.telegram_allowed_chat_ids, http=http)
+
+
+def cmd_bot(args, cfg) -> int:
+    from tracker.bot import Card
+
+    if not cfg.secrets.telegram_bot_token:
+        print("TELEGRAM_BOT_TOKEN is not set; skipping the bot.")
+        return 0
+    bot = make_bot(cfg)
+    if args.action == "poll":
+        print(bot.poll_once())
+    elif args.action == "listen":
+        print("Listening for Telegram updates (Ctrl+C to stop)...")
+        try:
+            while True:
+                stats = bot.poll_once(long_poll_seconds=50)
+                if stats["updates"]:
+                    log.info("processed %s", stats)
+        except KeyboardInterrupt:
+            pass
+    elif args.action == "test-card":
+        card = Card(url="https://www.ugc.gov.in/", title="Test card: tap a button to check training works",
+                    feed_id="official-ugc", source_name="UGC — notices", meta="National · Higher education · Policy")
+        for chat_id in cfg.secrets.telegram_allowed_chat_ids:
+            bot.send_cards(chat_id, [card])
+        print(f"sent to {len(cfg.secrets.telegram_allowed_chat_ids)} chat(s)")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="tracker", description="News & Election Tracker")
     parser.add_argument("--config", help="profile directory (default: ./config or $TRACKER_CONFIG_DIR)")
@@ -92,6 +131,10 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("watch", help="check official pages for new notices and PDFs")
     p.add_argument("--only", nargs="*", help="watch only these page ids")
     p.set_defaults(func=cmd_watch)
+
+    p = sub.add_parser("bot", help="Telegram bot: process updates once, listen continuously, or send a test card")
+    p.add_argument("action", choices=["poll", "listen", "test-card"])
+    p.set_defaults(func=cmd_bot)
     return parser
 
 
