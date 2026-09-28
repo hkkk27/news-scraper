@@ -1,6 +1,6 @@
 # ADR-0005: Adopt TrendRadar as the base engine and add an India layer
 
-- **Status:** Accepted (28 September 2026)
+- **Status:** Accepted (28 September 2026); amended the same day to keep the India layer outside `engine/`
 - **Supersedes:** [ADR-0001](0001-build-lean-core-not-fork.md) ("build a lean core, don't fork")
 - **Task:** M0-05
 
@@ -55,11 +55,9 @@ What it does not have, and we add as an **India layer**:
    - `frequency_words.txt` holds the multilingual sector and stream groups.
    - `ai_interests.txt` holds the relevance brief.
    - The AI prompts are translated to English.
-3. **Every new collector writes an RSS file** (`output/feeds/*.xml`), which TrendRadar ingests like any feed. This covers the government watcher, Telegram intake and X. The one engine edit this needs is `file://` URL support in the RSS fetcher, so the whole pipeline (filters, AI, alerts, reports) applies to them unchanged.
-4. **The India layer is a sub-package, `engine/trendradar/india/`.** It runs after each TrendRadar pass: it reads the stored items, tags and scores them, clusters stories, learns from feedback, and builds reports and the dashboard. Upstream code is edited only where a hook is needed.
-5. **Code superseded by this decision:**
-   - Our M1-01 skeleton (settings loader, CLI) is retired in favour of TrendRadar's config and entry point.
-   - The M1-02 taxonomy, gazetteer and matcher move into the India layer unchanged, with their tests.
+3. **Every new collector writes an RSS file** (`feeds/*.xml`), which TrendRadar ingests like any feed. This covers the government watcher, Telegram intake and X. The one engine edit this needs is `file://` URL support in the RSS fetcher, so the whole pipeline (filters, AI, alerts, reports) applies to them unchanged.
+4. **The India layer is the `tracker/` package at the repository root, outside `engine/`.** It runs after each TrendRadar pass: it reads the engine's SQLite output, tags and scores items, clusters stories, learns from feedback, and builds reports and the dashboard. Keeping it outside the subtree means upstream pulls never touch our code, and the engine is patched only where a hook is unavoidable (for example `file://` feeds).
+5. **Our M1-01/M1-02 code stays:** the settings loader and CLI become the India layer's own command line (`python -m tracker ...`), and the taxonomy, gazetteer and matcher are its tagging core. TrendRadar keeps its own config and entry point for the engine.
 6. **The ₹0 design of ADR-0004 stands.** No S3/R2: `output/` persists on the repository's `data` branch. The 7-day "check-in" trial step in TrendRadar's workflow is not used; our own workflow at the repository root runs the engine.
 
 ## Consequences
@@ -67,5 +65,5 @@ What it does not have, and we add as an **India layer**:
 - **Less to build.** Collection, storage, the AI filter, translation, alerts and HTML reports already exist and are tested by a large user base.
 - **Division of labour.** TrendRadar handles collection, filtering and real-time alerts. The India layer handles structure (state × sector), reporting and learning.
 - **Python 3.12.** TrendRadar requires it and installs with `uv`. CI uses 3.12.
-- **Upstream updates.** Most of our changes live in config files and the separate `india/` sub-package, so a `git subtree pull` should mostly merge cleanly.
+- **Upstream updates.** Most of our changes live in config files and the separate `tracker/` package, so a `git subtree pull` should mostly merge cleanly.
 - **License.** GPL-3.0: TrendRadar's LICENSE stays in `engine/`, and the README credits the project.

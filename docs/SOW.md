@@ -297,8 +297,8 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 | M0-04 | Architecture decision: ₹0 serverless, SQLite- and Telegram-first (ADR-0004), SOW v0.3 | — | Done |
 | M0-05 | Decision to build on TrendRadar (ADR-0005), SOW v0.4 | — | Done |
 | **M1** | **Backend & training platform (on TrendRadar, ADR-0005)** | D1 | |
-| M1-01 | Python package skeleton, settings loader, CLI | D1 | Done; superseded by TrendRadar's config and entry point |
-| M1-02 | Taxonomy and geography (sectors, categories, actors, 36 states/UTs, multilingual matcher) | D1 | Done; moves into the India layer |
+| M1-01 | Python package skeleton, settings loader, CLI | D1 | Done; now the India layer's CLI |
+| M1-02 | Taxonomy and geography (sectors, categories, actors, 36 states/UTs, multilingual matcher) | D1 | Done; the India layer's tagging core |
 | M1-03 | Import TrendRadar into `engine/` (git subtree) and run it locally | D1 | To do |
 | M1-04 | Configure the engine for India: English config, feeds and Google News query packs, keyword groups, AI interests, English prompts | D1 | To do |
 | M1-05 | Official page and PDF watcher that writes RSS files; `file://` feed support | D1 | To do |
