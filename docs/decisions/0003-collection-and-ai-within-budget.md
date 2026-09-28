@@ -1,6 +1,6 @@
 # ADR-0003: Collection methods and AI relevance engine within ₹500/month
 
-- **Status:** Proposed
+- **Status:** Accepted in part. The collection ladder and the three-layer cascade stand. The paid L3 default is superseded by [ADR-0004](0004-zero-cost-serverless-telegram-first.md): L3 is now optional and defaults to the free tier.
 - **Date:** 27 September 2026
 - **Task:** M0-02
 
