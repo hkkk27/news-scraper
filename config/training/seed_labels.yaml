@@ -1,0 +1,74 @@
+# Seed training labels (cold start).
+#
+# Written by the developer from the brief, using real headlines collected on 28 Sep 2026, so the
+# learned model has something to start from on day one. They carry half the weight of the
+# client's own labels (Telegram 👍/👎 and forwarded items), which quickly take over.
+# Edit or delete freely; `python -m tracker train` rebuilds the model.
+#
+# label: 1 = the client wants this; 0 = the client does not.
+
+weight: 0.5
+labels:
+  # --- wanted: policy, courts, transfers, elections, sector developments ------------------------
+  - {label: 1, title: "Supreme Court directs CBSE to extend 3rd language policy exemption to Class 6 students"}
+  - {label: 1, title: "CBSE Three-Language Policy: Supreme Court Extends Exemption To Class 6 Students"}
+  - {label: 1, title: "UGC notifies draft regulations for foreign university campuses"}
+  - {label: 1, title: "Revised National Scholarship Portal (NSP) Framework for Academic Year 2026-27"}
+  - {label: 1, title: "Haryana govt transfers 3 IAS officers; Nikhil Gajraj appointed director"}
+  - {label: 1, title: "Modi government changes CBSE chairman, senior IAS officer gets new responsibility"}
+  - {label: 1, title: "Collector transfer list 2026: major administrative reshuffle before Navratri"}
+  - {label: 1, title: "State Election Commission announces schedule for municipal corporation polls"}
+  - {label: 1, title: "Hyderabad Central University votes in student union polls"}
+  - {label: 1, title: "Election Commission deploys 2.5 million personnel for Assembly polls in five states"}
+  - {label: 1, title: "Bombay HC quashes fee hike order for unaided schools"}
+  - {label: 1, title: "Himachal High Court makes registration mandatory for pre-nursery admissions"}
+  - {label: 1, title: "Odisha school textbooks for classes 1 to 8 found with 1,741 errors; government orders reprint"}
+  - {label: 1, title: "CISCE to talk to 16 lakh students on mental health"}
+  - {label: 1, title: "Tamil Nadu NEET UG 2026 Round 3 Counselling: registration open"}
+  - {label: 1, title: "Saltlake teachers protest: termination letters before Puja"}
+  - {label: 1, title: "Ministry of Education launches new framework for teacher training"}
+  - {label: 1, title: "Cabinet approves expansion of PM SHRI schools in 10 states"}
+  - {label: 1, title: "Skill India: NCVET approves new qualifications for ITI trainees"}
+  - {label: 1, title: "Apprenticeship scheme expanded to 1 lakh youth, says Skill Development Ministry"}
+  - {label: 1, title: "New Higher Education Minister sworn in in Karnataka cabinet expansion"}
+  - {label: 1, title: "Rajasthan transfers 14 IAS officers including school education secretary"}
+  - {label: 1, title: "हरियाणा में 3 IAS अधिकारियों के तबादले, निखिल गजराज बने परिवहन निदेशक"}
+  - {label: 1, title: "हिमाचल में प्री-नर्सरी में एडमिशन के लिए रजिस्ट्रेशन अनिवार्य: हाईकोर्ट"}
+  - {label: 1, title: "राज्य निर्वाचन आयोग ने नगर निगम चुनाव का कार्यक्रम घोषित किया"}
+  - {label: 1, title: "शिक्षक भर्ती परीक्षा का परिणाम घोषित, 12 हजार पदों पर नियुक्ति"}
+  - {label: 1, title: "महापालिका निवडणूक कार्यक्रम जाहीर; आचारसंहिता लागू"}
+  - {label: 1, title: "CBSE மும்மொழிக் கொள்கை.. 6ம் வகுப்புக்கு விலக்கு"}
+  - {label: 1, title: "கேரளத்தில் 38 உள்ளாட்சி வார்டுகளுக்கான இடைத்தேர்தல்"}
+  - {label: 1, title: "কলকাতা বিশ্ববিদ্যালয়ে নতুন উপাচার্য নিয়োগ"}
+
+  # --- not wanted: sports, entertainment, crime, SEO pages, foreign news, trivia -----------------
+  - {label: 0, title: "India vs Pakistan cricket: Kohli hits century in Asia Cup final"}
+  - {label: 0, title: "Bollywood box office: new release crosses 100 crore"}
+  - {label: 0, title: "Geodetic Engineer Board Exam Results September 2026 – top 10 passers"}
+  - {label: 0, title: "Newett Homes launches first apprenticeship scheme to develop Yorkshire's future builders"}
+  - {label: 0, title: "Healey unveils apprenticeship service in drive to reindustrialise Britain"}
+  - {label: 0, title: "Jahangirnagar University student leader expelled after birthday post"}
+  - {label: 0, title: "School bus overturns in Jogulamba Gadwal, several injured"}
+  - {label: 0, title: "HP JBT Teacher Answer Key 2026, Download Link Here"}
+  - {label: 0, title: "Punjab school holiday today? Check list of holidays"}
+  - {label: 0, title: "Alumni meet after 29 years brings back school memories"}
+  - {label: 0, title: "Students distribute bicycles in Kalyandurg village"}
+  - {label: 0, title: "Kung fu and chess: school students win medals at district meet"}
+  - {label: 0, title: "Horoscope today: what the stars say for students"}
+  - {label: 0, title: "Gold price today: rates fall in Mumbai and Delhi"}
+  - {label: 0, title: "Petrol price hiked again in Chennai"}
+  - {label: 0, title: "Call for applications: Lead – Nyaaya Karnataka at Vidhi Centre for Legal Policy"}
+  - {label: 0, title: "Anchor files defamation suit against YouTuber before Delhi High Court"}
+  - {label: 0, title: "Ministry of Education 'abandoned' student support services employees – MUT South Africa"}
+  - {label: 0, title: "Top 10 study abroad destinations for 2027: a complete guide"}
+  - {label: 0, title: "Best coaching centres for JEE in Kota: fees and results"}
+  - {label: 0, title: "बॉलीवुड अभिनेत्री की नई फिल्म का ट्रेलर रिलीज"}
+  - {label: 0, title: "आज का राशिफल: छात्रों के लिए शुभ दिन"}
+  - {label: 0, title: "क्रिकेट: भारत ने ऑस्ट्रेलिया को हराया"}
+  - {label: 0, title: "జోగులాంబ గద్వాలలో ఘోర ప్రమాదం.. బోల్తా పడిన స్కూల్ బస్సు"}
+  - {label: 0, title: "পূর্ব শিক্ষার্থীদের পুনর্মিলনী উৎসব"}
+  - {label: 0, title: "শেখ হাসিনার জন্মদিনে শুভেচ্ছা মন্তব্য, জাবির ছাত্রশক্তি নেতা বহিষ্কার"}
+  - {label: 0, title: "நடிகர் நடித்த புதிய திரைப்படம் வெளியீடு"}
+  - {label: 0, title: "Smartphone launch price in India and specifications"}
+  - {label: 0, title: "Weather update: heavy rain expected over the weekend"}
+  - {label: 0, title: "Local fair draws crowds on the weekend"}
