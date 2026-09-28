@@ -53,7 +53,7 @@ class CollectionSettings(BaseModel):
 
 class DedupSettings(BaseModel):
     window_hours: int = 72
-    title_similarity: int = 88
+    story_similarity: float = 0.4
 
 
 class Bands(BaseModel):

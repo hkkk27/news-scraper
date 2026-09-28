@@ -20,6 +20,7 @@ foreign_terms: ["United States", "US university", "Harvard", "Oxford", "UK gover
                 "Pakistan", "Bangladesh", "China", "Nepal", "Sri Lanka", "UAE", "Russia", "South Africa", "Nigeria",
                 "Kenya", "Ghana", "Philippines", "Malaysia", "Singapore", "Dhaka", Britain, British, UK, England,
                 London, Scotland, Wales, Ireland, "New Zealand", Yorkshire, "List of Passers", Vietnam, Indonesia,
+                Passers, Geodetic, "licensure exam", "Licensure Examination", PRC,
                 # Bangladesh (the Bengali Google News edition mixes in Bangladeshi publishers)
                 "বাংলাদেশ", "ঢাকা", "চট্টগ্রাম", "রাজশাহী", "সিলেট", "খুলনা", "বরিশাল", "রংপুর", "ময়মনসিংহ",
                 "কুমিল্লা", "নোয়াখালী", "যশোর", "শেখ হাসিনা", "আওয়ামী", "বিএনপি", "জামায়াত", "ইউনূস",
