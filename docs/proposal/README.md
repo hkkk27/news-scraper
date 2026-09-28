@@ -2,7 +2,10 @@
 
 - **Due:** 29 September 2026, 23:59, by email to the client.
 - **Format asked for:** a slide deck of 3–5 slides, a brief about the individual(s), and details of prior work of a similar nature.
-- **Deck:** [News & Election Tracker — Approach & Methodology](https://claude.ai/artifact/KHNo1cwwFzs2QZPRDUHYnA). It is private; download it as PPTX or PDF from the page to attach to the email.
+- **Slide content for Claude Design (current):** [slide-content.md](slide-content.md). It covers the 5 slides, real numbers, screenshots to take and speaker notes.
+- **Demo video:** [demo-script.md](demo-script.md), a 3-minute screen-recording script.
+- **Sample outputs** to screenshot: [../../samples/](../../samples/README.md).
+- **First draft deck (27 Sep, outdated):** [News & Election Tracker — Approach & Methodology](https://claude.ai/artifact/KHNo1cwwFzs2QZPRDUHYnA). It still shows Supabase and a paid LLM; use slide-content.md instead.
 
 ## Slide outline
 
