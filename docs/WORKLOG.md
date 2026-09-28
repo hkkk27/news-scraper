@@ -5,6 +5,26 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 â€” M1-01 Python package skeleton
+
+**Branch:** `feat/m1-01-skeleton`
+
+### Done
+
+- **Packaging:** `pyproject.toml` (package `news-tracker`, console script `tracker`), `requirements.txt` for CI, and `.env.example` listing every optional secret.
+- **Settings:** `config/settings.yaml` with typed pydantic settings in `tracker/config.py`, covering storage, collection, dedup, relevance bands, the model and LLM, reports, Telegram, dashboard and retention.
+  - Secrets are read only from the environment or `.env`.
+  - A profile is a whole config folder, selectable with `--config` or `TRACKER_CONFIG_DIR`, so resale to a new client means a new folder.
+- **CLI:** `python -m tracker version | config`. It forces UTF-8 console output so Indian-language headlines print on Windows.
+- **Environment:** a project virtual environment in `.venv`. It is git-ignored and keeps the global Python untouched; an accidental global upgrade of `charset-normalizer` was reverted.
+- **Tests:** 4 passing.
+
+### Next
+
+- M1-02: taxonomy and geography configuration.
+
+---
+
 ## 2026-09-28 — M0-04 Architecture decision (Option A)
 
 **Branch:** `docs/m0-04-option-a`

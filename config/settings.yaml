@@ -1,0 +1,60 @@
+# Global settings for this tracker profile.
+# A "profile" is this whole config/ folder: copy it to track another sector or client
+# and point TRACKER_CONFIG_DIR (or --config) at the copy.
+
+profile:
+  name: "India Education & Governance Tracker"
+  country: IN
+  timezone: Asia/Kolkata
+
+storage:
+  backend: sqlite            # sqlite (default). The storage layer is an interface; D1 can be added later.
+  path: data/tracker.db      # relative to the project root
+
+collection:
+  lookback_hours: 72         # ignore items older than this when collecting
+  http_timeout_seconds: 20
+  max_items_per_source: 150
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36 NewsTracker/0.1"
+  full_text:
+    enabled: true            # fetch article text for promising items to improve tagging
+    max_per_run: 40
+    min_score: 55
+
+dedup:
+  window_hours: 72           # near-duplicate search window
+  title_similarity: 88       # 0-100, rapidfuzz token_set_ratio threshold for "same story"
+
+relevance:
+  bands:                     # score thresholds (0-100)
+    core: 80
+    relevant: 60
+    peripheral: 40
+  model:
+    enabled: true
+    min_labels: 20           # labelled items needed (both classes) before the model is used
+    full_weight_at: 200      # number of labels at which the model reaches max_weight
+    max_weight: 0.7          # model share of the final score; rules keep the rest
+  llm:
+    provider: none           # none | gemini
+    model: gemini-flash-lite-latest
+    uncertain_low: 40        # only items scoring inside [low, high] are sent
+    uncertain_high: 65
+    batch_size: 20
+    max_requests_per_day: 40
+
+reports:
+  exec_top_n: 8              # items in the executive brief
+  digest_min_band: relevant  # lowest band shown in the analyst digest
+  output_dir: output/reports
+
+telegram:
+  brief_max_items: 10        # item cards (with training buttons) sent with the daily brief
+
+dashboard:
+  days: 30
+  min_band: peripheral
+  output_dir: output/site
+
+retention:
+  not_relevant_days: 30      # purge items scored "not relevant" after this many days
