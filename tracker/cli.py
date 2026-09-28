@@ -167,6 +167,14 @@ def cmd_report(args, cfg) -> int:
     return 0
 
 
+def cmd_site(args, cfg) -> int:
+    from tracker.site import build_site
+
+    path = build_site(cfg)
+    print(f"dashboard written to {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="tracker", description="News & Election Tracker")
     parser.add_argument("--config", help="profile directory (default: ./config or $TRACKER_CONFIG_DIR)")
@@ -202,6 +210,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("kind", choices=["daily", "weekly"])
     p.add_argument("--send", action="store_true", help="also deliver by email and Telegram (if configured)")
     p.set_defaults(func=cmd_report)
+
+    sub.add_parser("site", help="build the static dashboard (output/site/index.html)").set_defaults(func=cmd_site)
     return parser
 
 
