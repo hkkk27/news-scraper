@@ -36,3 +36,6 @@ Thumbs.db
 
 # Generated exports
 build/
+
+# Local tool config
+.claude/

@@ -5,6 +5,29 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 — M2-01/07/08 Dashboard
+
+**Branch:** `feat/m2-01-dashboard`
+
+### Done
+
+- **`tracker site`.** Builds `output/site/index.html`, a single static page with the last 30 days of stories and the run log embedded. It works from disk or any static host (Cloudflare Pages behind Cloudflare Access email login).
+- **Filters:** period (today / 7 / 30 days), relevance (core / relevant+ / all), sector, state, category, language, search. They are remembered per browser.
+- **Tabs:**
+  - Feed, and trackers for transfers, elections, court rulings and policy.
+  - Insights: stories per day (stacked core / other), and counts by state (national shown separately), sector, category, language and deciding layer. Hover tooltips, plus a table view.
+  - Run log: success rate and the longest gap between successful runs, which is the evidence for D3.
+- **Visual checks** in the browser pane: desktop, 375 px phone (no horizontal scroll), dark mode.
+  - Chart colors use the validated reference palette. The deck's teal failed the chroma check.
+  - Fixed a clipped axis label, and excluded "National" from the state chart because it swamped the states.
+- **Tests:** 68 passing.
+
+### Next
+
+- M1-12: GitHub Actions workflow and `data`-branch persistence.
+
+---
+
 ## 2026-09-28 — M2-05/06 Reports; M2-03 Telegram commands
 
 **Branch:** `feat/m2-05-reports`
