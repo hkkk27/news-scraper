@@ -1,0 +1,102 @@
+# Google News search query packs → one RSS feed per (pack × language).
+# This gives vernacular and stream coverage without writing a scraper per newspaper.
+# Verified 28 Sep 2026: en, hi, mr, ta, te, bn, gu, ml, pa return results; kn and or returned
+# none for these queries, so they are off until re-checked.
+#
+# Query syntax is Google News search: quotes, OR, parentheses, and `when:1d` for recency.
+# The feed URL is built as:
+#   https://news.google.com/rss/search?q=<query>&hl=<hl>&gl=IN&ceid=IN:<lang>
+
+defaults:
+  recency: "when:1d"
+  type: aggregator
+
+languages:
+  en: {hl: en-IN, enabled: true}
+  hi: {hl: hi, enabled: true}
+  mr: {hl: mr, enabled: true}
+  ta: {hl: ta, enabled: true}
+  te: {hl: te, enabled: true}
+  bn: {hl: bn, enabled: true}
+  gu: {hl: gu, enabled: true}
+  ml: {hl: ml, enabled: true}
+  pa: {hl: pa, enabled: true}
+  kn: {hl: kn, enabled: false}
+  or: {hl: or, enabled: false}
+
+packs:
+  - id: school
+    name: School education
+    sector: school_education
+    queries:
+      en: 'CBSE OR "board exam" OR "school education" OR "Samagra Shiksha" OR "teacher recruitment" OR "government schools"'
+      hi: 'स्कूल शिक्षा OR बोर्ड परीक्षा OR शिक्षक भर्ती OR सरकारी स्कूल'
+      mr: 'शाळा OR शालेय शिक्षण OR शिक्षक भरती OR दहावी OR बारावी'
+      ta: 'பள்ளிக்கல்வி OR அரசுப் பள்ளி OR பொதுத்தேர்வு'
+      te: 'పాఠశాల విద్య'
+      bn: 'বিদ্যালয় শিক্ষা OR মাধ্যমিক'
+      gu: 'શાળા શિક્ષણ'
+      ml: 'സ്കൂൾ വിദ്യാഭ്യാസം'
+      pa: 'ਸਕੂਲ ਸਿੱਖਿਆ'
+  - id: higher
+    name: Higher education
+    sector: higher_education
+    queries:
+      en: 'UGC OR AICTE OR "vice-chancellor" OR "higher education" OR CUET OR NEET OR JEE OR "central university"'
+      hi: 'विश्वविद्यालय OR कुलपति OR उच्च शिक्षा OR यूजीसी'
+      mr: 'विद्यापीठ OR कुलगुरू OR उच्च शिक्षण'
+      ta: 'பல்கலைக்கழகம் OR துணைவேந்தர் OR உயர்கல்வி'
+      te: 'విశ్వవిద్యాలయం OR ఉన్నత విద్య'
+      bn: 'বিশ্ববিদ্যালয় OR উচ্চশিক্ষা'
+      gu: 'યુનિવર્સિટી OR ઉચ્ચ શિક્ષણ'
+      ml: 'സർവകലാശാല'
+      pa: 'ਯੂਨੀਵਰਸਿਟੀ'
+  - id: skills
+    name: Skill development
+    sector: skill_development
+    recency: "when:2d"
+    queries:
+      en: '"skill development" OR ITI OR apprenticeship OR PMKVY OR NSDC OR "Skill India" OR polytechnic'
+      hi: 'कौशल विकास OR आईटीआई OR अप्रेंटिसशिप'
+      mr: 'कौशल्य विकास OR आयटीआय'
+      ta: 'திறன் மேம்பாடு OR தொழிற்பயிற்சி'
+  - id: transfers
+    name: Officer transfers
+    stream: transfer
+    recency: "when:2d"
+    queries:
+      en: '"IAS officers" transferred OR "IAS reshuffle" OR "bureaucratic reshuffle" OR "posted as" IAS'
+      hi: 'आईएएस तबादला OR आईएएस अधिकारियों के तबादले'
+      mr: 'आयएएस बदली OR अधिकाऱ्यांच्या बदल्या'
+      ta: 'ஐஏஎஸ் இடமாற்றம்'
+      te: 'ఐఏఎస్ బదిలీలు'
+      bn: 'আইএএস বদলি'
+      gu: 'IAS બદલી'
+  - id: elections
+    name: Elections (down to municipal)
+    stream: election
+    recency: "when:2d"
+    queries:
+      en: '"State Election Commission" OR "civic polls" OR "local body polls" OR "municipal elections" OR bypoll OR "panchayat polls" OR "Election Commission" schedule'
+      hi: 'निकाय चुनाव OR पंचायत चुनाव OR नगर निगम चुनाव OR उपचुनाव OR राज्य निर्वाचन आयोग'
+      mr: 'महापालिका निवडणूक OR जिल्हा परिषद निवडणूक OR पोटनिवडणूक OR राज्य निवडणूक आयोग'
+      ta: 'உள்ளாட்சித் தேர்தல் OR இடைத்தேர்தல்'
+      te: 'స్థానిక సంస్థల ఎన్నికలు'
+      bn: 'পুরসভা নির্বাচন OR উপনির্বাচন'
+      gu: 'સ્થાનિક સ્વરાજ ચૂંટણી'
+  - id: courts
+    name: Court rulings on education
+    stream: court
+    queries:
+      en: '("High Court" OR "Supreme Court") (school OR university OR teachers OR students OR admission OR education)'
+      hi: 'हाईकोर्ट शिक्षक OR हाईकोर्ट स्कूल OR सुप्रीम कोर्ट शिक्षा'
+      mr: 'उच्च न्यायालय शिक्षण OR उच्च न्यायालय शिक्षक'
+      ta: 'உயர் நீதிமன்றம் பள்ளி OR உயர் நீதிமன்றம் கல்வி'
+  - id: policy
+    name: Education and skills policy
+    stream: policy
+    queries:
+      en: '"Education Ministry" OR "National Education Policy" OR "NEP 2020" OR "education policy" OR "skill ministry"'
+      hi: 'शिक्षा मंत्रालय OR राष्ट्रीय शिक्षा नीति OR शिक्षा मंत्री'
+      mr: 'शिक्षण मंत्री OR शिक्षण धोरण'
+      ta: 'கல்வி அமைச்சர் OR கல்விக் கொள்கை'

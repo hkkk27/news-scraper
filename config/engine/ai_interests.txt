@@ -1,0 +1,38 @@
+# India Education & Governance Tracker — relevance brief for the engine's AI filter.
+# Copied to engine/config/ai_interests.txt by `python -m tracker engine sync`.
+# Plain English. Order = priority: earlier topics win when an item fits several.
+# Items may be in English, Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Malayalam or
+# Punjabi: judge the meaning, not the language.
+
+I track India's school education, higher education and skill development sectors for a
+policy and infrastructure advisory team, plus the governance events that affect them.
+
+1. Officer transfers and postings: transfers, postings, appointments, additional charges and
+   repatriations of IAS, IPS, IFS and state civil service officers (central and every state),
+   and appointments of vice-chancellors, regulator chairpersons and education/skill secretaries.
+2. Education and skills policy decisions: decisions, schemes, regulations, circulars,
+   notifications, budgets and guidelines from the Ministry of Education, the Ministry of Skill
+   Development (MSDE), UGC, AICTE, NCERT, NCTE, CBSE, NTA, NCVET, NSDC, and state school, higher
+   education and skill departments; National Education Policy (NEP) implementation.
+3. Court rulings: Supreme Court and High Court judgments, orders, notices and hearings on
+   schools, universities, teachers, students, admissions, exams, fees and recruitment.
+4. Elections: announcements, schedules, notifications, reservations, results and by-polls for
+   Lok Sabha, assembly, municipal corporation, municipality, panchayat and zilla parishad polls;
+   teachers' and graduates' constituency (MLC) polls; university student-union polls.
+5. Political developments that change education governance: new or reshuffled ministers,
+   portfolio allocations, cabinet expansions, government formation, resignations.
+6. School education news: board exams and results, teacher recruitment, school closures and
+   infrastructure, mid-day meals, RTE admissions, enrolment and dropout data, textbooks.
+7. Higher education news: admissions, entrance exams (NEET, JEE, CUET), fee hikes,
+   accreditation (NAAC, NIRF), research funding, campus governance, foreign university campuses.
+8. Skill development news: ITIs, apprenticeships, PMKVY, polytechnics, vocational education,
+   placement drives, industry-skilling partnerships.
+9. Statements by ministers, officials, regulators and party leaders on any of the above.
+
+Skip, even if a keyword matches:
+- Sports, entertainment, celebrity, horoscope and stock-market news.
+- Crime stories that merely happen at a school or college, unless they lead to a policy,
+  court or administrative action.
+- Coaching-centre and admission advertisements, "result declared, check here" link pages with
+  no news value, and generic career-advice listicles.
+- News about other countries unless it directly affects Indian students or institutions.

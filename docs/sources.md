@@ -30,6 +30,15 @@ Google News search RSS is the backbone of vernacular and stream coverage. Each q
 (sector × stream × language) becomes one feed. Links are Google redirect URLs, which the
 normalizer decodes to the publisher URL before de-duplication.
 
+
+## Google News query packs (checked 28 September 2026)
+
+The packs live in `config/sources/google_news.yaml`; run `python -m tracker sources check` to re-check.
+
+- **Scope:** 7 packs (school, higher education, skills, transfers, elections, courts, policy) across 9 language editions. Together with the direct feeds that makes 54 sources.
+- **Language editions:** `en`, `hi`, `mr`, `ta`, `te`, `bn`, `gu`, `ml` and `pa` return results. `kn` and `or` returned nothing and are off until re-checked.
+- **Result on 28 Sep:** 50 of 54 sources returned items. The other 4 are sporadic streams with nothing new that day (transfers in `ta`, `bn`, `gu`; elections in `gu`). They are reported as "quiet", not failing.
+
 ## Not working, or needs a different method
 
 | Source | Result | Next step |

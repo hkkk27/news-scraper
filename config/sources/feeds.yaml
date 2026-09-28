@@ -1,0 +1,38 @@
+# Direct RSS/Atom feeds. Verified 27 Sep 2026 (see docs/sources.md).
+#
+# Fields:
+#   id        unique, lowercase-with-dashes (becomes the engine's feed id)
+#   name      display name
+#   url       feed URL
+#   type      official | national_media | regional_media | legal_media | social | manual
+#   language  ISO 639-1 code of most items
+#   prior     0-30 relevance bonus for feeds that are already on-topic (education sections, official)
+#   sector    optional hint when the whole feed is about one sector
+#   enabled   default true
+#   max_age_days  optional per-feed freshness override (engine setting)
+
+feeds:
+  - {id: thehindu-education, name: "The Hindu — Education", type: national_media, language: en, prior: 20,
+     url: "https://www.thehindu.com/education/feeder/default.rss"}
+  - {id: ie-education, name: "Indian Express — Education", type: national_media, language: en, prior: 20,
+     url: "https://indianexpress.com/section/education/feed/"}
+  - {id: theprint-education, name: "ThePrint — Education", type: national_media, language: en, prior: 20,
+     url: "https://theprint.in/category/india/education/feed/"}
+  - {id: edexlive, name: "EdexLive", type: national_media, language: en, prior: 20,
+     url: "https://www.edexlive.com/feed"}
+  - {id: livelaw, name: "LiveLaw", type: legal_media, language: en, prior: 0,
+     url: "https://www.livelaw.in/google_feeds.xml"}
+  - {id: pib-english, name: "PIB — Press releases (English)", type: official, language: en, prior: 10,
+     url: "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3"}
+  - {id: bhaskar, name: "Dainik Bhaskar", type: regional_media, language: hi, prior: 0,
+     url: "https://www.bhaskar.com/rss-v1--category-1061.xml"}
+  - {id: amarujala-education, name: "Amar Ujala — Education", type: regional_media, language: hi, prior: 20,
+     url: "https://www.amarujala.com/rss/education.xml"}
+
+  # Collected by the India layer and written as local RSS files (see tracker/watch, tracker/bot).
+  - {id: official-pages, name: "Official notices (watched pages)", type: official, language: en, prior: 15,
+     url: "file://feeds/official.xml"}
+  - {id: manual-feed-in, name: "Manual feed-in (Telegram)", type: manual, language: en, prior: 30,
+     url: "file://feeds/manual.xml"}
+  - {id: x-handles, name: "X.com handles", type: social, language: en, prior: 5, enabled: false,
+     url: "file://feeds/x.xml"}

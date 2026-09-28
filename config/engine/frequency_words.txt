@@ -1,0 +1,113 @@
+# ═══════════════════════════════════════════════════════════════
+#   India Education & Governance Tracker — keyword groups for the engine (TrendRadar)
+#   Copied to engine/config/frequency_words.txt by `python -m tracker engine sync`.
+# ═══════════════════════════════════════════════════════════════
+#
+# This is the engine's zero-cost first-pass filter (L1) for its alerts and HTML report.
+# The India layer re-scores every stored item on its own, so nothing is lost if a group misses.
+#
+# Syntax (TrendRadar): matching is case-insensitive substring on the title.
+#   word            plain keyword
+#   /regex/         regular expression (use \b for short acronyms, e.g. /\bITI\b/)
+#   +word           required word (all required words must match)
+#   !word           exclude word for this group
+#   [Group name]    first line names the group
+#   Groups are separated by blank lines.
+
+[GLOBAL_FILTER]
+cricket
+bollywood
+box office
+horoscope
+sensex
+nifty
+राशिफल
+क्रिकेट
+बॉलीवुड
+राशीभविष्य
+
+[WORD_GROUPS]
+[Officer transfers]
+/transferred|reshuffle|posted as|postings|repatriated|additional charge|takes charge|rejig/
+तबादल
+स्थानांतरण
+बदली
+बदल्या
+இடமாற்றம்
+బదిలీ
+বদলি
++/\b(ias|ips|ifs|pcs|officers?|secretary|commissioner|collector|vice.chancellor|registrar|director)\b|अधिकारी|आईएएस|आयएएस|ஐஏஎஸ்|అధికారుల|আইএএস/
+
+[Court rulings]
+/supreme court|high court|\bhc\b|apex court|bench/
+हाईकोर्ट
+हाई कोर्ट
+उच्च न्यायालय
+सुप्रीम कोर्ट
+सर्वोच्च न्यायालय
+நீதிமன்ற
+హైకోర్టు
++/school|universit|college|teacher|student|admission|exam|education|recruitment|fee|\bugc\b|\bcbse\b|\bneet\b|शिक्ष|स्कूल|विश्वविद्यालय|छात्र|शाळ|विद्यापीठ|பள்ளி|கல்வி|மாணவ/
+
+[Elections]
+/election|polls|bypoll|by-election|by-poll|model code|voter list|electoral roll|counting of votes/
+चुनाव
+निर्वाचन
+मतदान
+उपचुनाव
+निवडणूक
+पोटनिवडणूक
+தேர்தல்
+ఎన్నిక
+নির্বাচন
+ચૂંટણી
+
+[Policy decisions]
+/\b(ugc|aicte|ncert|cbse|nta|ncte|ncvet|nsdc|msde)\b|education ministry|ministry of education|education policy|\bnep\b|notification|circular|guidelines|regulations|scheme/
+शिक्षा मंत्रालय
+शिक्षा नीति
+अधिसूचना
+शासन निर्णय
+அரசாணை
+
+[Cabinet & political changes]
+/sworn in|takes oath|cabinet expansion|cabinet reshuffle|portfolio|resigns|floor test/
+मंत्रिमंडल विस्तार
+शपथ
+खातेवाटप
+அமைச்சரவை
+
+[School education]
+/\b(cbse|icse|ncert|kvs|udise|ctet|tet)\b|school|board exam|class 10|class 12|mid-day meal|samagra shiksha|pm shri|teacher recruitment|right to education/
+स्कूल
+विद्यालय
+बोर्ड परीक्षा
+शिक्षक
+शाळा
+दहावी
+बारावी
+பள்ளி
+పాఠశాల
+বিদ্যালয়
+શાળા
+
+[Higher education]
+/\b(ugc|aicte|naac|nirf|nta|cuet|neet|jee|iit|iim|nit)s?\b|universit|college|vice.chancellor|higher education|phd|admission/
+विश्वविद्यालय
+कुलपति
+उच्च शिक्षा
+महाविद्यालय
+विद्यापीठ
+कुलगुरू
+பல்கலைக்கழக
+విశ్వవిద్యాలయ
+বিশ্ববিদ্যালয়
+યુનિવર્સિટી
+
+[Skill development]
+/\b(itis?|nsdc|ncvet|pmkvy|msde)\b|skill development|skilling|apprentice|vocational|polytechnic|skill india/
+कौशल
+आईटीआई
+अप्रेंटिस
+कौशल्य
+திறன் மேம்பாடு
