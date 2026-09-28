@@ -5,6 +5,41 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 — M1-07 India-layer tagging, scoring and item store
+
+**Branch:** `feat/m1-07-india-tagger`
+
+### Done
+
+- **Tagger** (`tracker/tagger.py`). For each item it sets:
+  - Sectors, from title and summary evidence.
+  - Category by precedence (transfers need an officer term; election announcements are marked separately).
+  - Actors, states and geography level. States come from names, High Court seats, cities and the source hint; "New Delhi" datelines are ignored.
+  - Language, by script.
+  - A 0–100 score, with a `reasons` list naming every point added or removed.
+- **Scoring rules.** `config/taxonomy/scoring.yaml` holds all the weights. A category known only from the source's focus counts half.
+- **Item model** (`tracker/items.py`). Google News publisher suffixes are split off, so "Punjab Kesari" or "Telangana Today" is never read as a place.
+- **Engine reader** (`tracker/engine_store.py`). Reads TrendRadar's SQLite output read-only, including AI-filter scores. `tracker/collect.py` is a direct fallback collector.
+- **Processing pass** (`tracker/process.py`, `tracker process`):
+  - Tags and scores every item; a human label overrides the models.
+  - Sets band and priority and upserts into the new `items` table.
+  - Logs each run in the new `runs` table: the evidence for the 14-day run.
+- **Quality review on live data.** 1,438 items, sampled by band. Fixes:
+  - Bangladeshi news via the Bengali edition: foreign markers, and Bengali queries now require West Bengal context.
+  - "SC extends/asks …" is now recognised as a court ruling.
+  - Source focus alone no longer lifts an item to Core.
+  - A court case about elections counts the stronger stream.
+  - The skills query had a bare "ITI" that matched Ilocano text.
+  - More Bengali and education terms; UK and Philippines markers.
+- **Latest live run:** 1,337 items → 110 Core, 351 Relevant, 237 Peripheral, 639 Not relevant.
+- **Tests:** 51 passing.
+
+### Next
+
+- M1-08: story clustering across feeds (e.g. one Supreme Court CBSE order reported by 10+ outlets).
+
+---
+
 ## 2026-09-28 — M1-13 Telegram bot
 
 **Branch:** `feat/m1-13-telegram-bot` (work log repaired in `fix/worklog-restore`)
