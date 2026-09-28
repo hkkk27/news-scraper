@@ -1,0 +1,86 @@
+# Work Log
+
+Newest entries at the top. One entry per task or working session. Format rules are in
+[CONTRIBUTING.md](../CONTRIBUTING.md#5-documentation-rules).
+
+---
+
+## 2026-09-27 (session 2) — M0-02 Cost decision and SOW v0.2
+
+**Branch:** `docs/m0-scope-of-work`
+
+### Input from the team
+
+- The ₹500 budget is tight, so we need to decide between a local model, an API, and scraping or bots.
+- The workflow is: collect → scrape → reorganise → is it relevant → degree of relevance → tag → report.
+- Government notifications are a source.
+- The client must be able to feed items into the dataset himself.
+- Reports go to the client and to his boss.
+
+### Done
+
+- **[ADR-0003](decisions/0003-collection-and-ai-within-budget.md), collection and AI within budget:**
+  - **Collection** is a ladder, cheapest and most reliable first: RSS → Google News search RSS → targeted scraping of official pages and PDFs → headless browser (rare) → Apify for X.
+  - **Manual feed-in** comes through a Telegram bot polled by the pipeline (no server) and a web form.
+  - **Relevance** is a three-layer cascade: L1 rules, then L2 local embedding model and classifier (free, on CI), then L3 LLM only for the uncertain band.
+  - **Rejected:** a local LLM on CI (about 2,500 runner minutes a month, over budget, and weak in Indian languages), and a home PC (can't guarantee the 14-day run).
+  - **Chosen for L3:** Claude Haiku 4.5 through the Batches API with a hard cap, estimated at about ₹260 a month. **Total estimated running cost: ₹260–410 a month.**
+- **SOW v0.2:**
+  - The seven-stage pipeline table (§5).
+  - Relevance bands: Core, Relevant, Peripheral, Not relevant.
+  - A "decided by" audit tag.
+  - Manual feed-in (D1 bot, D2 form).
+  - Two report formats: analyst digest and executive brief.
+  - New task M1-13 and open questions 7–8.
+
+### Commits
+
+| Hash | Message |
+|---|---|
+| `a089c80` | docs: add ADR-0003 collection ladder and AI relevance cascade |
+| `9a8ea97` | docs: update SOW to v0.2 with pipeline stages and report audiences |
+
+### Next
+
+- M0-03: A/M proposal deck (due 29 Sep 23:59).
+
+---
+
+## 2026-09-27 — M0-01 Repository setup, M0-02 Scope of work and decisions
+
+**Branch:** `main` (initial setup), then `docs/m0-scope-of-work`
+
+### Done
+
+- **Repository.** Cloned the empty private repo `hkkk27/news-scraper`. Added the README, a `.gitignore` for Python, Node, secrets and local data, and a `.gitattributes` that stores LF line endings because the pipeline runs on Linux.
+- **Open-source survey.** Evaluated 8 candidate projects, plus the small India-specific scrapers, from GitHub. Decision: build a lean core and reuse libraries as dependencies rather than fork a product ([ADR-0001](decisions/0001-build-lean-core-not-fork.md)).
+- **Stack and cost.** Chose GitHub Actions, Supabase and Cloudflare Pages on free tiers, with a VPS as the fallback. Budgeted Actions minutes for a private repo at about 1,230 of 2,000 a month ([ADR-0002](decisions/0002-stack-and-hosting.md)).
+- **Source verification.** Tested 21 feeds:
+  - 14 work, including Hindi publisher feeds and Google News search in `en`, `hi`, `mr` and `ta`.
+  - 7 need another method, recorded in [sources.md](sources.md).
+- **Scope of work.** Wrote the [SOW](SOW.md): deliverables with acceptance criteria, taxonomy and priority rubric, three-level de-duplication protocol, training loop, timeline and a 29-task work breakdown.
+- **Git conventions.** Wrote [CONTRIBUTING.md](../CONTRIBUTING.md): branch per task, Conventional Commits, PR merges and milestone tags.
+
+### Commits
+
+| Hash | Message |
+|---|---|
+| `61f1652` | chore: initialize repository with README and .gitignore |
+| `c7e2cda` | chore: normalize line endings with .gitattributes |
+| `5f577db` | docs: add scope of work with milestones, taxonomy and WBS |
+| `841d1fe` | docs: add ADR-0001 build a lean core instead of forking |
+| `7b8043e` | docs: add ADR-0002 stack and hosting within Rs 500/month |
+| `e1f8aba` | docs: add source registry with 27 Sep verification results |
+| `8c8aebe` | docs: add contributing guide with branch, commit and release rules |
+
+### Key finding
+
+The 14-day uninterrupted run (D3) has to end by 19 October, so **the pipeline must be live
+by 5 October**, before the selection outcome is fully settled. Backend work therefore
+starts immediately after M0.
+
+### Next
+
+- Review and merge `docs/m0-scope-of-work` into `main`.
+- M0-03: build the A/M proposal deck (3–5 slides), due 29 Sep 23:59.
+- M1-01: Python package skeleton, config loader and CLI.
