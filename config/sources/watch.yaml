@@ -1,0 +1,74 @@
+# Official web pages watched for new notices, circulars, orders and PDFs.
+# Each page becomes a local RSS feed (data/feeds/official-<id>.xml) that the engine ingests.
+# Checked 28 Sep 2026: these pages serve their links as plain HTML. Pages rendered by JavaScript
+# (education.gov.in, msde.gov.in, eci.gov.in) are covered through PIB and Google News instead.
+#
+# Fields:
+#   id, name, url     page to watch
+#   include           regex (case-insensitive) on "link text + URL"; only matching links count
+#   exclude           regex for links to ignore (menus, archives, forms)
+#   min_text          ignore links whose text is shorter than this (icons, "click here")
+#   max_new           cap on new items emitted per run (protects against site redesigns)
+#   pdf_text          download new PDFs and add their first-page text to the item summary
+#   sector / stream / state   hints passed to the India layer's tagger
+#   prior             relevance bonus (official sources start higher)
+
+defaults:
+  min_text: 12
+  max_new: 15
+  pdf_text: true
+  prior: 15
+  exclude: "organisation(al)? chart|rti|tender|recruitment rules|annual report|citizen charter|sitemap|feedback|contact us|screen reader|archive"
+
+pages:
+  - id: ugc
+    name: UGC — notices
+    url: "https://www.ugc.gov.in/"
+    include: "\\.pdf|notice|circular|guideline|regulation"
+    sector: higher_education
+
+  - id: aicte
+    name: AICTE — announcements
+    url: "https://www.aicte.gov.in/"
+    include: "\\.pdf|notice|circular|announcement"
+    sector: higher_education
+
+  - id: cbse
+    name: CBSE — circulars and notices
+    url: "https://www.cbse.gov.in/cbsenew/cbse.html"
+    include: "\\.pdf"
+    sector: school_education
+
+  - id: nta
+    name: NTA — exam notices
+    url: "https://nta.ac.in/"
+    include: "\\.pdf"
+    sector: higher_education
+    max_new: 10
+
+  - id: dopt
+    name: DoPT — orders and appointments
+    url: "https://dopt.gov.in/"
+    include: "order|circular|office memorandum|notification|appoint|transfer|posting|\\bacc\\b|\\.pdf"
+    stream: transfer
+    prior: 10
+
+  - id: sci
+    name: Supreme Court — notices
+    url: "https://www.sci.gov.in/"
+    include: "\\.pdf|judgment|order|notice|circular"
+    stream: court
+    prior: 5
+
+  - id: dgt
+    name: DGT (skills) — notices
+    url: "https://dgt.gov.in/"
+    include: "\\.pdf|notice|circular|order"
+    sector: skill_development
+
+  - id: mahasec
+    name: Maharashtra State Election Commission
+    url: "https://mahasec.maharashtra.gov.in/"
+    include: "\\.pdf|election|निवडणूक|notification|press"
+    stream: election
+    state: MH

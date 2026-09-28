@@ -29,10 +29,9 @@ feeds:
   - {id: amarujala-education, name: "Amar Ujala — Education", type: regional_media, language: hi, prior: 20,
      url: "https://www.amarujala.com/rss/education.xml"}
 
-  # Collected by the India layer and written as local RSS files (see tracker/watch, tracker/bot).
-  - {id: official-pages, name: "Official notices (watched pages)", type: official, language: en, prior: 15,
-     url: "file://feeds/official.xml"}
+  # Written as local RSS files by the India layer (relative to the project root).
+  # Watched official pages are added automatically from watch.yaml as official-<id> feeds.
   - {id: manual-feed-in, name: "Manual feed-in (Telegram)", type: manual, language: en, prior: 30,
-     url: "file://feeds/manual.xml"}
+     url: "file://data/feeds/manual-feed-in.xml"}
   - {id: x-handles, name: "X.com handles", type: social, language: en, prior: 5, enabled: false,
-     url: "file://feeds/x.xml"}
+     url: "file://data/feeds/x-handles.xml"}
