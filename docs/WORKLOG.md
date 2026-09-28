@@ -5,6 +5,31 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-28 â€” M1-04 India sources and engine relevance config
+
+**Branch:** `feat/m1-04-india-sources`
+
+### Done
+
+- **Source registry.** `config/sources/feeds.yaml` has 8 verified direct feeds plus 3 local feeds that the India layer will write: official pages, Telegram feed-in and X.
+- **Google News packs.** `config/sources/google_news.yaml` has 7 query packs across 9 language editions. With the direct feeds, 54 sources in total.
+- **Engine overlay** in `config/engine/`, in TrendRadar format:
+  - `frequency_words.txt`: multilingual keyword groups. Transfers require an officer term; court rulings require an education term; short acronyms use word-boundary regexes.
+  - `ai_interests.txt`: the plain-English, priority-ordered relevance brief.
+- **Code.** `tracker/sources.py` plus `tracker sources list | check | export`. Export writes the engine's `rss.feeds` block to `build/`.
+- **Live check.** 50/54 sources returned items; 4 were quiet streams. `kn` and `or` Google News editions returned nothing and are disabled.
+- **Tests:** 18 passing.
+
+### Blocked
+
+- The TrendRadar import into `engine/` (M1-03) was stopped by the assistant's safety check on bringing third-party code into the repository. It needs the owner's approval, or the owner can run the `git subtree add` command.
+
+### Next
+
+- M1-05: official page and PDF watcher that writes `feeds/official.xml`.
+
+---
+
 ## 2026-09-28 â€” M0-05 Decision to build on TrendRadar
 
 **Branch:** `docs/m0-05-adopt-trendradar`
