@@ -1,6 +1,6 @@
 # ADR-0001: Build a lean core from proven libraries instead of forking an existing product
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0005](0005-adopt-trendradar-as-engine.md). The team chose to build on TrendRadar once the design (ADR-0004) matched its capabilities.
 - **Date:** 27 September 2026
 - **Task:** M0-02
 
