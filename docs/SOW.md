@@ -291,7 +291,7 @@ Each task gets its own branch and a WORKLOG entry (see [CONTRIBUTING.md](../CONT
 | **M0** | **Planning** | | |
 | M0-01 | Repository setup, git conventions | — | Done |
 | M0-02 | Scope of work, decisions, source verification | — | In review |
-| M0-03 | A/M proposal: 3–5 slides, profile, prior work (due 29 Sep 23:59) | Application | To do |
+| M0-03 | A/M proposal: 3–5 slides, profile, prior work (due 29 Sep 23:59) — [outline](proposal/README.md) | Application | Draft ready |
 | **M1** | **Backend & training platform** | D1 | |
 | M1-01 | Python package skeleton, config loader, logging, CLI | D1 | To do |
 | M1-02 | Taxonomy and geography config (sectors, categories, 36 states/UTs with multilingual aliases) | D1 | To do |

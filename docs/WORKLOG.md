@@ -5,6 +5,37 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-09-27 (session 2, continued) — M0-03 A/M proposal deck
+
+**Branch:** `docs/m0-03-proposal` (stacked on `docs/m0-scope-of-work`)
+
+### Done
+
+- **Proposal deck.** Built a five-slide deck: [News & Election Tracker — Approach & Methodology](https://claude.ai/artifact/KHNo1cwwFzs2QZPRDUHYnA).
+  - Each slide maps to one of the brief's evaluation areas:
+    1. Understanding
+    2. Seven-stage approach and sources
+    3. Taxonomy and learning
+    4. Architecture, reliability and cost
+    5. Team, prior work and delivery plan
+  - Each slide has speaker notes.
+- **Prior work.** Drawn from the team's existing projects: the education-sector school/NGO data pipeline (OpenStreetMap, Apify, NGO Darpan), the clipping pipeline and the explainer-video generator.
+- **Documentation.** Recorded the outline, placeholders and submission checklist in [proposal/README.md](proposal/README.md). Marked M0-03 as "Draft ready" in the SOW.
+
+### Commits
+
+| Hash | Message |
+|---|---|
+| `ff1835e` | docs: add A/M proposal outline, placeholders and submission checklist |
+
+### Next
+
+- **Team:** fill the four placeholders (college/batch, second member, phone), download as PPTX/PDF, and email before 29 Sep 23:59.
+- Merge `docs/m0-scope-of-work`, then `docs/m0-03-proposal`.
+- M1-01: Python package skeleton, config loader and CLI.
+
+---
+
 ## 2026-09-27 (session 2) — M0-02 Cost decision and SOW v0.2
 
 **Branch:** `docs/m0-scope-of-work`
