@@ -22,10 +22,12 @@ concurrency:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   tracker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: ubuntu-latest moves to 26.04 on 19 Oct, mid-run
     timeout-minutes: 25
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -38,10 +40,11 @@ jobs:
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
       REPORT_EMAIL_TO: ${{ secrets.REPORT_EMAIL_TO }}
       REPORT_EMAIL_TO_EXEC: ${{ secrets.REPORT_EMAIL_TO_EXEC }}
+      OPENROUTER_API_KEYS: ${{ secrets.OPENROUTER_API_KEYS }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -77,7 +80,15 @@ jobs:
 
       - name: Save data
         if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: bash scripts/data_branch.sh save
+
+      - name: Package the dashboard for GitHub Pages
+        if: always() && hashFiles('output/site/index.html') != ''
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: output/site
 
       - name: Upload reports, dashboard and a database backup
         if: always()
@@ -112,3 +123,17 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy output/site --project-name=${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+
+  # Public dashboard on GitHub Pages (needs a public repository and Settings → Pages → Source:
+  # "GitHub Actions"). Allowed to fail, so a repository without Pages still shows green runs.
+  pages:
+    needs: tracker
+    if: always() && needs.tracker.result != 'cancelled'
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
