@@ -10,7 +10,7 @@ repository secret**. For local runs, put the same names in a `.env` file (see `.
 | 2. Telegram bot | Morning brief, training buttons, forward-to-add | 10 min |
 | 3. Email | Brief to leadership, digest + Excel to analysts | 10 min |
 | 4. Dashboard online | Private dashboard with email login | 20 min |
-| 5. AI filter (engine) | Better relevance for uncertain items, English translations | 15 min |
+| 5. AI relevance (OpenRouter, free) | The AI settles items the rules are unsure about | 5 min |
 
 The scheduled pipeline (`.github/workflows/tracker.yml`) is already live on GitHub. It runs
 every 2 hours even before any secrets exist.
@@ -76,24 +76,14 @@ Free on Cloudflare:
 
 The next scheduled run deploys `output/site`.
 
-## 5. AI filter and translation (engine, optional)
+## 5. AI relevance (OpenRouter free models)
 
-The India layer runs on its own today. The TrendRadar engine adds three things:
-- An AI relevance filter for items the rules and model are unsure about.
-- English translations of Indian-language headlines.
-- Instant alerts.
+1. Create a key at <https://openrouter.ai/keys>. Only free models are used (`openrouter/free`, Gemma, Qwen), so nothing is charged.
+2. Add the secret `OPENROUTER_API_KEYS`. Several keys may be comma-separated.
 
-1. **Import the engine.** This needs the owner's go-ahead because it brings about 23,000 lines of third-party code into the repository:
+Each run sends only the items scored 40–65 (the uncertain band): at most 8 requests and 150 seconds per run, and 40 requests a day. Answers are cached, so no item is sent twice. The item's "Why this score" shows the AI's reason. Settings are in `config/settings.yaml` → `relevance.llm`.
 
-   ```bash
-   git subtree add --prefix=engine https://github.com/sansan0/TrendRadar.git master --squash
-   ```
-
-2. **Get a free Gemini key** at <https://aistudio.google.com/apikey> and add it as the secret `GEMINI_API_KEY`.
-3. **Integration task** (the next item in the work breakdown). It will:
-   - Sync `config/engine/*` and the source registry into `engine/config/`.
-   - Add `file://` feed support.
-   - Add an engine step to the workflow before `tracker run --mode engine`.
+**TrendRadar engine.** It is imported in `engine/`. Wiring it into the schedule (config sync, `file://` feeds, a workflow step) is the next integration task. It adds instant alerts and English translations of Indian-language headlines.
 
 ## Optional: X.com
 

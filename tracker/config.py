@@ -79,12 +79,13 @@ class ModelSettings(BaseModel):
 
 
 class LLMSettings(BaseModel):
-    provider: Literal["none", "gemini"] = "none"
-    model: str = "gemini-flash-lite-latest"
+    provider: Literal["none", "openrouter"] = "none"
+    models: list[str] = Field(default_factory=lambda: ["openrouter/free"])
     uncertain_low: int = 40
     uncertain_high: int = 65
     batch_size: int = 20
     max_requests_per_day: int = 40
+    max_seconds_per_run: int = 150
 
 
 class RelevanceSettings(BaseModel):
@@ -135,6 +136,7 @@ class Secrets(BaseModel):
     telegram_allowed_chat_ids: list[int] = Field(default_factory=list)
     gemini_api_key: str = ""
     apify_token: str = ""
+    openrouter_api_keys: list[str] = Field(default_factory=list)
     smtp_host: str = "smtp.gmail.com"
     smtp_port: int = 587
     smtp_user: str = ""
@@ -155,6 +157,7 @@ class Secrets(BaseModel):
             telegram_allowed_chat_ids=[int(x) for x in split(env("TELEGRAM_ALLOWED_CHAT_IDS")) if x.lstrip("-").isdigit()],
             gemini_api_key=env("GEMINI_API_KEY"),
             apify_token=env("APIFY_TOKEN"),
+            openrouter_api_keys=split(env("OPENROUTER_API_KEYS").replace(";", ",")),
             smtp_host=env("SMTP_HOST", "smtp.gmail.com") or "smtp.gmail.com",
             smtp_port=int(env("SMTP_PORT", "587") or 587),
             smtp_user=env("SMTP_USER"),

@@ -100,6 +100,37 @@ def combine(rule_score: int, probability: float | None, engine_score: float | No
     return int(max(0, min(100, final))), decided_by
 
 
+def ai_scores(cfg: AppConfig, conn: sqlite3.Connection, candidates: list[tuple[Item, int]],
+              scorer=None) -> dict[str, tuple[float, str]]:
+    """Cached AI scores for all candidates; new uncertain items are sent to the AI first (if configured)."""
+    from tracker.db import kv_get, kv_set
+
+    llm = cfg.settings.relevance.llm
+    cached = {row["item_key"]: (row["score"], row["reason"]) for row in conn.execute("SELECT * FROM ai_scores")}
+    todo = [(item.key, f"[{item.source_name}] {item.title} — {item.summary[:160]}")
+            for item, score in sorted(candidates, key=lambda c: -c[1])
+            if llm.uncertain_low <= score <= llm.uncertain_high and item.key not in cached]
+    keys = cfg.secrets.openrouter_api_keys
+    if todo and llm.provider == "openrouter" and (keys or scorer is not None):
+        from tracker.llm import OpenRouterScorer, load_brief
+
+        day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        used = int(kv_get(conn, f"ai_requests_{day}", "0") or 0)
+        budget = max(0, llm.max_requests_per_day - used)
+        if budget:
+            scorer = scorer or OpenRouterScorer(keys, llm.models, load_brief(cfg.config_dir))
+            results = scorer.score(todo, batch_size=llm.batch_size, max_requests=min(budget, 8),
+                                   max_seconds=llm.max_seconds_per_run)
+            kv_set(conn, f"ai_requests_{day}", str(used + getattr(scorer, "requests_made", 0)))
+            for key, result in results.items():
+                conn.execute("INSERT OR REPLACE INTO ai_scores(item_key, score, reason, model, created_at) "
+                             "VALUES(?,?,?,?,?)", (key, result.score, result.reason, result.model, utcnow()))
+                cached[key] = (result.score, result.reason)
+            conn.commit()
+    wanted = {item.key for item, _ in candidates}
+    return {key: value for key, value in cached.items() if key in wanted}
+
+
 def process(cfg: AppConfig, mode: str = "auto", items: list[Item] | None = None) -> RunReport:
     specs = load_sources(cfg.config_dir, include_disabled=True)
     by_id = {s.id: s for s in specs}
@@ -119,11 +150,22 @@ def process(cfg: AppConfig, mode: str = "auto", items: list[Item] | None = None)
 
         model = RelevanceModel.load(cfg.settings.relevance.model)
         probabilities = model.probabilities([text_of(i.title, i.summary) for i in items]) if model else []
+        llm_cfg = cfg.settings.relevance.llm
+        # Pass 1: rules + model for every item.
+        tagged = []
         for index, item in enumerate(items):
             tags = tagger.tag(item)
             probability = probabilities[index] if probabilities else None
-            final, decided_by = combine(tags.rule_score, probability, item.engine_score, model,
-                                        cfg.settings.relevance.llm)
+            preliminary, _ = combine(tags.rule_score, probability, None, model, llm_cfg)
+            tagged.append((item, tags, probability, preliminary))
+        # Pass 2: the AI settles uncertain items it has not seen yet (cached, capped per day).
+        ai = ai_scores(cfg, conn, [(i, p) for i, _, _, p in tagged if i.key not in labels])
+        for item, tags, probability, _ in tagged:
+            if item.engine_score is None and item.key in ai:
+                item.engine_score = ai[item.key][0]
+            final, decided_by = combine(tags.rule_score, probability, item.engine_score, model, llm_cfg)
+            if decided_by == "llm" and item.key in ai and ai[item.key][1]:
+                tags.reasons.append(f"AI: {ai[item.key][1]} ({round(100 * item.engine_score)})")
             if item.key in labels:  # a human label overrides every model
                 final, decided_by = (95 if labels[item.key] else 10), "human"
             band = bands_cfg.band(final)
