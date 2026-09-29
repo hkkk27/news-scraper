@@ -1,106 +1,64 @@
-# Slide content for the A/M proposal (for Claude Design)
+# Deck content for Claude Design (4 slides)
 
-**Format:** 3 slides as the brief asks (approach and methodology, plus a brief about the
-individual and prior work), and a 4th slide with the demo links. Due 29 Sep 2026, 23:59.
+**Style:** black, blue and white (`#0B1220` · `#1D4ED8` · white), clean sans-serif, one idea
+per slide, real screenshots.
 
-**The one message:** *It already runs: ₹0/month, live on Indian news in 9 languages, reports on
-Telegram, and it learns from your taps.*
+**Tone:** "I was already building this, so I made a small working demo. I'd love your
+feedback to shape it for you."
 
-## Style
+---
 
-- **Colours:** ink `#1B2433`, paper `#F6F4EE`, accent `#B34A1F`, teal `#17565D`.
-- **Type:** serif headings (Source Serif 4 or Georgia), sans body (IBM Plex Sans).
-- **Layout:** one idea per slide, a big number or a real screenshot, short lines.
-- **Screenshots** (from `output/` or `samples/`):
-  - The executive brief, top of the page.
-  - The dashboard's Feed tab and its Insights tab.
-  - Your Telegram chat showing the daily brief and a card with 👍 👎 ⭐ 🔇.
+## Slide 1 — Your 40-minute morning news scan, done by 10 AM
 
-## Slide 1 — Understanding and approach
+**Headline:** From 40 minutes of searching to a 2-minute brief on your phone.
 
-**Title:** Every signal that matters for Indian education, collected, ranked and reported by
-state and sector.
+**The problem:** tracking school education, higher education and skill development across
+India means checking dozens of sites, papers in regional languages, government notices,
+transfers, elections and court rulings, every morning.
 
-**Left: what it tracks.**
+**What the tracker does:**
+- Reads **61 sources in 9 Indian languages**: national and regional papers, Google News, and government notice pages (UGC, AICTE, CBSE, NTA, DoPT, Supreme Court, DGT, State Election Commission).
+- Picks what matters, tags it by **state, sector and category**, and removes duplicates.
+- Sends a **formatted PDF brief to Telegram before 10 AM**, and keeps a live dashboard.
 
-- School education · Higher education · Skill development. New sectors (e.g. healthcare) are added by configuration.
-- Officer transfers · Elections down to municipal level · SC/HC rulings · Policy decisions · Political changes · Statements.
+**Visual:** a phone showing the Telegram PDF brief, next to the dashboard.
 
-**Right: seven-step flow** (draw as a horizontal pipeline):
+## Slide 2 — How it works
 
-Collect → Extract → De-duplicate → Is it relevant? → How relevant (0–100) → Tag → Report
+**Visual:** a flow of 7 steps: Collect → Clean → Remove duplicates → Is it relevant? → How relevant (0–100) → Tag → Brief.
 
-**Sources strip:**
-- 55 feeds in 9 languages (publisher RSS plus Google News in en, hi, mr, ta, te, bn, gu, ml, pa).
-- 8 government notice pages: UGC, AICTE, CBSE, NTA, DoPT, Supreme Court, DGT, Maharashtra SEC.
-- Anything forwarded to the Telegram bot.
+- **Collect:** RSS feeds, Google News in 9 languages, government notice pages, and anything you forward to the bot.
+- **Score:**
+  1. Keyword rules in 9 languages, with every point explained ("why this score").
+  2. A model that **learns from your 👍 / 👎** in Telegram.
+  3. Free AI for items the first two are unsure about.
+- **Tag:** sector (school / higher / skills) · category (policy, court, transfer, election, political, statement, news) · state/UT · priority.
+- **One card per event:** 14 outlets reporting the same Supreme Court order appear as one item marked "reported by 14 outlets".
+- **Deliver:** a Telegram PDF brief (daily at about 9:45 AM; weekly with Excel), a live dashboard, and filters by state, sector and category.
+- **Cost:** ₹0 per month (GitHub Actions, Telegram and free AI models).
 
-**Proof line:** Live on 28–29 Sep: 2,865 items tagged → 671 relevant stories across 28
-states/UTs.
+**Proof line:** On 29 Sep it scanned 1,488 items from 61 sources and found 671 relevant reports on 521 distinct events across 28 states. The brief leads with the top 8.
 
-## Slide 2 — Methodology: tagging, learning, reliability, cost
+## Slide 3 — About me, and next steps
 
-**Tagging rubric (small table):**
-
-| Tag | Values |
-|---|---|
-| Sector | School · Higher · Skills |
-| Category | Policy · Court · Transfer · Election · Political · Statement · News |
-| Geography | National → state/UT → district → municipal |
-| Relevance | Core ≥80 · Relevant 60–79 · Peripheral 40–59 |
-| Priority | High · Medium · Low |
-
-Example: "Bombay HC quashes fee hike for unaided schools" → Court · Maharashtra · School ·
-Core.
-
-**How the score is decided** (three stacked boxes):
-
-1. **Rules:** keywords and places in 9 languages, with every point shown as "why".
-2. **Learning model:** retrains nightly from 👍/👎 in Telegram.
-3. **Free AI** (OpenRouter free models): only for unsure items. It rejected Bangladeshi, UK and coaching-ad items with a stated reason.
-
-**Reliability:**
-- Duplicate articles merged into one story with an "N outlets" count.
-- Runs every 2 hours on GitHub Actions, and every run is logged.
-- 72 automated tests.
-
-**Cost:** ₹0 per month. GitHub Actions, Telegram, GitHub Pages and free AI models, well under
-the ₹500 ceiling.
-
-## Slide 3 — About me, prior work, plan
-
-**Harshit Singh:** `[college, programme, batch]` · Python, data pipelines, scraping,
-automation.
+**Harshit Singh:** `[college, programme, batch]` · Python, data pipelines, automation.
 
 **Prior work:**
-- Education-sector data pipeline (schools and NGOs, India/Gulf/SE Asia; OpenStreetMap, Google Maps, NGO Darpan; merged, de-duplicated, scored).
-- Video clipping pipeline.
-- Explainer-video generator.
+- An education-sector data pipeline for schools and NGOs across India, the Gulf and South-East Asia (multi-source, de-duplicated, scored).
+- A video clipping pipeline.
+- An explainer-video generator.
 
-**Built on open source:** TrendRadar (62k★) is imported as the collection and alert engine,
-plus our India layer.
+**How I built this:** on open source (the TrendRadar engine, 62k★) plus an India-specific layer.
 
-**Plan:**
-
-| Dates | Deliverable |
-|---|---|
-| Now | Prototype live ✅ |
-| 30 Sep – 4 Oct | D1 backend and training |
-| 5–12 Oct | D2 frontend and reporting |
-| 5–19 Oct | D3 14-day run with a public run log |
-| 16–19 Oct | D4 handover and 2-hour session |
+**Next steps:**
+- I was already working on this, so this is a small demo of what it does.
+- I'd like your feedback on sources, topics, states and the brief format.
+- It is ready to tune to your preferences: tap 👍 / 👎 and it adapts.
 
 ## Slide 4 — See it live
 
-- **Demo video:** `[paste your video link]`
-- **Live dashboard:** https://hkkk27.github.io/news-scraper/ (once the repo is public and Pages is on)
+- **Demo video:** `[your video link]`
+- **Live dashboard:** https://hkkk27.github.io/news-scraper/
 - **Telegram bot:** @newsscrapereduction_bot (access on request)
-- **Code:** https://github.com/hkkk27/news-scraper
 
 **Contact:** harshitkumarsingh04@gmail.com · `[phone]`
-
-## Placeholders
-
-- `[college, programme, batch]`
-- `[paste your video link]`
-- `[phone]`
