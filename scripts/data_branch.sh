@@ -27,6 +27,10 @@ case "$action" in
     tmp="$(mktemp -d)"
     cp -r data "$tmp/"
     remote="$(git remote get-url origin)"
+    # The temporary repository does not inherit actions/checkout's credentials: use the token.
+    if [ -n "${GITHUB_TOKEN:-}" ] && [ -n "${GITHUB_REPOSITORY:-}" ]; then
+      remote="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+    fi
     (
       cd "$tmp"
       git init -q
