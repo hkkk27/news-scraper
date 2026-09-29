@@ -75,5 +75,7 @@ def read_engine_items(output_dir: Path = DEFAULT_ENGINE_OUTPUT, days: int = 3, t
     return list(items.values())
 
 
-def engine_available(output_dir: Path = DEFAULT_ENGINE_OUTPUT) -> bool:
-    return (output_dir / "rss").is_dir() and any((output_dir / "rss").glob("*.db"))
+def engine_available(output_dir: Path = DEFAULT_ENGINE_OUTPUT, days: int = 2, today: date | None = None) -> bool:
+    """True only if the engine wrote RSS data recently (the upstream repo ships old sample files)."""
+    today = today or date.today()
+    return any((output_dir / "rss" / f"{(today - timedelta(days=d)).isoformat()}.db").exists() for d in range(days))

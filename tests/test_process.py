@@ -41,7 +41,8 @@ def make_engine_output(root, day):
 def test_engine_store_reads_items_and_ai_scores(tmp_path):
     day = date(2026, 9, 28)
     make_engine_output(tmp_path, day.isoformat())
-    assert engine_available(tmp_path)
+    assert engine_available(tmp_path, today=day)
+    assert not engine_available(tmp_path, today=date(2026, 10, 9))  # stale output is ignored
     items = {i.url: i for i in read_engine_items(tmp_path, days=1, today=day)}
     ugc = items["https://example.com/ugc"]
     assert ugc.title == "UGC notifies draft regulations" and ugc.source_name == "The Hindu"
