@@ -1,64 +1,125 @@
-# Deck content for Claude Design (4 slides)
-
-**Style:** black, blue and white (`#0B1220` · `#1D4ED8` · white), clean sans-serif, one idea
-per slide, real screenshots.
-
-**Tone:** "I was already building this, so I made a small working demo. I'd love your
-feedback to shape it for you."
+# A/M proposal — slide content (5 slides)
 
 ---
 
-## Slide 1 — Your 40-minute morning news scan, done by 10 AM
+## Slide 1 — Understanding the ask
+*Clarity & Understanding*
 
-**Headline:** From 40 minutes of searching to a 2-minute brief on your phone.
+**Title:** One daily read for India's education, skills and governance news
 
-**The problem:** tracking school education, higher education and skill development across
-India means checking dozens of sites, papers in regional languages, government notices,
-transfers, elections and court rulings, every morning.
+Every morning someone has to scan national papers, regional-language dailies, department
+websites, official PDFs and social media to find the few items that matter, then sort them
+by state and sector. That takes 40 minutes on a good day, and things still get missed.
 
-**What the tracker does:**
-- Reads **61 sources in 9 Indian languages**: national and regional papers, Google News, and government notice pages (UGC, AICTE, CBSE, NTA, DoPT, Supreme Court, DGT, State Election Commission).
-- Picks what matters, tags it by **state, sector and category**, and removes duplicates.
-- Sends a **formatted PDF brief to Telegram before 10 AM**, and keeps a live dashboard.
+This platform does that work before the day starts:
 
-**Visual:** a phone showing the Telegram PDF brief, next to the dashboard.
+- **Sectors:** school education, higher education, skill development
+- **Governance signals around them:** transfer orders for central and state officers;
+  election announcements and political developments down to the municipal level; Supreme
+  Court and High Court decisions; policy decisions and statements
+- **Output:** a daily and weekly report by state and sector, and a live dashboard
+- **Room to grow:** healthcare or any other sector, more states, other geographies
+- **Running cost:** under ₹500 a month (the working demo runs at ₹0)
 
-## Slide 2 — How it works
+---
 
-**Visual:** a flow of 7 steps: Collect → Clean → Remove duplicates → Is it relevant? → How relevant (0–100) → Tag → Brief.
+## Slide 2 — What it delivers every day
+*Content Quality · Reliability*
 
-- **Collect:** RSS feeds, Google News in 9 languages, government notice pages, and anything you forward to the bot.
-- **Score:**
-  1. Keyword rules in 9 languages, with every point explained ("why this score").
-  2. A model that **learns from your 👍 / 👎** in Telegram.
-  3. Free AI for items the first two are unsure about.
-- **Tag:** sector (school / higher / skills) · category (policy, court, transfer, election, political, statement, news) · state/UT · priority.
-- **One card per event:** 14 outlets reporting the same Supreme Court order appear as one item marked "reported by 14 outlets".
-- **Deliver:** a Telegram PDF brief (daily at about 9:45 AM; weekly with Excel), a live dashboard, and filters by state, sector and category.
-- **Cost:** ₹0 per month (GitHub Actions, Telegram and free AI models).
+**Title:** From hundreds of headlines to the ones that matter, by 10 AM
 
-**Proof line:** On 29 Sep it scanned 1,488 items from 61 sources and found 671 relevant reports on 521 distinct events across 28 states. The brief leads with the top 8.
+**Where it reads from**
+- 61 sources in 9 Indian languages: national and regional papers, including vernacular
+  dailies in Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Malayalam and Punjabi
+- Department and regulator websites and their official PDFs: UGC, AICTE, CBSE, NTA, DoPT,
+  Supreme Court, DGT, State Election Commission; more can be added any time
+- X.com handles of ministries, regulators and election bodies (added during the build)
 
-## Slide 3 — About me, and next steps
+**What it does with them**
+- **Relevance, scored your way:** each item gets a 0–100 score against the criteria you set.
+  You tell us what matters and how much; those rules go straight into the scoring model, and
+  it keeps learning from the items you mark as useful or not
+- **AI as a second opinion:** a free AI service reviews the borderline items alongside the
+  news itself, so nothing important slips through and nothing irrelevant gets in
+- **No duplicates:** the same event reported by 14 outlets shows up once, with a note of how
+  widely it was covered
+- **Always current:** refreshed in the evening and early morning, with the report ready
+  before 10 AM
 
-**Harshit Singh:** `[college, programme, batch]` · Python, data pipelines, automation.
+**From the demo, 29 September:** 1,488 items read from 61 sources became 521 distinct
+events across 28 states, ranked by relevance.
 
-**Prior work:**
-- An education-sector data pipeline for schools and NGOs across India, the Gulf and South-East Asia (multi-source, de-duplicated, scored).
-- A video clipping pipeline.
-- An explainer-video generator.
+---
 
-**How I built this:** on open source (the TrendRadar engine, 62k★) plus an India-specific layer.
+## Slide 3 — How items are classified, and how it scales
+*Taxonomy · Architecture*
 
-**Next steps:**
-- I was already working on this, so this is a small demo of what it does.
-- I'd like your feedback on sources, topics, states and the brief format.
-- It is ready to tune to your preferences: tap 👍 / 👎 and it adapts.
+**Title:** Every item tagged the same way, every time
 
-## Slide 4 — See it live
+| Tag | What it captures |
+|---|---|
+| Sector | School education · Higher education · Skill development |
+| Category | Policy decision · Court ruling · Transfer or posting · Election · Political development · Statement · Sector news |
+| Geography | National · State or UT · District · Municipal |
+| Who is involved | Ministries, regulators, courts, election bodies, parties, officers |
+| Relevance | Core · Relevant · Peripheral, from the 0–100 score |
+| Priority | High · Medium · Low |
 
-- **Demo video:** `[your video link]`
+**Example:** "Bombay High Court quashes fee hike for unaided schools" is tagged as Court
+ruling · Maharashtra · School education · Core · High priority.
+
+**Built to be extended, not rebuilt**
+- A new feed, keyword, state or district is a one-line configuration change
+- A new sector such as healthcare, or a new country, uses the same structure with its own
+  word lists and sources
+- 3–5 users on phone and desktop, with the dashboard filterable by state, sector, category,
+  language and date
+
+---
+
+## Slide 4 — About me, prior work and delivery
+*Brief about the individual · Prior work*
+
+**Harshit Singh**
+[College, programme, batch]
+Python, data pipelines, web scraping and automation
+
+**Similar work**
+- **Education-sector data pipeline:** collected and merged records of schools and NGOs across
+  India, the Gulf and South-East Asia from OpenStreetMap, Google Maps and the NGO Darpan
+  government portal, with de-duplication and confidence scoring
+- **Automated video pipeline:** turns long recordings into short captioned clips, choosing
+  the key moments by rule
+- **This tracker:** already running on live data (see the next slide)
+
+**Delivery plan**
+
+| Milestone | Dates |
+|---|---|
+| Backend and training platform, tuned to your criteria | 30 Sep – 4 Oct |
+| Frontend and reporting structure | 5 – 12 Oct |
+| Two weeks of uninterrupted processing, with a run log | 5 – 19 Oct |
+| Handover and 2-hour hands-on training | 16 – 19 Oct |
+
+---
+
+## Slide 5 — A working demo, and your input
+*Next steps*
+
+I was already working on this problem, so I built a small working version to show what it
+can do. It is running on live news today.
+
+- **Demo video:** [video link]
 - **Live dashboard:** https://hkkk27.github.io/news-scraper/
-- **Telegram bot:** @newsscrapereduction_bot (access on request)
 
-**Contact:** harshitkumarsingh04@gmail.com · `[phone]`
+**What I need from you**
+- Your scoring criteria: which topics, states and signals matter most, and what to ignore.
+  These go directly into the model.
+- The sources and X.com handles you already follow
+- How you want the report delivered and formatted
+
+For the demo, the daily report is delivered on Telegram because it is free and works well on
+a phone. It can go to email, WhatsApp or any channel you prefer.
+
+**Harshit Singh**
++91 95035 60489 · harshitkumarsingh04@gmail.com
