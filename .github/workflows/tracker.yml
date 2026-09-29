@@ -2,11 +2,14 @@ name: tracker
 
 # One workflow for every scheduled job. All jobs share one concurrency group, because the
 # SQLite database is saved back to the `data` branch and must never be written twice at once.
+# Built around one reader's morning: collect the evening before and early morning, then score
+# (rules + model + free AI) and deliver the brief to Telegram before 10:00 IST.
 on:
   schedule:
-    - cron: "10 */2 * * *"   # every 2 hours: watch, Telegram, collect, tag, dashboard
-    - cron: "0 2 * * *"      # 07:30 IST: daily report (email + Telegram)
-    - cron: "30 2 * * 1"     # Monday 08:00 IST: weekly report with Excel
+    - cron: "0 13 * * *"     # 18:30 IST: evening sweep (feeds that only keep a few hours of items)
+    - cron: "0 1 * * *"      # 06:30 IST: early-morning sweep
+    - cron: "0 4 * * *"      # 09:30 IST: final sweep + AI scoring + daily brief PDF on Telegram (~09:45)
+    - cron: "30 4 * * 1"     # Monday 10:00 IST: weekly brief + Excel on Telegram
     - cron: "40 21 * * *"    # 03:10 IST: retrain the relevance model from the day's feedback
   workflow_dispatch:
     inputs:
@@ -57,14 +60,18 @@ jobs:
         id: task
         run: |
           case "${{ github.event.schedule }}" in
-            "0 2 * * *")   task=daily ;;
-            "30 2 * * 1")  task=weekly ;;
+            "0 4 * * *")   task=daily ;;
+            "30 4 * * 1")  task=weekly ;;
             "40 21 * * *") task=train ;;
             "")            task="${{ inputs.task || 'run' }}" ;;
             *)             task=run ;;
           esac
           echo "task=$task" >> "$GITHUB_OUTPUT"
           echo "Running task: $task"
+
+      - name: Fonts for Indian scripts in the PDF brief
+        if: steps.task.outputs.task == 'daily' || steps.task.outputs.task == 'weekly'
+        run: sudo apt-get update -q >/dev/null && sudo apt-get install -y -q fonts-noto-core >/dev/null
 
       - name: Restore data
         run: bash scripts/data_branch.sh restore
