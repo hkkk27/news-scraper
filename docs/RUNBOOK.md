@@ -4,11 +4,12 @@
 
 All times are IST. Everything runs from `.github/workflows/tracker.yml`.
 
-| When | Job | What it does |
+| When (IST) | Job | What it does |
 |---|---|---|
-| Every 2 hours (at :40 past odd hours IST) | `run` | Watch 8 government pages → read Telegram → collect 54 feeds → tag, score, cluster → rebuild dashboard |
-| 07:30 daily | `daily` | `run`, then the daily report to email and Telegram |
-| 08:00 Monday | `weekly` | Weekly report; the analyst email carries the Excel |
+| 18:30 daily | `run` | Evening sweep: watch 8 government pages, read Telegram, collect 54 feeds, tag, score, cluster, rebuild dashboard |
+| 06:30 daily | `run` | Early-morning sweep |
+| 09:30 daily | `daily` | Final sweep + AI scoring, then the **brief PDF and top cards on Telegram by about 09:45** |
+| 10:00 Monday | `weekly` | Weekly brief PDF + Excel on Telegram |
 | 03:10 daily | `train` | Retrain the relevance model on the day's feedback, re-score |
 
 Each job restores the database from the `data` branch at the start and saves it back at the
@@ -17,7 +18,7 @@ end. Reports, the dashboard and a database copy are kept as artifacts for 14 day
 ## Daily check (1 minute)
 
 1. **Dashboard → Run log.** Runs should be green, and "longest gap" should stay under 6 hours. The two-week acceptance target is ≥ 95% success and no gap over 6 h.
-2. **Report footer.** It lists any sources that errored in the last run.
+3. **Report footer.** It lists any sources that errored in the last run.
 
 ## Where to look when something is wrong
 

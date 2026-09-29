@@ -13,7 +13,7 @@ and delivered as a daily and weekly brief, an analyst digest, Excel, a Telegram 
 dashboard.
 
 - **Running cost:** ₹0–150/month (ceiling ₹500).
-- **Status:** live since 28 Sep 2026. Scheduled every 2 hours on GitHub Actions; 68 tests.
+- **Status:** live since 28 Sep 2026 on GitHub Actions. Evening and early-morning sweeps; the brief PDF reaches Telegram by 10:00 IST. 74 tests.
 
 ```
 54 news feeds (9 languages) ─┐
