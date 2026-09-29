@@ -158,10 +158,17 @@ def cmd_report(args, cfg) -> int:
         send_email(cfg, f"Analyst digest — {data.period_label}", render(data, "digest.html"),
                    cfg.secrets.report_email_to, attachments)
         if cfg.secrets.telegram_bot_token:
+            from tracker.reports import telegram_caption
+
             bot = make_bot(cfg)
             cards = [story_card(s) for s in data.top[: cfg.settings.telegram.brief_max_items]]
             for chat_id in cfg.secrets.telegram_allowed_chat_ids:
-                bot.client.send_message(chat_id, telegram_text(data))
+                if "pdf" in files:  # the formatted brief as a PDF document, with a short caption
+                    bot.client.send_document(chat_id, files["pdf"], telegram_caption(data))
+                else:
+                    bot.client.send_message(chat_id, telegram_text(data))
+                if args.kind == "weekly":
+                    bot.client.send_document(chat_id, files["excel"], "Weekly workbook: state × sector pivot and trackers")
                 bot.send_cards(chat_id, cards)
             print(f"  sent to {len(cfg.secrets.telegram_allowed_chat_ids)} Telegram chat(s)")
     return 0

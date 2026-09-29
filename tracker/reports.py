@@ -312,6 +312,20 @@ def write_excel(data: ReportData, path: Path) -> Path:
     return path
 
 
+def telegram_caption(data: ReportData, limit: int = 5) -> str:
+    """Short caption for the PDF: headline numbers and the top developments (≤ 1,024 chars)."""
+    import html
+
+    s = data.stats
+    lines = [f"<b>{'Weekly' if data.kind == 'weekly' else 'Daily'} brief · {html.escape(data.period_label)}</b>",
+             f"{s['stories']} stories · {s['core']} core · {s['high_priority']} high priority", ""]
+    for i, story in enumerate(data.top[:limit], 1):
+        lines.append(f"{i}. {html.escape(story.title[:110])}")
+    lines += ["", "Full brief in the PDF. Tap 👍/👎 on the cards below to train."]
+    caption = "\n".join(lines)
+    return caption if len(caption) <= 1024 else caption[:1000] + "…"
+
+
 def telegram_text(data: ReportData, limit: int = 8) -> str:
     import html
 
@@ -339,6 +353,11 @@ def write_report(cfg: AppConfig, data: ReportData, out_root: Path | None = None)
     files["brief"].write_text(render(data, "brief.html"), encoding="utf-8")
     write_excel(data, files["excel"])
     files["telegram"].write_text(telegram_text(data), encoding="utf-8")
+    from tracker.pdf import html_to_pdf
+
+    pdf = html_to_pdf(files["brief"], folder / f"brief-{data.kind}-{data.date}.pdf")
+    if pdf:
+        files["pdf"] = pdf
     log.info("report written to %s", folder)
     return files
 
