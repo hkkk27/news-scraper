@@ -75,3 +75,22 @@ def test_top_developments_skip_other_outlets_takes_on_same_event(cfg):
                                         "title": "CBSE third-language exemption: SC directs board to extend it to Class 6"})
     top = pick_top([*data.stories, twin], 8)
     assert sum("third" in s.title.lower() for s in top) == 1
+
+
+def test_telegram_caption_fits_the_limit(cfg):
+    from tracker.reports import telegram_caption
+
+    data = build_report(cfg, "daily", now=NOW)
+    caption = telegram_caption(data)
+    assert len(caption) <= 1024 and "Daily brief" in caption and "PDF" in caption
+
+
+def test_pdf_rendering_when_a_browser_exists(tmp_path):
+    from tracker.pdf import find_browser, html_to_pdf
+
+    if not find_browser():
+        return  # no Chromium on this machine; the report falls back to a text message
+    html = tmp_path / "x.html"
+    html.write_text("<html><body><h1>मुंबई — test</h1></body></html>", encoding="utf-8")
+    pdf = html_to_pdf(html, tmp_path / "x.pdf")
+    assert pdf and pdf.read_bytes()[:4] == b"%PDF"

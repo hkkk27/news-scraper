@@ -53,7 +53,7 @@ reports:
   output_dir: output/reports
 
 telegram:
-  brief_max_items: 10        # item cards (with training buttons) sent with the daily brief
+  brief_max_items: 5         # item cards (with training buttons) sent after the PDF brief
 
 dashboard:
   days: 30

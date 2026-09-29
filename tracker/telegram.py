@@ -44,6 +44,20 @@ class TelegramClient:
         return self.call("sendMessage", chat_id=chat_id, text=text, parse_mode="HTML",
                          reply_markup=reply_markup, disable_web_page_preview=disable_preview)
 
+    def send_document(self, chat_id: int, path, caption: str = "") -> dict:
+        """Upload a file (PDF, Excel) with an HTML caption (Telegram limit: 1,024 characters)."""
+        from pathlib import Path
+
+        path = Path(path)
+        with path.open("rb") as fh:
+            response = self._http.post(f"{self._base}/sendDocument",
+                                       data={"chat_id": chat_id, "caption": caption[:1024], "parse_mode": "HTML"},
+                                       files={"document": (path.name, fh)}, timeout=120)
+        data = response.json()
+        if not data.get("ok"):
+            raise TelegramError(f"sendDocument: {data.get('description', response.status_code)}")
+        return data["result"]
+
     def answer_callback(self, callback_id: str, text: str = "") -> None:
         self.call("answerCallbackQuery", callback_query_id=callback_id, text=text)
 
