@@ -47,7 +47,7 @@ The score runs from 0 to 100 and is built in three layers:
    - `final = rule + w × (100 × P(relevant) − 50)`. This is neutral when the model is unsure.
    - The weight `w` grows with the number of labels, up to 0.7.
    - It retrains nightly and reports cross-validated accuracy.
-3. **AI (L3, optional).** The engine's AI filter scores titles against the plain-English brief in `config/engine/ai_interests.txt`. It only settles items in the uncertain band (40–65), or rescues a miss it is very sure about (≥ 0.85).
+3. **AI (L3, optional, free).** OpenRouter's free models score titles against the plain-English brief in `config/engine/ai_interests.txt`, 20 per request, cached per item and capped per run and per day. The AI only settles items in the uncertain band (40–65), or rescues a miss it is very sure about (≥ 0.85). Its reason is added to "Why this score". The TrendRadar engine's AI filter can feed the same slot.
 
 A **human label always wins**: 👍 → 95, 👎 → 10.
 
