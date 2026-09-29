@@ -98,6 +98,15 @@ CREATE INDEX IF NOT EXISTS idx_items_seen ON items(first_seen);
 CREATE INDEX IF NOT EXISTS idx_items_band ON items(band);
 CREATE INDEX IF NOT EXISTS idx_items_story ON items(story_id);
 
+-- AI (L3) scores, one per item, so an item is never sent twice.
+CREATE TABLE IF NOT EXISTS ai_scores (
+    item_key   TEXT PRIMARY KEY,
+    score      REAL NOT NULL,          -- 0-1
+    reason     TEXT DEFAULT '',
+    model      TEXT DEFAULT '',
+    created_at TEXT NOT NULL
+);
+
 -- One row per pipeline run: the evidence log for the 14-day uninterrupted run.
 CREATE TABLE IF NOT EXISTS runs (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,

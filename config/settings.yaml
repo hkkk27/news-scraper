@@ -36,12 +36,16 @@ relevance:
     full_weight_at: 200      # number of labels at which the model reaches max_weight
     max_weight: 0.7          # model share of the final score; rules keep the rest
   llm:
-    provider: none           # none | gemini
-    model: gemini-flash-lite-latest
+    provider: openrouter     # none | openrouter (free models; skipped when OPENROUTER_API_KEYS is not set)
+    models:                  # tried in order; a busy or failing model falls through to the next
+      - openrouter/free                # OpenRouter's router over its free models
+      - google/gemma-4-31b-it:free
+      - qwen/qwen3.8-27b:free
     uncertain_low: 40        # only items scoring inside [low, high] are sent
     uncertain_high: 65
     batch_size: 20
     max_requests_per_day: 40
+    max_seconds_per_run: 150 # AI time budget per run; the rest waits for the next run
 
 reports:
   exec_top_n: 8              # items in the executive brief
