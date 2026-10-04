@@ -150,7 +150,16 @@ def cmd_report(args, cfg) -> int:
     print(f"{data.title} ({data.period_label}): {data.stats['stories']} stories, {data.stats['core']} core")
     for name, path in files.items():
         print(f"  {name:9} {path}")
-    if args.send:
+    send = args.send
+    conn = None
+    if send:
+        from tracker.db import connect
+        from tracker.reports import mark_sent, should_send
+
+        conn = connect(cfg.db_path)
+        send, why = should_send(conn, args.kind, args.once_after)
+        print(f"  send: {'yes' if send else 'no'} ({why})")
+    if send:
         subject = f"{'Weekly' if args.kind == 'weekly' else 'Daily'} brief — {data.period_label}"
         exec_to = cfg.secrets.report_email_to_exec or cfg.secrets.report_email_to
         send_email(cfg, subject, render(data, "brief.html"), exec_to)
@@ -171,6 +180,8 @@ def cmd_report(args, cfg) -> int:
                     bot.client.send_document(chat_id, files["excel"], "Weekly workbook: state × sector pivot and trackers")
                 bot.send_cards(chat_id, cards)
             print(f"  sent to {len(cfg.secrets.telegram_allowed_chat_ids)} Telegram chat(s)")
+            if cfg.secrets.telegram_allowed_chat_ids:
+                mark_sent(conn, args.kind)
     return 0
 
 
@@ -249,6 +260,8 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("report", help="build the daily or weekly report (HTML, Excel, Telegram text)")
     p.add_argument("kind", choices=["daily", "weekly"])
     p.add_argument("--send", action="store_true", help="also deliver by email and Telegram (if configured)")
+    p.add_argument("--once-after", metavar="HH:MM",
+                   help="with --send: send only once per day/week, and not before this IST time (for scheduled runs)")
     p.set_defaults(func=cmd_report)
 
     sub.add_parser("site", help="build the static dashboard (output/site/index.html)").set_defaults(func=cmd_site)

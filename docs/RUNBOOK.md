@@ -4,13 +4,16 @@
 
 All times are IST. Everything runs from `.github/workflows/tracker.yml`.
 
-| When (IST) | Job | What it does |
+| When (IST, nominal) | Job | What it does |
 |---|---|---|
-| 18:30 daily | `run` | Evening sweep: watch 8 government pages, read Telegram, collect 54 feeds, tag, score, cluster, rebuild dashboard |
-| 06:30 daily | `run` | Early-morning sweep |
-| 09:30 daily | `daily` | Final sweep + AI scoring, then the **brief PDF and top cards on Telegram by about 09:45** |
-| 10:00 Monday | `weekly` | Weekly brief PDF + Excel on Telegram |
-| 03:10 daily | `train` | Retrain the relevance model on the day's feedback, re-score |
+| 13 attempts between 02:47 and 10:07 | `morning` | Each attempt collects, tags and scores. The **first attempt that runs after 08:45 IST sends the daily brief PDF to Telegram**, once per day. On Mondays it also sends the weekly brief and Excel. |
+| 18:07 daily | `run` | Evening sweep: watch 8 government pages, read Telegram, collect the feeds, rebuild the dashboard |
+| 00:13 daily | `train` | Retrain the relevance model on the day's feedback, re-score |
+
+GitHub starts scheduled jobs late. We measured 2 to 6 hours of delay on 30 Sep – 4 Oct, when a
+single 09:30 job delivered the brief at about 15:30. That is why the morning job is attempted
+many times and the send is gated by time (`tracker report --send --once-after 08:45`). A
+manual run (Actions → tracker → Run workflow → `daily`) always sends immediately.
 
 Each job restores the database from the `data` branch at the start and saves it back at the
 end. Reports, the dashboard and a database copy are kept as artifacts for 14 days.

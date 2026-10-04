@@ -340,6 +340,42 @@ def telegram_text(data: ReportData, limit: int = 8) -> str:
     return "\n".join(lines)
 
 
+def sent_key(kind: str, now: datetime) -> str:
+    """One key per day (daily) or per ISO week (weekly), in IST."""
+    local = now.astimezone(IST)
+    if kind == "weekly":
+        year, week, _ = local.isocalendar()
+        return f"brief_sent_weekly_{year}-W{week:02d}"
+    return f"brief_sent_daily_{local:%Y-%m-%d}"
+
+
+def should_send(conn: sqlite3.Connection, kind: str, once_after: str | None, now: datetime | None = None) -> tuple[bool, str]:
+    """Gate for scheduled sends: only once per period, and not before `once_after` (HH:MM, IST).
+
+    GitHub starts scheduled jobs hours late and unpredictably, so the morning job is attempted
+    several times; whichever attempt first runs after the gate time sends the brief.
+    """
+    from tracker.db import kv_get
+
+    if not once_after:
+        return True, "manual send"
+    now = now or datetime.now(timezone.utc)
+    if kv_get(conn, sent_key(kind, now)):
+        return False, "already sent for this period"
+    hour, minute = (int(x) for x in once_after.split(":"))
+    local = now.astimezone(IST)
+    if (local.hour, local.minute) < (hour, minute):
+        return False, f"too early ({local:%H:%M} IST, sending after {once_after})"
+    return True, "first run after the gate time"
+
+
+def mark_sent(conn: sqlite3.Connection, kind: str, now: datetime | None = None) -> None:
+    from tracker.db import kv_set
+
+    now = now or datetime.now(timezone.utc)
+    kv_set(conn, sent_key(kind, now), now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+
+
 def write_report(cfg: AppConfig, data: ReportData, out_root: Path | None = None) -> dict[str, Path]:
     folder = (out_root or cfg.resolve(cfg.settings.reports.output_dir)) / f"{data.kind}-{data.date}"
     folder.mkdir(parents=True, exist_ok=True)
