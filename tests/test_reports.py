@@ -94,3 +94,19 @@ def test_pdf_rendering_when_a_browser_exists(tmp_path):
     html.write_text("<html><body><h1>मुंबई — test</h1></body></html>", encoding="utf-8")
     pdf = html_to_pdf(html, tmp_path / "x.pdf")
     assert pdf and pdf.read_bytes()[:4] == b"%PDF"
+
+
+def test_scheduled_send_is_gated_and_once_per_day(tmp_path):
+    from datetime import timedelta
+    from tracker.reports import mark_sent, sent_key, should_send
+
+    conn = connect(tmp_path / "gate.db")
+    early = datetime(2026, 10, 5, 2, 0, tzinfo=timezone.utc)    # 07:30 IST
+    after = datetime(2026, 10, 5, 3, 30, tzinfo=timezone.utc)   # 09:00 IST
+    assert should_send(conn, "daily", None, early)[0]                    # manual sends are never gated
+    assert not should_send(conn, "daily", "08:45", early)[0]             # too early
+    assert should_send(conn, "daily", "08:45", after)[0]                 # first run after the gate
+    mark_sent(conn, "daily", after)
+    assert not should_send(conn, "daily", "08:45", after + timedelta(hours=2))[0]   # already sent today
+    assert should_send(conn, "daily", "08:45", after + timedelta(days=1))[0]        # next day sends again
+    assert sent_key("weekly", after) == "brief_sent_weekly_2026-W41"
