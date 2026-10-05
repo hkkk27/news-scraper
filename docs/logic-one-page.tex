@@ -1,0 +1,201 @@
+% How the tracker works: one page. Compile with pdfLaTeX (Overleaf default).
+\documentclass[8pt,a4paper]{extarticle}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[scaled=0.95]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[a4paper,margin=1.1cm]{geometry}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{adjustbox}
+\usepackage{microtype}
+
+\definecolor{ink}{HTML}{0B1220}
+\definecolor{accent}{HTML}{1D4ED8}
+\definecolor{muted}{HTML}{475569}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt}
+\setlength{\columnsep}{14pt}
+\setlist{nosep,leftmargin=1.1em,itemsep=1pt}
+\setlist[enumerate]{nosep,leftmargin=1.6em,itemsep=1pt}
+
+\newcommand{\stage}[2]{\vspace{5pt}{\large\bfseries{\color{accent}Stage #1}\quad #2}\par\nobreak\vspace{1pt}%
+  {\color{accent}\hrule height 0.6pt}\nobreak\vspace{3pt}}
+\newcommand{\kw}[1]{\textit{#1}}
+\newcommand{\lbl}[1]{\textbf{#1}}
+
+\begin{document}
+\color{ink}
+\noindent
+% The whole page is one box that is scaled down if needed, so it always prints on a single page.
+\begin{adjustbox}{max totalheight=\textheight,max width=\textwidth,center}
+\begin{minipage}{\textwidth}
+
+{\LARGE\bfseries How the Tracker Works: the Logic, Stage by Stage}\par
+\vspace{2pt}
+{\color{muted}News \& Election Tracker (India): school education, higher education, skill development and the
+governance signals around them. Every keyword and number below is a setting; changing one needs no new code.}\par
+
+\begin{multicols}{2}
+
+\stage{1}{Collect (scraping)}
+\begin{itemize}
+  \item \lbl{52 news feeds.} 8 publisher feeds (The Hindu, Indian Express, ThePrint, EdexLive, LiveLaw, PIB,
+        Dainik Bhaskar, Amar Ujala) and 44 Google News searches: 7 topics (school, higher education, skills,
+        transfers, elections, courts, policy) in up to 9 languages (English, Hindi, Marathi, Tamil, Telugu,
+        Bengali, Gujarati, Malayalam, Punjabi).
+  \item \lbl{8 government pages} (UGC, AICTE, CBSE, NTA, DoPT, Supreme Court, DGT, Maharashtra State Election
+        Commission). The system remembers every link it has seen on a page; a link it has not seen before is a
+        new notice. The first visit only records a baseline. The first page of each new PDF is read.
+  \item \lbl{Items the user forwards} (a link or a notification) enter the same pipeline.
+  \item Each item keeps its headline, summary, link, source and date. About 1,400 items per run.
+\end{itemize}
+
+\stage{2}{Keyword matching (tagging)}
+\lbl{Matching rules.} English: whole words, any case. Acronyms in capitals: exact case, so \kw{ITI} never matches
+inside ``politics''. Indian languages: match at the start of a word and allow endings. About 700 keywords in
+nine languages; the main English ones are listed here.
+
+\vspace{2pt}
+\lbl{Sector keywords} (strong words are unambiguous; normal words are supporting evidence)
+\begin{itemize}
+  \item \lbl{School, strong:} \kw{CBSE, ICSE, NCERT, SCERT, NIOS, board exam, Class 10, Class 12, Samagra Shiksha,
+        PM SHRI, PM POSHAN, mid-day meal, teacher recruitment, Right to Education, UDISE, NIPUN Bharat, Kendriya
+        Vidyalaya, Navodaya Vidyalaya, TET, CTET, government schools, school fees.}
+        \lbl{Normal:} \kw{school, student, teacher, textbook, curriculum, syllabus, enrolment, dropout, anganwadi,
+        principal, education.}
+  \item \lbl{Higher education, strong:} \kw{UGC, AICTE, NAAC, NIRF, NTA, CUET, JEE, NEET, UGC-NET, GATE, IIT, IIM,
+        NIT, central university, vice-chancellor, higher education, NEP 2020, foreign university, PhD.}
+        \lbl{Normal:} \kw{university, college, campus, faculty, professor, admission, entrance exam, scholarship,
+        hostel, degree, fee hike, accreditation.}
+  \item \lbl{Skills, strong:} \kw{ITI, NSDC, NCVET, MSDE, PMKVY, Skill India, skill development, skilling,
+        apprenticeship, vocational training, polytechnic, DDU-GKY, PM Vishwakarma, PM Internship.}
+        \lbl{Normal:} \kw{employability, job fair, placement drive, trainees, certification, skill gap.}
+\end{itemize}
+
+\vspace{2pt}
+\lbl{Category keywords} (checked in this order; the first match is the category)
+\begin{enumerate}
+  \item \lbl{Court:} \kw{Supreme Court, High Court, HC, bench, PIL, petition, verdict, judgment, quashes, stays,
+        upholds, contempt, writ, SC directs/asks/extends.}
+  \item \lbl{Transfer:} \kw{transferred, reshuffle, posted as, appointed as, additional charge, takes charge,
+        repatriated} \lbl{and} one of \kw{IAS, IPS, IFS, secretary, commissioner, collector, district magistrate,
+        DGP, vice-chancellor, registrar, chairperson.}
+  \item \lbl{Election:} \kw{election, polls, bypoll, civic/municipal/panchayat polls, zilla parishad, State
+        Election Commission, ECI, model code of conduct, voter list, nomination, counting.}
+        It is an \lbl{announcement} if it also has \kw{schedule, notification, dates, to be held, phase, ward reservation.}
+  \item \lbl{Policy:} \kw{policy, scheme, notification, circular, guidelines, regulations, cabinet approves,
+        launches, amendment, bill, ordinance, budget, government order.}
+  \item \lbl{Political:} \kw{sworn in, cabinet expansion, cabinet reshuffle, portfolio, resigns, alliance, floor
+        test, government formation.}
+  \item \lbl{Statement:} \kw{said, urged, slammed, demanded, assured, announced, alleged.}
+  \item \lbl{News:} everything else.
+\end{enumerate}
+
+\vspace{2pt}
+\lbl{Off-topic words:} \kw{cricket, IPL, Bollywood, box office, horoscope, Sensex, Nifty, stock market, gold price,
+smartphone, web series, celebrity, football.}
+\lbl{Noise phrases:} \kw{headlines for school assembly, answer key, admit card download, direct link, GK quiz.}
+
+\lbl{State:} names of all 36 states and union territories in their own scripts, major cities, and the seat of
+each High Court (\kw{Bombay HC} $\rightarrow$ Maharashtra). A ``New Delhi'' dateline alone is ignored.
+
+\stage{3}{Scoring (0 to 100)}
+\lbl{Rule score} = sector points + category points + bonuses $-$ penalties, limited to 0--100.
+
+\vspace{2pt}
+\begin{tabularx}{\columnwidth}{@{}Xr@{}}
+\toprule
+\lbl{Sector evidence} (the best match counts) & \lbl{Points}\\
+\midrule
+Strong keyword in the headline & 40\\
+Normal keyword in the headline & 25\\
+Strong keyword only in the summary & 20\\
+Normal keyword only in the summary & 10\\
+Each further distinct keyword (maximum 55 in total) & +5\\
+\bottomrule
+\end{tabularx}
+{\color{muted}A sector is tagged only when it reaches 20 points.}
+
+\vspace{3pt}
+\begin{tabularx}{\columnwidth}{@{}Xrr@{}}
+\toprule
+\lbl{Category} & \lbl{Base} & \lbl{If a sector also matched}\\
+\midrule
+Election announcement & 58 & +15\\
+Transfer & 55 & +30\\
+Election (other coverage) & 40 & +15\\
+Political & 35 & +15\\
+Court & 15 & +30\\
+Policy & 10 & +25\\
+Statement / News & 0 & +10 / +5\\
+\bottomrule
+\end{tabularx}
+
+\vspace{3pt}
+\begin{itemize}
+  \item \lbl{Bonuses:} a ministry, regulator, board, court or election body is named +10; the source's own focus
+        agrees +10; source trust 0 to +20 (education sections +20, official sites +5 to +15, Google News +5).
+  \item \lbl{Penalties:} off-topic word $-45$ ($-15$ if a sector also matched); noise phrase $-45$; foreign news
+        with no Indian place $-40$; a source the user muted $-30$.
+  \item If the category is known only from the source's focus (no keyword), it gets half the base and no bonus.
+\end{itemize}
+
+\lbl{Examples} (text only, before source trust). ``Bombay HC quashes Maharashtra order on teacher recruitment'':
+\kw{teacher recruitment} in the headline 40 + one more keyword 5 + court 15 + court with a sector 30 + High Court
+named 10 = \lbl{100}; tagged Court, School education, Maharashtra. ``IPL final: Mumbai school students cheer'':
+\kw{school} 25 + one more keyword 5 + news with a sector 5 $-$ off-topic 15 = \lbl{20}; dropped.
+
+\vspace{2pt}
+\lbl{Three adjustments after the rules}
+\begin{enumerate}
+  \item \lbl{Learning model.} Logistic regression on TF-IDF features, trained on the user's thumbs up / thumbs
+        down. Final $=$ rule score $+\, w \times (100p - 50)$, where $p$ is the model's probability that the item
+        is relevant and $w$ grows with the number of ratings up to 0.7. So it moves a score by at most 35 points
+        and does nothing when unsure ($p = 0.5$).
+  \item \lbl{AI second opinion} (free models), only for scores from 40 to 65: the final score is the average of
+        that score and the AI's score. Limits: 20 items per request, 8 requests per run, 40 per day.
+  \item \lbl{The user has the last word:} thumbs up sets 95, thumbs down sets 10, a forwarded item gets at least 95.
+\end{enumerate}
+
+\stage{4}{Duplicates}
+\begin{itemize}
+  \item \lbl{Same article.} Links are normalised (no \texttt{www}/\texttt{m}/\texttt{amp}, no tracking codes such as
+        \texttt{utm\_source}, no fragments), so one article is stored once.
+  \item \lbl{Same event, different outlets.} Headlines are normalised (\kw{SC} $\rightarrow$ \kw{supreme court},
+        \kw{HC} $\rightarrow$ \kw{high court}, \kw{Class VI} $\rightarrow$ \kw{class 6}, \kw{third/3rd}
+        $\rightarrow$ \kw{3}) and compared by TF-IDF cosine similarity on words and word pairs. Two items are the
+        same story when similarity $\geq 0.40$, the language is the same, they are within 72 hours, and their
+        states do not conflict. The highest-scored item leads the story; the number of outlets is recorded
+        (``reported by 14 outlets'').
+  \item \lbl{On screen.} Headlines sharing at least 3 key words and 40\% of the shorter headline fold under one card.
+  \item Google News adds ``-- Publisher'' to headlines; it is split off so \kw{Punjab Kesari} is not read as Punjab.
+\end{itemize}
+
+\stage{5}{Ranking and reporting}
+\begin{itemize}
+  \item \lbl{Bands:} Core $\geq 80$; Relevant 60--79; Peripheral 40--59; below 40 is dropped from reports (kept 30
+        days so the model can learn from it).
+  \item \lbl{Priority:} High = score $\geq 80$ and a policy, court, transfer or election item tied to a sector
+        (transfers always qualify); Medium = score $\geq 60$; Low = the rest.
+  \item \lbl{Order:} priority first, then score, then number of outlets. The top list has 8 items, at most 3 per
+        category, and skips a headline that repeats one already chosen.
+  \item \lbl{Output:} a daily PDF brief (top developments, transfers, elections, court rulings), a weekly Excel
+        (state by sector), and a dashboard with search and filters by state, sector, category and language. Each item
+        shows ``why this score'': the exact points listed above.
+\end{itemize}
+
+\end{multicols}
+
+\vspace{1pt}
+{\color{muted}\footnotesize The complete keyword lists in nine languages, all weights and the source list are plain
+settings files (\texttt{config/}); they are tuned to the client's criteria.}
+
+\end{minipage}
+\end{adjustbox}
+\end{document}

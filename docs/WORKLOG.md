@@ -5,6 +5,30 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-10-05 — One-page logic explainer for the client (LaTeX)
+
+**Branch:** `docs/logic-one-page`
+
+### Why
+
+After the call, the client asked to understand the logic: how items are collected, which keywords are used, how the score is built, how items are ranked and how duplicates are found.
+
+### Done
+
+- **`docs/logic-one-page.tex`.** One A4 page, five stages: collect, keyword matching, scoring, duplicates, ranking and reporting. It lists the main English keywords for every sector and category, the off-topic and noise lists, the full points table, the three adjustments after the rules (learning model, AI second opinion, user rating) and two worked examples.
+- **Checked against the code, not written from memory.** Source counts come from `tracker sources list` (52 news feeds = 8 publisher + 44 Google News; 8 government pages; 1 forwarded-items feed). Weights come from `config/taxonomy/scoring.yaml`. Both examples were run through the real tagger (100 and 20). The AI rule was read from `process.combine`.
+
+### Not verified
+
+- **The file has not been compiled.** No LaTeX engine is installed on this machine. Only a syntax check was run (balanced braces and environments, ASCII only). Compile it on Overleaf with pdfLaTeX. The page is wrapped in a box that scales down if the text is too long, so it stays on one page, but the type will be small (about 7.5 pt).
+
+### Notes
+
+- The page shows the main English keywords, not all of them. The full set is about 700 keywords in nine languages in `config/taxonomy/`.
+- This log has no entries for 30 Sep – 4 Oct (PDF brief, dashboard restyle, morning delivery fix). Those changes are described in their commit messages and in `docs/RUNBOOK.md`.
+
+---
+
 ## 2026-09-29 — M4-01 Handover documents
 
 **Branch:** `docs/m4-01-handover-docs`
