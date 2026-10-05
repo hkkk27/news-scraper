@@ -1,0 +1,178 @@
+% How the tracker works: two pages, black and white, Times. Compile with pdfLaTeX (Overleaf default).
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx}
+\usepackage[a4paper,margin=1.8cm]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{adjustbox}
+\usepackage{microtype}
+
+\pagestyle{plain}
+\setlength{\parindent}{0pt}
+\setlist{leftmargin=1.4em,topsep=1pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
+\setlist[enumerate]{leftmargin=1.7em,topsep=1pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
+
+\newcommand{\stage}[2]{\vspace{7pt}{\large\bfseries Stage #1.\enspace #2}\par\nobreak\vspace{1pt}%
+  \hrule height 0.5pt\nobreak\vspace{3pt}}
+\newcommand{\kw}[1]{\textit{#1}}
+\newcommand{\lbl}[1]{\textbf{#1}}
+
+\begin{document}
+
+% Each page is one box. A box is scaled down only if its text is too long, so the document is always two pages.
+\noindent
+\begin{adjustbox}{max totalheight=0.98\textheight,max width=\textwidth,center}
+\begin{minipage}{\textwidth}
+\setlength{\parskip}{4pt}
+
+{\LARGE\bfseries How the Tracker Works: the Logic, Stage by Stage}\par
+
+\stage{1}{Collecting the news}
+
+\begin{itemize}
+  \item \lbl{News.} 52 news feeds covering 7 topics (school, higher education, skills, transfers, elections, courts, policy) in up to 9 languages (English, Hindi, Marathi, Tamil, Telugu, Bengali, Gujarati, Malayalam, Punjabi).
+  \item \lbl{Government websites.} 8 official pages: UGC, AICTE, CBSE, NTA, DoPT, Supreme Court, DGT and the Maharashtra State Election Commission. The system remembers the links it has already seen, so a link it has not seen before is a new notice. If the notice is a PDF, it reads the first page.
+  \item \lbl{Items sent by the user.} A link or a notice that the user forwards is added to the same list.
+  \item Each item is saved with its headline, a short summary, link, source and date. One round brings in about 1,400 items.
+\end{itemize}
+
+\stage{2}{Finding the keywords}
+
+Fixed keywords in the headline and the summary decide the \lbl{sector}, the \lbl{category} (type of news) and the \lbl{state} of each item. About 700 keywords are used, in nine languages. The main English ones are listed here.
+
+\lbl{How a keyword is matched.} English words must match as whole words; capital and small letters are treated the same. Short forms in capitals must match exactly, so \kw{ITI} is never found inside ``politics''. Words in Indian languages are matched from the start of the word, so the same word with a different ending is still found.
+
+\lbl{Sector keywords.} Strong keywords clearly belong to the sector. Supporting keywords only point towards it.
+
+\begin{itemize}
+  \item \lbl{School education. Strong:} \kw{CBSE, ICSE, NCERT, SCERT, NIOS, board exam, Class 10, Class 12, Samagra Shiksha, PM SHRI, PM POSHAN, mid-day meal, teacher recruitment, Right to Education, UDISE, NIPUN Bharat, Kendriya Vidyalaya, Navodaya Vidyalaya, TET, CTET, government schools, school fees.} \lbl{Supporting:} \kw{school, student, teacher, textbook, curriculum, syllabus, enrolment, dropout, anganwadi, principal, education.}
+  \item \lbl{Higher education. Strong:} \kw{UGC, AICTE, NAAC, NIRF, NTA, CUET, JEE, NEET, UGC-NET, GATE, IIT, IIM, NIT, central university, vice-chancellor, higher education, NEP 2020, foreign university, PhD.} \lbl{Supporting:} \kw{university, college, campus, faculty, professor, admission, entrance exam, scholarship, hostel, degree, fee hike, accreditation.}
+  \item \lbl{Skill development. Strong:} \kw{ITI, NSDC, NCVET, MSDE, PMKVY, Skill India, skill development, skilling, apprenticeship, vocational training, polytechnic, DDU-GKY, PM Vishwakarma, PM Internship.} \lbl{Supporting:} \kw{employability, job fair, placement drive, trainees, certification, skill gap.}
+\end{itemize}
+
+\lbl{Category keywords.} The categories are checked in this order. The first one that matches becomes the category.
+
+\begin{enumerate}
+  \item \lbl{Court:} \kw{Supreme Court, High Court, HC, bench, PIL, petition, verdict, judgment, quashes, stays, upholds, contempt, writ, SC directs, SC asks, SC extends.}
+  \item \lbl{Transfer:} \kw{transferred, reshuffle, posted as, appointed as, additional charge, takes charge, repatriated.} The item must also name a service or a post: \kw{IAS, IPS, IFS, secretary, commissioner, collector, district magistrate, DGP, vice-chancellor, registrar, chairperson.}
+  \item \lbl{Election:} \kw{election, polls, bypoll, civic polls, municipal polls, panchayat polls, zilla parishad, State Election Commission, ECI, model code of conduct, voter list, nomination, counting.} It is an \lbl{election announcement} if it also has: \kw{schedule, notification, dates, to be held, phase, ward reservation.}
+  \item \lbl{Policy:} \kw{policy, scheme, notification, circular, guidelines, regulations, cabinet approves, launches, amendment, bill, ordinance, budget, government order.}
+  \item \lbl{Political:} \kw{sworn in, cabinet expansion, cabinet reshuffle, portfolio, resigns, alliance, floor test, government formation.}
+  \item \lbl{Statement:} \kw{said, urged, slammed, demanded, assured, announced, alleged.}
+  \item \lbl{News:} everything else.
+\end{enumerate}
+
+\lbl{Other keyword lists}
+
+\begin{itemize}
+  \item \lbl{Off-topic words} (they lower the score): \kw{cricket, IPL, Bollywood, box office, horoscope, Sensex, Nifty, stock market, gold price, smartphone, web series, celebrity, football.}
+  \item \lbl{Low-value phrases} (they lower the score): \kw{headlines for school assembly, answer key, admit card download, direct link, GK quiz.}
+  \item \lbl{State:} the names of all 36 states and union territories (in English and in their own scripts), major cities and High Courts (\kw{Bombay HC} means Maharashtra). ``New Delhi'' written only as the place of reporting is ignored.
+\end{itemize}
+
+\end{minipage}
+\end{adjustbox}
+
+\newpage
+
+\noindent
+\begin{adjustbox}{max totalheight=0.98\textheight,max width=\textwidth,center}
+\begin{minipage}{\textwidth}
+\setlength{\parskip}{4pt}
+
+\stage{3}{Scoring (0 to 100)}
+
+\lbl{Score = sector points + category points + bonus points $-$ penalty points.} A higher score means a more useful item.
+
+\vspace{2pt}
+\begin{minipage}[t]{0.47\textwidth}
+\lbl{Sector points} (only the best match counts)\par\vspace{2pt}
+\begin{tabularx}{\linewidth}{@{}Xr@{}}
+\toprule
+Where the keyword is found & Points\\
+\midrule
+Strong keyword in the headline & 40\\
+Supporting keyword in the headline & 25\\
+Strong keyword only in the summary & 20\\
+Supporting keyword only in the summary & 10\\
+Each extra keyword (sector points stop at 55) & +5\\
+\bottomrule
+\end{tabularx}\par\vspace{2pt}
+A sector is tagged only when it reaches 20 points.\par\vspace{7pt}
+\lbl{Bonus points}\par\vspace{2pt}
+\begin{tabularx}{\linewidth}{@{}Xr@{}}
+\toprule
+Ministry, regulator, board, court or election body named & +10\\
+The feed was set up for the same topic & +10\\
+Source: education page of a newspaper & +20\\
+Source: government website & +5 to +15\\
+Source: general news search & +5\\
+\bottomrule
+\end{tabularx}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\lbl{Category points} (Extra: if a sector is also found)\par\vspace{2pt}
+\begin{tabularx}{\linewidth}{@{}Xrr@{}}
+\toprule
+Category & Points & Extra\\
+\midrule
+Election announcement & 58 & +15\\
+Transfer & 55 & +30\\
+Election (other news) & 40 & +15\\
+Political & 35 & +15\\
+Court & 15 & +30\\
+Policy & 10 & +25\\
+Statement & 0 & +10\\
+News & 0 & +5\\
+\bottomrule
+\end{tabularx}\par\vspace{7pt}
+\lbl{Penalty points}\par\vspace{2pt}
+\begin{tabularx}{\linewidth}{@{}Xr@{}}
+\toprule
+Off-topic word ($-15$ if a sector keyword is also present) & $-45$\\
+Low-value phrase & $-45$\\
+Foreign news with no mention of India & $-40$\\
+Source muted by the user & $-30$\\
+\bottomrule
+\end{tabularx}
+\end{minipage}
+
+\lbl{Two examples} (points from the text only, before the bonus for the source)
+
+\begin{itemize}
+  \item ``Bombay HC quashes Maharashtra order on teacher recruitment'': \kw{teacher recruitment} in the headline 40 + one extra keyword 5 + court 15 + court with a sector 30 + High Court named 10 = \lbl{100} (Court, School education, Maharashtra).
+  \item ``IPL final: Mumbai school students cheer'': \kw{school} in the headline 25 + one extra keyword 5 + news with a sector 5 $-$ off-topic word 15 = \lbl{20} (left out of the reports).
+\end{itemize}
+
+\lbl{Three checks after the keyword score}
+
+\begin{enumerate}
+  \item \lbl{Learning from the user.} The user gives items a thumbs up or a thumbs down. The system learns from this and moves the score of similar new items up or down, by at most 35 points.
+  \item \lbl{AI second opinion.} When the score is doubtful (40 to 65), a free AI model also scores the item, and the final score is the average of the two. Limit: 40 AI requests a day, 20 items in each.
+  \item \lbl{The user decides.} A thumbs up sets the score to 95 and a thumbs down sets it to 10. A forwarded item gets at least 95.
+\end{enumerate}
+
+\stage{4}{Removing duplicates}
+
+\begin{itemize}
+  \item \lbl{The same article twice.} Each link is cleaned first (``www'', mobile versions and tracking text are removed), so the same article is saved only once.
+  \item \lbl{The same event in different newspapers.} Headlines are first put in a standard form (\kw{SC} becomes \kw{supreme court}, \kw{Class VI} becomes \kw{class 6}). The system then measures how similar the words of two headlines are, from 0 to 1. They are one story if the similarity is 0.40 or more, the language is the same, both appeared in the last 72 hours and they do not name different states. The report then shows the count (``reported by 14 outlets'').
+  \item \lbl{In the report.} Headlines that share at least 3 important words, and 40\% of the shorter headline, are shown as one card.
+\end{itemize}
+
+\stage{5}{Ranking and reporting}
+
+\begin{itemize}
+  \item \lbl{Bands.} Core: 80 and above. Relevant: 60 to 79. Peripheral: 40 to 59. Below 40: left out of the reports.
+  \item \lbl{Priority.} High: a score of 80 or more, and a policy, court, transfer or election item linked to a sector (a transfer needs no sector). Medium: a score of 60 or more. Low: the rest.
+  \item \lbl{Order.} Priority first, then score, then the number of outlets. The top list has 8 items, at most 3 from one category, and no event is repeated.
+  \item \lbl{What the user receives.} A daily PDF brief, a weekly Excel sheet (state by sector) and a dashboard with search and filters. Every item shows ``why this score'': the points listed above.
+\end{itemize}
+
+\end{minipage}
+\end{adjustbox}
+
+\end{document}

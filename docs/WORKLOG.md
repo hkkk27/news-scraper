@@ -5,6 +5,28 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-10-05 — Logic explainer reworked as two pages (client feedback)
+
+**Branch:** `docs/logic-two-pages`
+
+### Why
+
+The one-page version was too congested to read. The owner asked for two pages, black and white, Times, simpler language, and three pieces of text removed.
+
+### Done
+
+- **Renamed** `docs/logic-one-page.tex` to `docs/tracker-logic.tex`, because it is no longer one page.
+- **Layout.** Two pages, single column, 10 pt Times (`mathptmx`), no colour. Page 1: collecting and keywords. Page 2: scoring, duplicates, ranking. The points are now four small tables (sector, bonus, category, penalty).
+- **Removed** the list of publisher feeds and the Google News count, the grey subtitle under the title, and the footer about settings files.
+- **Simpler wording.** No "TF-IDF", "logistic regression", "baseline" or formulas. The learning step is described by what it does (moves a score by at most 35 points).
+- **Kept accurate.** Bonus rows match the source priors in `tracker sources list` (education pages +20, government sites +5 to +15, news search +5).
+
+### Not verified
+
+- **Still not compiled**; there is no LaTeX engine on this machine. A syntax check passes. Page fit was estimated by measuring the text with the real Times New Roman fonts: about 94% and 95% full at 10 pt. Each page sits in a box that scales down only if the text is too long, so the result is two pages either way.
+
+---
+
 ## 2026-10-05 — One-page logic explainer for the client (LaTeX)
 
 **Branch:** `docs/logic-one-page`
