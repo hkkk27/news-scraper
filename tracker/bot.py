@@ -4,8 +4,9 @@
   A press is stored in the `feedback` table and trains the relevance model.
 * Anything forwarded to the bot (a link, a PDF, or plain text) becomes an item in
   data/feeds/manual-feed-in.xml, which the engine ingests; it also counts as a positive label.
-* Only chat IDs in TELEGRAM_ALLOWED_CHAT_IDS are served. Anyone else who sends /start is told
-  their chat ID so an admin can add it.
+* Chat IDs in TELEGRAM_ALLOWED_CHAT_IDS are the admins: only they can train and add items.
+* With `telegram.public` on, anyone else can press Start to receive the briefs and use the
+  read-only commands. With it off, anyone else is only told their chat ID so an admin can add it.
 
 Runs in two ways:
 * `tracker bot poll`   — process pending updates once (used by the scheduled pipeline).
@@ -44,8 +45,18 @@ HELP = (
     "  👍 relevant · 👎 not relevant · ⭐ key item · 🔇 mute this source\n"
     "• Forward or paste a <b>link</b>, send a <b>PDF</b>, or paste <b>text</b> to add it to the tracker.\n"
     "• /today — today's brief · /search &lt;words&gt; · /state &lt;name&gt; · /sector &lt;name&gt;\n"
-    "• /id — show this chat's ID"
+    "• /id — show this chat's ID · /users — how many people get the brief"
 )
+PUBLIC_HELP = (
+    "<b>News & Election Tracker</b>\n\n"
+    "You will get the daily brief here every morning.\n"
+    "• /today — today's top items · /week — this week's\n"
+    "• /search &lt;words&gt; · /state &lt;name&gt; · /sector &lt;name&gt;\n"
+    "• /stop — stop the daily brief · /start — turn it on again\n\n"
+    "Replies are not instant: messages are read a few times a day."
+)
+GONE = ("blocked", "deactivated", "chat not found", "kicked")  # Telegram errors for a chat that has left
+PUBLIC_CARDS_PER_MESSAGE = 4
 
 
 @dataclass
@@ -84,17 +95,24 @@ def card_text(card: Card) -> str:
 
 class Bot:
     def __init__(self, client, conn: sqlite3.Connection, allowed_chat_ids: list[int], http=None,
-                 manual_feed: Path = MANUAL_FEED, commands: dict | None = None):
+                 manual_feed: Path = MANUAL_FEED, commands: dict | None = None, public: bool = False):
         self.client = client
         self.conn = conn
-        self.allowed = set(allowed_chat_ids)
+        self.allowed = set(allowed_chat_ids)  # the admins
         self.http = http              # used to look up titles of forwarded links
         self.manual_feed = manual_feed
         self.commands = commands or {}  # extra /commands registered by other modules (reports, search)
+        self.public = public
 
     # --- sending ------------------------------------------------------------------------------
 
     def send_cards(self, chat_id: int, cards: list[Card]) -> int:
+        """Admins get one message per item with the training buttons; public users get plain lists."""
+        if chat_id not in self.allowed:
+            for start in range(0, len(cards), PUBLIC_CARDS_PER_MESSAGE):
+                batch = cards[start:start + PUBLIC_CARDS_PER_MESSAGE]
+                self.client.send_message(chat_id, "\n\n".join(card_text(card) for card in batch))
+            return len(cards)
         sent = 0
         for card in cards:
             message = self.client.send_message(chat_id, card_text(card), reply_markup=card_keyboard(card.key))
@@ -105,6 +123,48 @@ class Bot:
             sent += 1
         self.conn.commit()
         return sent
+
+    def subscribers(self) -> list[int]:
+        """Public users who pressed Start and have not sent /stop or blocked the bot."""
+        rows = self.conn.execute(
+            "SELECT chat_id FROM subscribers WHERE active = 1 ORDER BY joined_at, chat_id").fetchall()
+        return [row["chat_id"] for row in rows if row["chat_id"] not in self.allowed]
+
+    def recipients(self) -> list[int]:
+        return sorted(self.allowed) + (self.subscribers() if self.public else [])
+
+    def broadcast(self, documents: list[tuple[Path, str]], cards: list[Card], text: str = "") -> int:
+        """Send the brief to every recipient; returns how many chats were reached.
+
+        Each file is uploaded once and then re-sent by its Telegram file ID. Admins also get the
+        item cards with training buttons. One unreachable chat never stops the others; a public
+        user who blocked the bot is dropped from the list.
+        """
+        file_ids: dict[Path, str] = {}
+        reached = 0
+        for chat_id in self.recipients():
+            try:
+                if text:
+                    self.client.send_message(chat_id, text)
+                for path, caption in documents:
+                    message = self.client.send_document(chat_id, path, caption, file_id=file_ids.get(path))
+                    file_id = (message.get("document") or {}).get("file_id")
+                    if file_id:
+                        file_ids[path] = file_id
+                if chat_id in self.allowed:
+                    self.send_cards(chat_id, cards)
+                reached += 1
+            except Exception as exc:
+                log.warning("brief not delivered to chat %s: %s", chat_id, exc)
+                if chat_id not in self.allowed and any(word in str(exc).lower() for word in GONE):
+                    self._subscribe(chat_id, False)
+        return reached
+
+    def _subscribe(self, chat_id: int, active: bool) -> None:
+        self.conn.execute("INSERT INTO subscribers(chat_id, active, joined_at) VALUES(?,?,?) "
+                          "ON CONFLICT(chat_id) DO UPDATE SET active = excluded.active",
+                          (chat_id, int(active), utcnow()))
+        self.conn.commit()
 
     # --- receiving ----------------------------------------------------------------------------
 
@@ -131,6 +191,8 @@ class Bot:
             return "ignored"
         text = (message.get("text") or message.get("caption") or "").strip()
         if chat_id not in self.allowed:
+            if self.public:
+                return self.handle_public(chat_id, text)
             if text.startswith(("/start", "/id")):
                 self.client.send_message(chat_id, f"This chat's ID is <code>{chat_id}</code>. Ask the tracker "
                                                   "admin to add it to TELEGRAM_ALLOWED_CHAT_IDS.")
@@ -139,6 +201,26 @@ class Bot:
             return self.handle_command(chat_id, text)
         return self.handle_intake(message)
 
+    def handle_public(self, chat_id: int, text: str) -> str:
+        """Anyone may subscribe, read and search. Training and adding items stay with the admins,
+        so a stranger cannot change the scores or put items into the reports."""
+        name = text.partition(" ")[0].split("@")[0].lower()
+        if name == "/start":
+            self._subscribe(chat_id, True)
+            self.client.send_message(chat_id, PUBLIC_HELP)
+        elif name == "/stop":
+            self._subscribe(chat_id, False)
+            self.client.send_message(chat_id, "Stopped. Send /start to get the daily brief again.")
+        elif name == "/help":
+            self.client.send_message(chat_id, PUBLIC_HELP)
+        elif name.startswith("/"):
+            return self.handle_command(chat_id, text)
+        else:
+            self.client.send_message(chat_id, "Only the tracker's admins can add items. Send /help to see "
+                                              "what you can do.")
+            return "ignored"
+        return "command"
+
     def handle_command(self, chat_id: int, text: str) -> str:
         name, _, arg = text.partition(" ")
         name = name.split("@")[0].lower()
@@ -146,6 +228,10 @@ class Bot:
             self.client.send_message(chat_id, HELP)
         elif name == "/id":
             self.client.send_message(chat_id, f"This chat's ID is <code>{chat_id}</code>.")
+        elif name == "/users" and chat_id in self.allowed:
+            self.client.send_message(chat_id, f"{len(self.allowed)} admin chat(s), {len(self.subscribers())} "
+                                              f"public subscriber(s). Public access is "
+                                              f"{'on' if self.public else 'off'}.")
         elif name in self.commands:
             reply = self.commands[name](arg.strip())
             if isinstance(reply, list):  # a list of Cards

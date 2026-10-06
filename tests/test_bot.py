@@ -22,6 +22,12 @@ class FakeTelegram:
         self.sent.append((chat_id, text, reply_markup))
         return {"message_id": self._next_id}
 
+    def send_document(self, chat_id, path, caption="", file_id=None):
+        if chat_id in getattr(self, "blocked", ()):
+            raise RuntimeError("sendDocument: Forbidden: bot was blocked by the user")
+        self.documents = getattr(self, "documents", []) + [(chat_id, str(path), file_id)]
+        return {"message_id": 1, "document": {"file_id": "FILE-1"}}
+
     def answer_callback(self, callback_id, text=""):
         self.answered.append((callback_id, text))
 
@@ -108,3 +114,61 @@ def test_registered_command_returns_cards(setup):
     bot.commands["/search"] = lambda q: [Card(url="https://e.com/1", title=f"Result for {q}")]
     bot.handle_update(msg(30, "/search NEET"))
     assert tg.sent[-1][1].startswith("<b>Result for NEET</b>")
+
+
+# --- public mode: anyone can subscribe and read; only admins train and add items ---------------
+
+@pytest.fixture
+def public(tmp_path):
+    conn = connect(tmp_path / "t.db")
+    tg = FakeTelegram()
+    bot = Bot(tg, conn, [ALLOWED], http=FakeHTTP(), manual_feed=tmp_path / "manual.xml", public=True)
+    bot.commands["/today"] = lambda _: [Card(url=f"https://e.com/{n}", title=f"Story {n}") for n in range(5)]
+    return bot, tg, conn, tmp_path
+
+
+def test_public_user_can_subscribe_read_and_stop(public):
+    bot, tg, conn, _ = public
+    assert bot.handle_update(msg(1, "/start", chat=999)) == "command"
+    assert "daily brief" in tg.sent[-1][1] and bot.subscribers() == [999]
+    bot.handle_update(msg(2, "/today", chat=999))
+    lists = tg.sent[1:]
+    assert len(lists) == 2 and all(markup is None for _, _, markup in lists)      # 5 stories, 4 per message
+    assert conn.execute("SELECT COUNT(*) FROM cards").fetchone()[0] == 0          # nothing to press later
+    bot.handle_update(msg(3, "/stop", chat=999))
+    assert bot.subscribers() == []
+    bot.handle_update(msg(4, "/start", chat=999))
+    assert bot.subscribers() == [999]
+
+
+def test_public_user_cannot_add_items_or_train(public):
+    bot, tg, conn, tmp = public
+    assert bot.handle_update(msg(5, "https://x.in/a", chat=999)) == "ignored"
+    assert "admins" in tg.sent[-1][1] and not (tmp / "manual.xml").exists()
+    press = {"update_id": 6, "callback_query": {"id": "cb", "data": "fb:n:abc", "from": {"id": 9},
+                                                "message": {"message_id": 1, "chat": {"id": 999}}}}
+    assert bot.handle_update(press) == "ignored"
+    bot.handle_update(msg(7, "/users", chat=999))
+    assert "Unknown command" in tg.sent[-1][1]
+    assert conn.execute("SELECT COUNT(*) FROM feedback").fetchone()[0] == 0
+
+
+def test_brief_goes_to_admins_and_subscribers_and_survives_a_blocked_chat(public):
+    bot, tg, conn, tmp = public
+    for update_id, chat in ((10, 999), (11, 888)):
+        bot.handle_update(msg(update_id, "/start", chat=chat))
+    tg.blocked = {999}
+    cards = [Card(url="https://e.com/a", title="UGC notifies rules")]
+    assert bot.recipients() == [ALLOWED, 888, 999]
+    assert bot.broadcast([(tmp / "brief.pdf", "Daily brief")], cards) == 2
+    assert [(chat, file_id) for chat, _, file_id in tg.documents] == [(ALLOWED, None), (888, "FILE-1")]
+    assert [chat for chat, _, markup in tg.sent if markup] == [ALLOWED]             # buttons for the admin only
+    assert bot.subscribers() == [888]                                               # the blocked chat is dropped
+    bot.handle_update(msg(12, "/users"))
+    assert "1 public subscriber" in tg.sent[-1][1]
+
+
+def test_private_mode_sends_the_brief_to_admins_only(setup):
+    bot, tg, conn, tmp = setup
+    bot._subscribe(999, True)
+    assert bot.recipients() == [ALLOWED]

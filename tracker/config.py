@@ -102,6 +102,7 @@ class ReportSettings(BaseModel):
 
 class TelegramSettings(BaseModel):
     brief_max_items: int = 10
+    public: bool = False       # True: anyone may subscribe and search; training stays with the admin chat IDs
 
 
 class DashboardSettings(BaseModel):
