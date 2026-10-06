@@ -5,6 +5,42 @@ Newest entries at the top. One entry per task or working session. Format rules a
 
 ---
 
+## 2026-10-06 — Telegram bot opened to the public (read-only)
+
+**Branch:** `feat/public-bot`
+
+### Why
+
+The owner asked for the bot to work for anyone, without adding each person's chat ID by hand.
+
+### Decision
+
+- **Anyone** can press Start, receive the daily and weekly brief, and use `/today`, `/week`, `/search`, `/state`, `/sector`. `/stop` leaves, `/start` rejoins.
+- **Training and adding items stay with the admins** (the chat IDs in `TELEGRAM_ALLOWED_CHAT_IDS`). Otherwise a stranger could push the scores around, mute sources, or forward an item that enters the client's report with a score of 95.
+- One switch: `telegram.public` in `config/settings.yaml` (now `true`; the code default is `false`).
+
+### Done
+
+- **`tracker/bot.py`.** `handle_public` for non-admin chats; a `subscribers` list; `recipients()`; `broadcast()` sends the brief to admins and subscribers. Public users get plain lists (4 items per message) without buttons. Admins get a new `/users` command.
+- **`tracker/telegram.py`.** `send_document` can re-send a file by its Telegram file ID, so the PDF is uploaded once however many people receive it.
+- **`tracker/cli.py`.** `report --send` uses `broadcast()`. One unreachable chat no longer stops the others, and a public user who blocked the bot is dropped from the list. The brief is marked as sent only if at least one chat was reached.
+- **`tracker/db.py`.** New `subscribers` table (chat ID, active flag, join time; no names).
+- **Docs.** `SETUP.md` (who can do what), `RUNBOOK.md` (new rows), `SOW.md` (users row).
+- **Tests.** 4 new tests, 79 pass.
+- **Local `.env`.** Chat ID 8859638027 added as a second admin. The GitHub secret has to be updated by the owner.
+
+### Not verified
+
+- **Not tried against Telegram itself.** The logic is covered by tests with a fake client. A local `bot poll` was not run on purpose: it would take pending messages away from the scheduled run on GitHub.
+
+### Open items
+
+- **Replies are not instant.** A new user's Start is answered at the next scheduled job, which can be hours later.
+- **Privacy.** Subscriber chat IDs are saved in the database on the public `data` branch. Admin chat IDs are already there (`cards` table), and their first names will be too once they press a training button (`feedback` table). Fix options: make the repository private, or keep the database out of the public branch.
+- **No rate limiting.** Fine for tens or a few hundred users; needs a pause between sends beyond that.
+
+---
+
 ## 2026-10-05 — Logic explainer reworked as two pages (client feedback)
 
 **Branch:** `docs/logic-two-pages`

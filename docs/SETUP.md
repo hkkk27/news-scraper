@@ -45,13 +45,28 @@ Other useful commands:
 1. In Telegram, open **@BotFather**, send `/newbot`, and pick a name and username. Copy the **token**.
 2. Add the secret `TELEGRAM_BOT_TOKEN` with that token.
 3. Each person who should use the bot opens it and sends `/start`. The bot replies with that chat's ID at its next run: within 2 hours on GitHub, or immediately if you run `python -m tracker bot listen` locally. For a group, add the bot to the group and send `/start` there; group IDs are negative numbers.
-4. Add the secret `TELEGRAM_ALLOWED_CHAT_IDS` with the IDs, comma-separated, e.g. `123456789,-1001234567890`.
+4. Add the secret `TELEGRAM_ALLOWED_CHAT_IDS` with the IDs of the **admins**, comma-separated, e.g. `123456789,-1001234567890`.
 5. Test it: `python -m tracker bot test-card` sends a sample card with the 👍 / 👎 / ⭐ / 🔇 buttons.
 
-**What users can do:**
-- Tap the buttons on item cards.
-- Forward or paste links, send PDFs, or paste text to add items.
-- Use `/today`, `/week`, `/search NEET`, `/state Maharashtra`, `/sector skill`.
+**Two kinds of user**
+
+| | Admins (chat IDs in `TELEGRAM_ALLOWED_CHAT_IDS`) | Everyone else (when `telegram.public: true`) |
+|---|---|---|
+| Daily and weekly brief | Yes, plus item cards with buttons | Yes, after they press **Start** |
+| `/today`, `/week`, `/search NEET`, `/state Maharashtra`, `/sector skill` | Yes | Yes (plain lists, no buttons) |
+| Train with 👍 / 👎 / ⭐ / 🔇 | Yes | No |
+| Add items by forwarding links, PDFs or text | Yes | No |
+| `/stop` to leave, `/start` to rejoin | Not needed | Yes |
+| `/users` (how many people get the brief) | Yes | No |
+
+Public access is switched in `config/settings.yaml` (`telegram.public`). With `false`, only the admins are
+served and anyone else is told their chat ID. Training and adding items always stay with the admins, so a
+stranger cannot change the scores or put items into the reports.
+
+Things to know about public access:
+- **Replies are not instant on GitHub.** A new user's `/start` is answered at the next scheduled run.
+- **The subscriber list is in the database**, which is saved to the repository's `data` branch. Only chat IDs
+  are stored, no names. In a public repository those IDs are visible to anyone who downloads the database.
 
 ## 3. Email reports
 

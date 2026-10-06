@@ -54,6 +54,8 @@ reports:
 
 telegram:
   brief_max_items: 5         # item cards (with training buttons) sent after the PDF brief
+  public: true               # anyone can press Start to get the briefs and search. Training buttons and
+                             # adding items stay with the chat IDs in TELEGRAM_ALLOWED_CHAT_IDS (the admins).
 
 dashboard:
   days: 30

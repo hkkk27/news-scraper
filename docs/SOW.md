@@ -40,7 +40,7 @@ system.
 | Streams | Sector news, transfers, elections, political developments, court decisions, policy and statements |
 | Curation | Automatic tagging, a relevance yes/no decision with a degree-of-relevance score, de-duplication, and a training loop that learns from user feedback |
 | Manual feed-in | The client can add items himself by forwarding a link, PDF or text to the Telegram bot; these become part of the dataset and training labels |
-| Users | 3–5 concurrent users: an allowlist for the Telegram bot and email login for the dashboard; the mobile training mode lives in Telegram |
+| Users | 3–5 concurrent users who can train the system: an admin list for the Telegram bot and email login for the dashboard; the mobile training mode lives in Telegram. Since 6 Oct 2026 anyone else can also subscribe to the briefs and search (read-only), switchable with `telegram.public` |
 | Reporting | Daily and weekly reports by state, sector and category for two audiences: a detailed **analyst digest** (the client) and a one-page **executive brief** (his leadership). Plus an interactive dashboard. |
 | Operations | Two weeks of uninterrupted processing, with evidence (run logs) |
 | Handover | Runbook, methodology document, a 2-hour hands-on session, and transfer of all accounts |

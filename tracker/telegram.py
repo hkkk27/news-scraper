@@ -44,10 +44,17 @@ class TelegramClient:
         return self.call("sendMessage", chat_id=chat_id, text=text, parse_mode="HTML",
                          reply_markup=reply_markup, disable_web_page_preview=disable_preview)
 
-    def send_document(self, chat_id: int, path, caption: str = "") -> dict:
-        """Upload a file (PDF, Excel) with an HTML caption (Telegram limit: 1,024 characters)."""
+    def send_document(self, chat_id: int, path, caption: str = "", file_id: str | None = None) -> dict:
+        """Upload a file (PDF, Excel) with an HTML caption (Telegram limit: 1,024 characters).
+
+        Pass the `file_id` Telegram returned for an earlier upload to send the same file to
+        another chat without uploading it again.
+        """
         from pathlib import Path
 
+        if file_id:
+            return self.call("sendDocument", chat_id=chat_id, document=file_id, caption=caption[:1024],
+                             parse_mode="HTML")
         path = Path(path)
         with path.open("rb") as fh:
             response = self._http.post(f"{self._base}/sendDocument",

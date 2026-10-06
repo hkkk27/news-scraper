@@ -85,7 +85,7 @@ def make_bot(cfg):
     client = TelegramClient(cfg.secrets.telegram_bot_token)
     http = httpx.Client(headers={"User-Agent": cfg.settings.collection.user_agent}, timeout=15, follow_redirects=True)
     return Bot(client, connect(cfg.db_path), cfg.secrets.telegram_allowed_chat_ids, http=http,
-               commands=build_commands(cfg))
+               commands=build_commands(cfg), public=cfg.settings.telegram.public)
 
 
 def cmd_bot(args, cfg) -> int:
@@ -171,16 +171,14 @@ def cmd_report(args, cfg) -> int:
 
             bot = make_bot(cfg)
             cards = [story_card(s) for s in data.top[: cfg.settings.telegram.brief_max_items]]
-            for chat_id in cfg.secrets.telegram_allowed_chat_ids:
-                if "pdf" in files:  # the formatted brief as a PDF document, with a short caption
-                    bot.client.send_document(chat_id, files["pdf"], telegram_caption(data))
-                else:
-                    bot.client.send_message(chat_id, telegram_text(data))
-                if args.kind == "weekly":
-                    bot.client.send_document(chat_id, files["excel"], "Weekly workbook: state × sector pivot and trackers")
-                bot.send_cards(chat_id, cards)
-            print(f"  sent to {len(cfg.secrets.telegram_allowed_chat_ids)} Telegram chat(s)")
-            if cfg.secrets.telegram_allowed_chat_ids:
+            # The formatted brief as a PDF document with a short caption; plain text if no PDF was made.
+            documents = [(files["pdf"], telegram_caption(data))] if "pdf" in files else []
+            if args.kind == "weekly":
+                documents.append((files["excel"], "Weekly workbook: state × sector pivot and trackers"))
+            recipients = bot.recipients()
+            reached = bot.broadcast(documents, cards, text="" if "pdf" in files else telegram_text(data))
+            print(f"  sent to {reached} of {len(recipients)} Telegram chat(s)")
+            if reached:  # if nobody was reached, the next scheduled attempt tries again
                 mark_sent(conn, args.kind)
     return 0
 

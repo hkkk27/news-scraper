@@ -56,6 +56,14 @@ CREATE TABLE IF NOT EXISTS intake (
     created_at TEXT NOT NULL
 );
 
+-- Public users who pressed Start; they receive the briefs while telegram.public is on.
+-- Only the chat ID is kept (no names): this database is saved to the repository's data branch.
+CREATE TABLE IF NOT EXISTS subscribers (
+    chat_id    INTEGER PRIMARY KEY,
+    active     INTEGER DEFAULT 1,      -- 0 after /stop, or when the user blocked the bot
+    joined_at  TEXT NOT NULL
+);
+
 -- Sources muted by users (the tagger lowers their scores).
 CREATE TABLE IF NOT EXISTS muted_sources (
     feed_id    TEXT PRIMARY KEY,
