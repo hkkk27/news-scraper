@@ -36,8 +36,11 @@ end. Reports, the dashboard and a database copy are kept as artifacts for 14 day
 | A feed shows `!!` for days | Publisher moved or blocked the feed | Find the new URL (see `docs/sources.md`) or set `enabled: false` in `config/sources/feeds.yaml` |
 | An official page stops producing items | Site redesign or JavaScript-only page | Run `python -m tracker watch --only <id>`; adjust `include` in `watch.yaml`, or rely on PIB/Google News |
 | A burst of old notices from one page | The site renamed all its links | Temporary: `max_new` caps it at 15 per run. To reset the baseline, delete that page's entry in `data/state/watch_seen.json` |
-| Bot silent | Token or allowlist wrong | Check the secrets; `/start` from an unknown chat returns its ID; run `python -m tracker bot poll` locally |
-| Bot replies late | Expected on GitHub | Updates are read every 2 hours. For instant replies, run `python -m tracker bot listen` on an always-on machine |
+| Bot silent | Token wrong, or the person has not pressed Start | Check the `TELEGRAM_BOT_TOKEN` secret; the person must open the bot and press **Start** |
+| Bot replies late | Expected on GitHub | Messages are read only when a job runs (see the schedule above). For instant replies, run `python -m tracker bot listen` on an always-on machine |
+| Someone cannot train or add items | They are a public user, not an admin | Add their chat ID (they can send `/id`) to the `TELEGRAM_ALLOWED_CHAT_IDS` secret |
+| Close the bot to the public | | Set `telegram.public: false` in `config/settings.yaml`; only the admins are served after that |
+| How many people use the bot | | An admin sends `/users` |
 | No email | App password or recipients missing | See `docs/SETUP.md` §3. The run log shows "email not configured" |
 | Irrelevant items in Core | Rules too generous for a pattern | Tap 👎 on them (the model learns overnight); for a whole pattern add a term to `negative` (sectors.yaml) or `noise_terms` (scoring.yaml) |
 | Relevant items missed | Vocabulary gap (often a regional language) | Tap 👍 or forward the item; add the missing term to `config/taxonomy/sectors.yaml` |
