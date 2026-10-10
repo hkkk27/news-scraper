@@ -1,0 +1,9 @@
+{
+  "trained_at": "2026-10-10T21:59:52Z",
+  "labels": 0,
+  "seed_labels": 60,
+  "positives": 30,
+  "negatives": 30,
+  "cv_accuracy": 0.667,
+  "cv_precision": 0.639
+}
