@@ -6,12 +6,10 @@ name: tracker
 # GitHub starts scheduled jobs late (we measured 2-6 hours), so the morning job is attempted many
 # times; each attempt collects fresh news, and the first one that runs after 08:45 IST sends the
 # brief (once per day; see `tracker report --once-after`).
+# Paused 21 Nov 2026: the work moved to the shared intel-scanner app, and this bot token is now
+# used there. Manual runs still work (Actions -> tracker -> Run workflow). To resume the schedule,
+# restore the four cron lines from git history (commit before this one).
 on:
-  schedule:
-    - cron: "17 21-23 * * *"   # morning attempts (nominal 02:47-04:47 IST; early to absorb delays)
-    - cron: "7,37 0-4 * * *"   # morning attempts (nominal 05:37-10:07 IST)
-    - cron: "37 12 * * *"      # evening sweep (nominal 18:07 IST): feeds that keep only a few hours of items
-    - cron: "43 18 * * *"      # nightly retrain from the day's feedback (nominal 00:13 IST)
   workflow_dispatch:
     inputs:
       task:
